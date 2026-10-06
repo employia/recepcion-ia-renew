@@ -7,7 +7,7 @@ const geistSans = Geist({ subsets: ["latin"], variable: "--font-geist-sans" })
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" })
 
 export const metadata: Metadata = {
-  title: "Recepción Digital IA · Renew",
+  title: "Recepción Digital Renew",
   description:
     "Panel de supervisión y visualización de la Recepción Digital IA de Renew — una oficina digital donde el sistema cobra forma.",
   generator: "v0.app",
