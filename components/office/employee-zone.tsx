@@ -63,8 +63,10 @@ const CONFIG_BY_ID: Record<string, ModelConfig> = {
 export function EmployeeZone({ employee, index }: { employee: Employee; index: number }) {
   const { openEmployee } = useApp()
   const [x, z] = employee.station
-  // Orient the whole station so the seated employee faces the room center.
-  const rotationY = Math.atan2(-x, -z)
+  // Facing comes from the employee's own `rotation` (0 = faces the open side
+  // of the room, i.e. toward the isometric camera), so every avatar shows its
+  // face instead of turning its back on the viewer.
+  const rotationY = employee.rotation
   const cfg = CONFIG_BY_ID[employee.id] ?? {
     targetHeight: 1.95,
     rotationY: 0,

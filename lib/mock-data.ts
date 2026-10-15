@@ -22,10 +22,13 @@ export const ALL_BRANCHES_BRANCH: Branch = {
   label: "Renew · Todas las sucursales",
 }
 
-// Office layout (clockwise around the room, matching the patient's journey):
-// Valentina (left) -> Carlos (top) -> Elena (right) -> Steven (bottom).
-// To move someone, change only their `station` [x, z] — the avatar is
-// oriented toward the room center automatically (see employee-zone.tsx).
+// Office layout: a tidy 2x2 grid, every employee facing the open side of the
+// room (toward the isometric camera) so faces are always visible — the classic
+// 2.5D look. Reading order is left→right, back→front:
+//   Valentina  Carlos
+//   Elena      Steven
+// To move someone, change only `station` [x, z]; `rotation` is the Y angle in
+// radians (0 = facing the camera side).
 export const EMPLOYEES: Employee[] = [
   {
     id: "valentina",
@@ -41,8 +44,8 @@ export const EMPLOYEES: Employee[] = [
       "Pasa el caso a una persona del equipo cuando hace falta",
     ],
     portrait: "/avatars/valentina.webp",
-    station: [-2.6, 2.2],
-    rotation: Math.PI * 0.25,
+    station: [-2.4, -1.8],
+    rotation: 0,
     accent: "#33969b", // oklch(0.62 0.09 200)
     model: "/models/valentina-empleada.glb",
     status: "working",
@@ -61,8 +64,8 @@ export const EMPLOYEES: Employee[] = [
       "Confirma los detalles de cada cita al paciente",
     ],
     portrait: "/avatars/carlos.webp",
-    station: [-2.6, -2.2],
-    rotation: -Math.PI * 0.25,
+    station: [2.4, -1.8],
+    rotation: 0,
     accent: "#519160", // oklch(0.6 0.1 150)
     model: "/models/carlos-empleado.glb",
     status: "working",
@@ -81,8 +84,8 @@ export const EMPLOYEES: Employee[] = [
       "Mantiene la información lista para el equipo de Renew",
     ],
     portrait: "/avatars/elena.webp",
-    station: [2.6, -2.2],
-    rotation: Math.PI * 0.75,
+    station: [-2.4, 2.4],
+    rotation: 0,
     accent: "#9d6f48", // oklch(0.58 0.08 60)
     model: "/models/elena-empleada.glb",
     status: "resting",
@@ -100,8 +103,8 @@ export const EMPLOYEES: Employee[] = [
       "Avisa al equipo de Renew con el contexto del caso",
     ],
     portrait: "/avatars/steven.webp",
-    station: [2.6, 2.2],
-    rotation: -Math.PI * 0.75,
+    station: [2.4, 2.4],
+    rotation: 0,
     accent: "#bd6254", // oklch(0.6 0.12 30)
     model: "/models/steven-empleado.glb",
     status: "working",
