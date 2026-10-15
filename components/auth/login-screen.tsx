@@ -14,7 +14,7 @@ export function LoginScreen() {
     e.preventDefault()
     if (!email) return
     setLoading(true)
-    // Mock authentication. Swap for Supabase Auth (signInWithPassword) later.
+    // Mock authentication for the demo.
     setTimeout(() => signIn(email), 650)
   }
 
@@ -52,7 +52,7 @@ export function LoginScreen() {
 
           <div className="relative space-y-4">
             <h2 className="text-balance text-3xl font-medium leading-tight text-[oklch(0.97_0.004_85)]">
-              La oficina digital de tu Recepción Digital IA.
+              La oficina digital de tu recepción.
             </h2>
             <p className="max-w-sm text-pretty text-sm leading-relaxed text-white/60">
               Un espacio donde cada área del sistema toma forma. Entra, observa a
@@ -72,7 +72,7 @@ export function LoginScreen() {
         <section className="flex flex-col justify-center p-8 sm:p-12">
           <div className="mb-8">
             <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
-              Recepción Digital IA
+              Recepción Digital
             </p>
             <h1 className="mt-2 text-2xl font-medium tracking-tight">Iniciar sesión</h1>
             <p className="mt-1.5 text-sm text-muted-foreground">
@@ -127,10 +127,6 @@ export function LoginScreen() {
             </button>
           </form>
 
-          <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
-            Demo: usa cualquier correo y contraseña para entrar. La autenticación
-            real con Supabase Auth se conecta en un paso posterior.
-          </p>
         </section>
       </div>
     </main>

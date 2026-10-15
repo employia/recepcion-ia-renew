@@ -4,7 +4,6 @@ import type {
   BranchMetrics,
   Conversation,
   Employee,
-  Escalation,
   Patient,
 } from "./types"
 
@@ -23,13 +22,26 @@ export const ALL_BRANCHES_BRANCH: Branch = {
   label: "Renew · Todas las sucursales",
 }
 
+// Office layout (clockwise around the room, matching the patient's journey):
+// Valentina (left) -> Carlos (top) -> Elena (right) -> Steven (bottom).
+// To move someone, change only their `station` [x, z] — the avatar is
+// oriented toward the room center automatically (see employee-zone.tsx).
 export const EMPLOYEES: Employee[] = [
   {
     id: "valentina",
     name: "Valentina",
     role: "Recepción",
-    module: "conversations",
-    station: [-2.6, -2.2],
+    tagline: "La primera voz de Renew",
+    summary:
+      "Recibe a cada paciente apenas escribe. Responde con calidez, entiende qué necesita y lo encamina con el compañero indicado, a cualquier hora del día.",
+    duties: [
+      "Atiende los mensajes de WhatsApp de los pacientes",
+      "Informa sobre servicios, horarios y sucursales",
+      "Identifica la necesidad y la dirige al área correcta",
+      "Pasa el caso a una persona del equipo cuando hace falta",
+    ],
+    portrait: "/avatars/valentina.webp",
+    station: [-2.6, 2.2],
     rotation: Math.PI * 0.25,
     accent: "#33969b", // oklch(0.62 0.09 200)
     model: "/models/valentina-empleada.glb",
@@ -39,8 +51,17 @@ export const EMPLOYEES: Employee[] = [
     id: "carlos",
     name: "Carlos",
     role: "Agenda",
-    module: "agenda",
-    station: [2.6, -2.2],
+    tagline: "El que mantiene las citas en orden",
+    summary:
+      "Se encarga de todo lo relacionado con las citas: revisa la disponibilidad real de cada sucursal y deja cada reserva confirmada sin cruces ni confusiones.",
+    duties: [
+      "Consulta la disponibilidad por servicio y sucursal",
+      "Agenda nuevas citas",
+      "Reprograma y cancela cuando el paciente lo pide",
+      "Confirma los detalles de cada cita al paciente",
+    ],
+    portrait: "/avatars/carlos.webp",
+    station: [-2.6, -2.2],
     rotation: -Math.PI * 0.25,
     accent: "#519160", // oklch(0.6 0.1 150)
     model: "/models/carlos-empleado.glb",
@@ -50,8 +71,17 @@ export const EMPLOYEES: Employee[] = [
     id: "elena",
     name: "Elena",
     role: "Secretaría · Datos",
-    module: "patients",
-    station: [-2.6, 2.2],
+    tagline: "La memoria de cada paciente",
+    summary:
+      "Mantiene ordenada la información de los pacientes para que nadie tenga que repetir sus datos. Cada conversación y cada cita queda asociada a la persona correcta.",
+    duties: [
+      "Registra y actualiza los datos del paciente",
+      "Identifica al paciente por su cédula",
+      "Relaciona cada conversación y cada cita con su historial",
+      "Mantiene la información lista para el equipo de Renew",
+    ],
+    portrait: "/avatars/elena.webp",
+    station: [2.6, -2.2],
     rotation: Math.PI * 0.75,
     accent: "#9d6f48", // oklch(0.58 0.08 60)
     model: "/models/elena-empleada.glb",
@@ -61,7 +91,15 @@ export const EMPLOYEES: Employee[] = [
     id: "steven",
     name: "Steven",
     role: "Supervisión",
-    module: "escalations",
+    tagline: "El que vela para que nada se quede sin atender",
+    summary:
+      "Supervisa la atención del equipo y se asegura de que los casos que requieren criterio humano lleguen a la persona correcta de Renew.",
+    duties: [
+      "Supervisa la calidad de las conversaciones",
+      "Detecta los casos que necesitan a una persona",
+      "Avisa al equipo de Renew con el contexto del caso",
+    ],
+    portrait: "/avatars/steven.webp",
     station: [2.6, 2.2],
     rotation: -Math.PI * 0.75,
     accent: "#bd6254", // oklch(0.6 0.12 30)
@@ -186,32 +224,6 @@ export function getPatients(branchId: string): Patient[] {
   }))
 }
 
-export function getEscalations(branchId: string): Escalation[] {
-  const rand = seeded(branchId + "esc")
-  const statuses: Escalation["status"][] = ["waiting-human", "human-attending", "resolved"]
-  const reasons = [
-    "Paciente solicita hablar con una persona.",
-    "Consulta fuera del alcance del asistente.",
-    "Reclamo sobre una cita previa.",
-    "Solicitud de información médica específica.",
-  ]
-  const count = 3 + Math.floor(rand() * 3)
-  return Array.from({ length: count }).map((_, i) => {
-    const hour = 9 + Math.floor(rand() * 4)
-    const minute = Math.floor(rand() * 60)
-    return {
-      id: `${branchId}-esc-${i}`,
-      branchId,
-      conversationId: `#${2800 + Math.floor(rand() * 200)}`,
-      employee: "Valentina",
-      reason: pick(reasons, rand()),
-      status: pick(statuses, rand()),
-      since: timeString(hour, minute),
-      priority: pick(["Alta", "Media", "Baja"] as const, rand()),
-    }
-  })
-}
-
 export function getMetrics(branchId: string): BranchMetrics {
   const rand = seeded(branchId + "met")
   const hours = ["8", "9", "10", "11", "12", "13", "14", "15", "16", "17"]
@@ -231,7 +243,6 @@ export function getMetrics(branchId: string): BranchMetrics {
       messagesProcessed: conversationsAttended * (6 + Math.floor(rand() * 6)),
       avgResponseSeconds: 8 + Math.floor(rand() * 20),
       conversationsResolved: Math.floor(conversationsAttended * (0.6 + rand() * 0.25)),
-      escalations: 2 + Math.floor(rand() * 6),
       trend: opTrend,
     },
     agenda: {

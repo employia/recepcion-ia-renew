@@ -6,7 +6,6 @@ import {
   LayoutGrid,
   LineChart,
   MessageSquare,
-  TriangleAlert,
   UserRound,
   Users,
 } from "lucide-react"
@@ -20,11 +19,10 @@ const NAV: { id: ModuleId; label: string; icon: LucideIcon }[] = [
   { id: "agenda", label: "Citas", icon: CalendarDays },
   { id: "patients", label: "Pacientes", icon: Users },
   { id: "metrics", label: "Métricas", icon: LineChart },
-  { id: "escalations", label: "Escalamientos", icon: TriangleAlert },
 ]
 
 export function Sidebar() {
-  const { activeModule, openModule, closeModule } = useApp()
+  const { activeModule, openModule, closeModule, closeEmployee } = useApp()
 
   return (
     <nav
@@ -49,7 +47,14 @@ export function Sidebar() {
           return (
             <button
               key={item.id}
-              onClick={() => (isOffice ? closeModule() : openModule(item.id))}
+              onClick={() => {
+                if (isOffice) {
+                  closeModule()
+                  closeEmployee()
+                } else {
+                  openModule(item.id)
+                }
+              }}
               className={`group flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-sm transition ${
                 active
                   ? "bg-primary text-primary-foreground shadow-soft"

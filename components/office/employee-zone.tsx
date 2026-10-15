@@ -55,13 +55,13 @@ const CONFIG_BY_ID: Record<string, ModelConfig> = {
  * this file and person.tsx for the full chronology). There is now
  * intentionally no hover state anywhere in this component: no
  * onPointerOver/onPointerOut, no useState/useEffect for it, no <Html>. The
- * only interaction is click -> open the employee's module. If hover
+ * only interaction is click -> open the employee's presentation card. If hover
  * feedback is wanted again in the future, it needs a fresh, deliberately
  * conservative design (e.g. a static always-rendered indicator with no
  * per-frame DOM work), not a re-add of what was here before.
  */
 export function EmployeeZone({ employee, index }: { employee: Employee; index: number }) {
-  const { openModule } = useApp()
+  const { openEmployee } = useApp()
   const [x, z] = employee.station
   // Orient the whole station so the seated employee faces the room center.
   const rotationY = Math.atan2(-x, -z)
@@ -73,7 +73,7 @@ export function EmployeeZone({ employee, index }: { employee: Employee; index: n
 
   function handleClick(e: ThreeEvent<MouseEvent>) {
     e.stopPropagation()
-    openModule(employee.module)
+    openEmployee(employee.id)
   }
 
   return (
@@ -102,7 +102,7 @@ export function EmployeeZone({ employee, index }: { employee: Employee; index: n
 
       {/* Sole owner of interaction: an independent group whose only child is
           the fixed-size invisible hitbox mesh. Click only — no hover
-          handlers of any kind. */}
+          handlers of any kind. Click opens the employee's presentation card. */}
       <group onClick={handleClick}>
         <mesh position={[0, 0.9, 0.2]} visible={false}>
           <boxGeometry args={[1.6, 1.9, 1.6]} />

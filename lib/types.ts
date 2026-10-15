@@ -1,4 +1,4 @@
-// Domain types for Recepción Digital IA · Renew
+// Domain types for Recepción Digital · Renew
 // Read-only visualization layer. No mutations anywhere in the app.
 
 export type ModuleId =
@@ -7,7 +7,6 @@ export type ModuleId =
   | "agenda"
   | "patients"
   | "metrics"
-  | "escalations"
   | "account"
 
 export type EmployeeId = "valentina" | "carlos" | "elena" | "steven"
@@ -19,7 +18,14 @@ export interface Employee {
   id: EmployeeId
   name: string
   role: string
-  module: ModuleId
+  /** One-line description shown under the name in the presentation panel. */
+  tagline: string
+  /** Short paragraph presenting who the employee is. */
+  summary: string
+  /** "What they do" bullets in the presentation panel. */
+  duties: string[]
+  /** Static frame of the avatar shown in the presentation panel. */
+  portrait: string
   // Position of the workstation in the 3D office (x, z on the floor plane)
   station: [number, number]
   // Rotation of the person/desk in radians around Y
@@ -73,19 +79,6 @@ export interface Patient {
   phone: string
 }
 
-export type EscalationStatus = "waiting-human" | "human-attending" | "resolved"
-
-export interface Escalation {
-  id: string
-  branchId: string
-  conversationId: string
-  employee: string
-  reason: string
-  status: EscalationStatus
-  since: string
-  priority: "Alta" | "Media" | "Baja"
-}
-
 export interface MetricPoint {
   label: string
   value: number
@@ -97,7 +90,6 @@ export interface BranchMetrics {
     messagesProcessed: number
     avgResponseSeconds: number
     conversationsResolved: number
-    escalations: number
     trend: MetricPoint[]
   }
   agenda: {

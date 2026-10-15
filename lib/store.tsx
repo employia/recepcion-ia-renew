@@ -8,8 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react"
-import { BRANCHES } from "./mock-data"
-import type { ModuleId } from "./types"
+import type { EmployeeId, ModuleId } from "./types"
 
 interface Session {
   email: string
@@ -17,25 +16,26 @@ interface Session {
 }
 
 interface AppState {
-  // auth (mock now, Supabase Auth later)
+  // auth (mock for now)
   session: Session | null
   signIn: (email: string) => void
   signOut: () => void
-  // branch context — a filter over data, not a different office
-  branchId: string
-  setBranchId: (id: string) => void
   // active module panel (null = office view, no panel)
   activeModule: ModuleId | null
   openModule: (m: ModuleId) => void
   closeModule: () => void
+  // employee presentation panel (opened by clicking a 3D employee)
+  activeEmployee: EmployeeId | null
+  openEmployee: (id: EmployeeId) => void
+  closeEmployee: () => void
 }
 
 const AppContext = createContext<AppState | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
-  const [branchId, setBranchId] = useState<string>(BRANCHES[0].id)
   const [activeModule, setActiveModule] = useState<ModuleId | null>(null)
+  const [activeEmployee, setActiveEmployee] = useState<EmployeeId | null>(null)
 
   const signIn = useCallback((email: string) => {
     const name = email.split("@")[0].replace(/[._]/g, " ")
@@ -45,26 +45,48 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(() => {
     setSession(null)
     setActiveModule(null)
+    setActiveEmployee(null)
   }, [])
 
+  // Only one side panel at a time: opening a module closes the employee card
+  // and vice versa.
   const openModule = useCallback((m: ModuleId) => {
+    setActiveEmployee(null)
     setActiveModule(m === "office" ? null : m)
   }, [])
 
   const closeModule = useCallback(() => setActiveModule(null), [])
+
+  const openEmployee = useCallback((id: EmployeeId) => {
+    setActiveModule(null)
+    setActiveEmployee(id)
+  }, [])
+
+  const closeEmployee = useCallback(() => setActiveEmployee(null), [])
 
   const value = useMemo<AppState>(
     () => ({
       session,
       signIn,
       signOut,
-      branchId,
-      setBranchId,
       activeModule,
       openModule,
       closeModule,
+      activeEmployee,
+      openEmployee,
+      closeEmployee,
     }),
-    [session, signIn, signOut, branchId, activeModule, openModule, closeModule],
+    [
+      session,
+      signIn,
+      signOut,
+      activeModule,
+      openModule,
+      closeModule,
+      activeEmployee,
+      openEmployee,
+      closeEmployee,
+    ],
   )
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

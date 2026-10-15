@@ -3,13 +3,11 @@
 import { useEffect } from "react"
 import { X } from "lucide-react"
 import { useApp } from "@/lib/store"
-import { BRANCHES } from "@/lib/mock-data"
 import type { ModuleId } from "@/lib/types"
 import { ConversationsModule } from "@/components/modules/conversations"
 import { AgendaModule } from "@/components/modules/agenda"
 import { PatientsModule } from "@/components/modules/patients"
 import { MetricsModule } from "@/components/modules/metrics"
-import { EscalationsModule } from "@/components/modules/escalations"
 import { AccountModule } from "@/components/modules/account"
 
 const META: Record<Exclude<ModuleId, "office">, { title: string; subtitle: string; employee?: string }> = {
@@ -17,14 +15,11 @@ const META: Record<Exclude<ModuleId, "office">, { title: string; subtitle: strin
   agenda: { title: "Agenda", subtitle: "Citas gestionadas por Carlos", employee: "Carlos · Agenda" },
   patients: { title: "Pacientes", subtitle: "Datos y CRM de Elena", employee: "Elena · Datos" },
   metrics: { title: "Métricas", subtitle: "Rendimiento diario del sistema" },
-  escalations: { title: "Escalamientos", subtitle: "Casos en supervisión", employee: "Steven · Supervisión" },
   account: { title: "Cuenta", subtitle: "Sesión y preferencias" },
 }
 
 export function ModulePanel() {
-  const { activeModule, closeModule, branchId } = useApp()
-  const branch = BRANCHES.find((b) => b.id === branchId)
-  const branchName = branch?.name ?? "Todas las sucursales"
+  const { activeModule, closeModule } = useApp()
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -71,7 +66,7 @@ export function ModulePanel() {
                     {meta.title}
                   </h2>
                   <p className="truncate text-xs text-muted-foreground">
-                    {meta.subtitle} · {branchName}
+                    {meta.subtitle}
                   </p>
                 </div>
                 <button
@@ -88,7 +83,6 @@ export function ModulePanel() {
                 {activeModule === "agenda" && <AgendaModule />}
                 {activeModule === "patients" && <PatientsModule />}
                 {activeModule === "metrics" && <MetricsModule />}
-                {activeModule === "escalations" && <EscalationsModule />}
                 {activeModule === "account" && <AccountModule />}
               </div>
             </>

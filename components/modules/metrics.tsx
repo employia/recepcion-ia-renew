@@ -40,7 +40,7 @@ export function MetricsModule() {
           <Kpi label="Tiempo prom. respuesta" value={`${operation.avgResponseSeconds}s`} />
           <Kpi label="Resueltas" value={operation.conversationsResolved} />
         </div>
-        <ChartCard label="Conversaciones por hora" hint={`${operation.escalations} escalamientos hoy`}>
+        <ChartCard label="Conversaciones por hora">
           <ResponsiveContainer width="100%" height={120}>
             <AreaChart data={operation.trend} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
               <defs>

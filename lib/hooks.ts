@@ -2,13 +2,13 @@
 
 import useSWR from "swr"
 import { dataService } from "./data-service"
-import { useApp } from "./store"
+import { ALL_BRANCHES_ID } from "./mock-data"
 
 // Auto-refresh roughly once a minute, per the blueprint's real-time guidance.
 const REFRESH_MS = 60_000
 
 export function useConversations() {
-  const { branchId } = useApp()
+  const branchId = ALL_BRANCHES_ID
   return useSWR(["conversations", branchId], () => dataService.conversations(branchId), {
     refreshInterval: REFRESH_MS,
     keepPreviousData: true,
@@ -16,7 +16,7 @@ export function useConversations() {
 }
 
 export function useAppointments() {
-  const { branchId } = useApp()
+  const branchId = ALL_BRANCHES_ID
   return useSWR(["appointments", branchId], () => dataService.appointments(branchId), {
     refreshInterval: REFRESH_MS,
     keepPreviousData: true,
@@ -24,23 +24,15 @@ export function useAppointments() {
 }
 
 export function usePatients() {
-  const { branchId } = useApp()
+  const branchId = ALL_BRANCHES_ID
   return useSWR(["patients", branchId], () => dataService.patients(branchId), {
     refreshInterval: REFRESH_MS,
     keepPreviousData: true,
   })
 }
 
-export function useEscalations() {
-  const { branchId } = useApp()
-  return useSWR(["escalations", branchId], () => dataService.escalations(branchId), {
-    refreshInterval: REFRESH_MS,
-    keepPreviousData: true,
-  })
-}
-
 export function useMetrics() {
-  const { branchId } = useApp()
+  const branchId = ALL_BRANCHES_ID
   return useSWR(["metrics", branchId], () => dataService.metrics(branchId), {
     refreshInterval: REFRESH_MS,
     keepPreviousData: true,

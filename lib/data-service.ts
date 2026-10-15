@@ -9,7 +9,6 @@ import {
   BRANCHES,
   getAppointments,
   getConversations,
-  getEscalations,
   getMetrics,
   getPatients,
 } from "./mock-data"
@@ -17,7 +16,6 @@ import type {
   Appointment,
   BranchMetrics,
   Conversation,
-  Escalation,
   MetricPoint,
   Patient,
 } from "./types"
@@ -60,7 +58,6 @@ function getCombinedMetrics(): BranchMetrics {
       messagesProcessed: sum(all.map((m) => m.operation.messagesProcessed)),
       avgResponseSeconds: Math.round(avg(all.map((m) => m.operation.avgResponseSeconds))),
       conversationsResolved: sum(all.map((m) => m.operation.conversationsResolved)),
-      escalations: sum(all.map((m) => m.operation.escalations)),
       trend: mergeTrend(all.map((m) => m.operation.trend)),
     },
     agenda: {
@@ -87,8 +84,6 @@ export const dataService = {
     delay(isAll(branchId) ? everyBranch(getAppointments) : getAppointments(branchId)),
   patients: (branchId: string): Promise<Patient[]> =>
     delay(isAll(branchId) ? everyBranch(getPatients) : getPatients(branchId)),
-  escalations: (branchId: string): Promise<Escalation[]> =>
-    delay(isAll(branchId) ? everyBranch(getEscalations) : getEscalations(branchId)),
   metrics: (branchId: string): Promise<BranchMetrics> =>
     delay(isAll(branchId) ? getCombinedMetrics() : getMetrics(branchId)),
 }

@@ -6,8 +6,8 @@ import { MousePointerClick } from "lucide-react"
 import { useApp } from "@/lib/store"
 import { OfficeLoading } from "@/components/office/office-view"
 import { Sidebar } from "./sidebar"
-import { BranchSelector } from "./branch-selector"
 import { ModulePanel } from "./module-panel"
+import { EmployeePanel } from "./employee-panel"
 
 // The 3D office is client-only; avoid SSR of the WebGL canvas.
 const OfficeView = dynamic(
@@ -16,7 +16,7 @@ const OfficeView = dynamic(
 )
 
 export function AppShell() {
-  const { activeModule } = useApp()
+  const { activeModule, activeEmployee } = useApp()
   const [showHint, setShowHint] = useState(true)
 
   useEffect(() => {
@@ -25,17 +25,17 @@ export function AppShell() {
   }, [])
 
   useEffect(() => {
-    if (activeModule) setShowHint(false)
-  }, [activeModule])
+    if (activeModule || activeEmployee) setShowHint(false)
+  }, [activeModule, activeEmployee])
 
   return (
     <main className="relative h-screen w-full overflow-hidden bg-background">
       <OfficeView />
 
       {/* Floating UI layer */}
-      <BranchSelector />
       <Sidebar />
       <ModulePanel />
+      <EmployeePanel />
 
       {/* Onboarding hint — appears briefly, unobtrusive */}
       <div
@@ -45,7 +45,7 @@ export function AppShell() {
       >
         <div className="glass flex items-center gap-2 rounded-full border border-border/70 px-4 py-2 text-xs text-muted-foreground shadow-float">
           <MousePointerClick className="h-3.5 w-3.5 text-accent" />
-          Haz clic en un empleado para abrir su módulo
+          Haz clic en un empleado para conocerlo
         </div>
       </div>
     </main>
