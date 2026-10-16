@@ -26,6 +26,8 @@ export interface Employee {
   duties: string[]
   /** Static frame of the avatar shown in the presentation panel. */
   portrait: string
+  /** Where the face sits in the portrait, as [x, y] fractions — used to crop round thumbnails. */
+  portraitFace: [number, number]
   // Position of the workstation in the 3D office (x, z on the floor plane)
   station: [number, number]
   // Rotation of the person/desk in radians around Y

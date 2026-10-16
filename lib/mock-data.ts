@@ -44,6 +44,7 @@ export const EMPLOYEES: Employee[] = [
       "Pasa el caso a una persona del equipo cuando hace falta",
     ],
     portrait: "/avatars/valentina.webp",
+    portraitFace: [0.59, 0.15],
     station: [-2.4, -1.8],
     rotation: 0,
     accent: "#33969b", // oklch(0.62 0.09 200)
@@ -64,6 +65,7 @@ export const EMPLOYEES: Employee[] = [
       "Confirma los detalles de cada cita al paciente",
     ],
     portrait: "/avatars/carlos.webp",
+    portraitFace: [0.63, 0.13],
     station: [2.4, -1.8],
     rotation: 0,
     accent: "#519160", // oklch(0.6 0.1 150)
@@ -84,11 +86,12 @@ export const EMPLOYEES: Employee[] = [
       "Mantiene la información lista para el equipo de Renew",
     ],
     portrait: "/avatars/elena.webp",
+    portraitFace: [0.62, 0.17],
     station: [-2.4, 2.4],
     rotation: 0,
     accent: "#9d6f48", // oklch(0.58 0.08 60)
     model: "/models/elena-empleada.glb",
-    status: "resting",
+    status: "working",
   },
   {
     id: "steven",
@@ -103,6 +106,7 @@ export const EMPLOYEES: Employee[] = [
       "Avisa al equipo de Renew con el contexto del caso",
     ],
     portrait: "/avatars/steven.webp",
+    portraitFace: [0.6, 0.13],
     station: [2.4, 2.4],
     rotation: 0,
     accent: "#bd6254", // oklch(0.6 0.12 30)

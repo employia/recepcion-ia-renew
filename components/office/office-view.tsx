@@ -1,7 +1,7 @@
 "use client"
 
-import { Suspense, useCallback, useEffect, useRef } from "react"
-import { Canvas } from "@react-three/fiber"
+import { Suspense, useCallback, useEffect, useRef, useState } from "react"
+import { Canvas, useThree } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
 import { Loader2 } from "lucide-react"
 import { HoverProvider } from "@/lib/store"
@@ -33,6 +33,68 @@ function isSoftwareRenderer(gl: WebGLRenderingContext | WebGL2RenderingContext) 
   return SOFTWARE_RENDERER_PATTERNS.some((p) => renderer.includes(p))
 }
 
+
+// --- Responsive framing -----------------------------------------------------
+// The room is a fixed isometric box. Its footprint on screen, in world units
+// at zoom=1 (camera ~(9, 8.5, 9) looking at the origin): ~13.6 wide and ~10.1
+// tall including the walls. We pick the largest zoom that fits the free area
+// (leaving room for the side nav / bottom nav and the team bar) and shift the
+// camera target so the room sits centered in that free area. Computed on
+// resize only — nothing here runs per frame.
+const ROOM_W = 13.6
+const ROOM_H = 10.1
+const ROOM_MID_U = 0.833 // vertical midpoint of the room, in screen-up units, for target.y = 0.6
+const CAM_OFFSET: [number, number, number] = [9, 7.9, 9] // camera position minus target
+const U_Y = 0.8497 // screen-up component of the world Y axis
+
+const CLUSTER_W = 9.6 // width of the desk cluster alone, used on phones where the whole room would be tiny
+
+function fitCamera(width: number, height: number) {
+  const tier = width >= 1024 ? "lg" : width >= 768 ? "md" : "sm"
+  const top = tier === "sm" ? 16 : 24
+  const bottom = tier === "sm" ? 176 : 112 // team bar (+ bottom nav on phones)
+  const side = tier === "lg" ? 200 : tier === "md" ? 96 : 12 // side nav footprint
+  const availH = Math.max(height - top - bottom, 160)
+  const availW = Math.max(width - side * 2, 200)
+  const clamp = (z: number) => Math.min(Math.max(z, 20), 120)
+  const zoomAll = clamp(Math.min(availH / ROOM_H, availW / ROOM_W)) // whole room visible
+
+  // Phones and portrait tablets are narrow and tall: showing the whole room
+  // leaves the avatars tiny and the screen mostly empty. Frame the desks
+  // instead (walls bleed off the sides); the person can still pinch out to see
+  // the entire room.
+  const portrait = height > width * 1.15
+  const closeUp = tier === "sm" || portrait
+  const zoom = closeUp ? clamp(Math.min(availH / ROOM_H, (width - side * 2) / CLUSTER_W)) : zoomAll
+  const minZoom = closeUp ? zoomAll * 0.95 : zoom * 0.7
+
+  // Screen-y (px) where the room's midpoint should land.
+  const centerY = top + availH / 2
+  const m = (height / 2 - centerY) / zoom
+  const targetY = 0.6 + (ROOM_MID_U - m) / U_Y
+  return { zoom, targetY, minZoom }
+}
+
+/** Applies the fitted zoom + target to the camera whenever the window size changes. */
+function CameraRig({ zoom, targetY }: { zoom: number; targetY: number }) {
+  const camera = useThree((s) => s.camera)
+  const controls = useThree((s) => s.controls) as unknown as
+    | { target: { set: (x: number, y: number, z: number) => void }; update: () => void }
+    | null
+
+  useEffect(() => {
+    camera.position.set(CAM_OFFSET[0], CAM_OFFSET[1] + targetY, CAM_OFFSET[2])
+    camera.zoom = zoom
+    camera.updateProjectionMatrix()
+    if (controls) {
+      controls.target.set(0, targetY, 0)
+      controls.update()
+    }
+  }, [camera, controls, zoom, targetY])
+
+  return null
+}
+
 export function OfficeView() {
   // Default changed from false to true (Sept 2026): starting in "high
   // quality" and downgrading on detection assumes the first frame survives
@@ -46,6 +108,20 @@ export function OfficeView() {
   // there's no setter to call. Kept as a named constant (not inlined below)
   // so every prop that reads it below stays self-documenting about why.
   const lowPower = true
+
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [fit, setFit] = useState(() =>
+    typeof window === "undefined" ? { zoom: 78, targetY: 0.6, minZoom: 54 } : fitCamera(window.innerWidth, window.innerHeight),
+  )
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const update = () => setFit(fitCamera(el.clientWidth, el.clientHeight))
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
   // frameloop is unconditionally "always" (Sept 2026, production incident:
   // full office canvas going blank on Vercel while sidebar/module bar —
@@ -109,7 +185,7 @@ export function OfficeView() {
   }, [])
 
   return (
-    <div className="absolute inset-0">
+    <div ref={containerRef} className="absolute inset-0">
       <HoverProvider>
         <Canvas
           // Shadows are toggled off entirely (not just per-mesh) once a
@@ -141,10 +217,11 @@ export function OfficeView() {
           // floor, rug and contact-shadow plane sit within 0.012 units of each
           // other (y=0 / 0.006 / 0.012), causing visible z-fighting flicker —
           // worse while zooming, since minZoom/maxZoom re-derives the frustum.
-          camera={{ position: [9, 8.5, 9], zoom: 78, near: 1, far: 30 }}
+          camera={{ position: [CAM_OFFSET[0], CAM_OFFSET[1] + fit.targetY, CAM_OFFSET[2]], zoom: fit.zoom, near: 1, far: 30 }}
           gl={{ antialias: !lowPower, preserveDrawingBuffer: false }}
         >
           <GlRecoveryWatcher onContextLost={handleContextLost} />
+          <CameraRig zoom={fit.zoom} targetY={fit.targetY} />
           <color attach="background" args={["#f2efe9"]} />
           <Suspense fallback={null}>
             <Scene lowPower={lowPower} />
@@ -155,9 +232,9 @@ export function OfficeView() {
             enableRotate={false}
             enablePan={false}
             enableZoom
-            minZoom={52}
-            maxZoom={150}
-            target={[0, 0.6, 0]}
+            minZoom={fit.minZoom}
+            maxZoom={fit.zoom * 2}
+            target={[0, fit.targetY, 0]}
           />
         </Canvas>
       </HoverProvider>

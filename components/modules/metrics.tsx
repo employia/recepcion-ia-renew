@@ -10,7 +10,7 @@ import {
   XAxis,
 } from "recharts"
 import { useMetrics } from "@/lib/hooks"
-import { SkeletonList, ReadOnlyNote } from "./shared"
+import { SkeletonList } from "./shared"
 
 // Recharts renders these as SVG presentation attributes, where CSS custom
 // properties (var(--x)) do NOT resolve — so we use explicit theme colors.
@@ -70,11 +70,11 @@ export function MetricsModule() {
 
       {/* Agenda */}
       <Section title="Agenda">
-        <div className="grid grid-cols-4 gap-2">
-          <Kpi small label="Creadas" value={agenda.created} />
-          <Kpi small label="Cancel." value={agenda.canceled} />
-          <Kpi small label="Reprog." value={agenda.rescheduled} />
-          <Kpi small label="No-shows" value={agenda.noShows} />
+        <div className="grid grid-cols-2 gap-2.5">
+          <Kpi label="Citas creadas" value={agenda.created} />
+          <Kpi label="Canceladas" value={agenda.canceled} />
+          <Kpi label="Reprogramadas" value={agenda.rescheduled} />
+          <Kpi label="No asistieron" value={agenda.noShows} />
         </div>
         <ChartCard label="Citas creadas · semana">
           <ResponsiveContainer width="100%" height={110}>
@@ -96,7 +96,7 @@ export function MetricsModule() {
       <Section title="Negocio">
         <div className="grid grid-cols-2 gap-2.5">
           <Kpi
-            label="Conversión conv. → cita"
+            label="Conversación a cita"
             value={`${Math.round(business.conversionRate * 100)}%`}
           />
           <Kpi label="Clientes nuevos" value={business.newClients} />
@@ -124,9 +124,6 @@ export function MetricsModule() {
         </div>
       </Section>
 
-      <ReadOnlyNote>
-        Métricas diarias del sistema. Se actualizan automáticamente.
-      </ReadOnlyNote>
     </div>
   )
 }

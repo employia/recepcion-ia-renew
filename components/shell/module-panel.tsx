@@ -52,7 +52,7 @@ export function ModulePanel() {
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="glass-strong flex h-full flex-col">
+        <div className="flex h-full flex-col bg-card md:glass-strong">
           {meta && (
             <>
               <header className="flex items-start justify-between gap-3 border-b border-border/60 px-5 py-4">
