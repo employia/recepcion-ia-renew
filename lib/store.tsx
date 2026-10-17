@@ -4,11 +4,35 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react"
 import type { EmployeeId, ModuleId } from "./types"
+
+// --- Browser history -------------------------------------------------------
+// The app is a single page, so the browser (and the Android/iOS back gesture)
+// has nothing to go back to inside it: "Back" used to leave the app entirely.
+// Opening a panel (module or employee card) from the office now pushes one
+// history entry; switching between panels replaces it. So one "Back" always
+// closes the open panel and lands on the office, and "Forward" reopens it.
+const HISTORY_KEY = "renewView"
+
+interface ViewState {
+  module: ModuleId | null
+  employee: EmployeeId | null
+}
+
+const EMPTY_VIEW: ViewState = { module: null, employee: null }
+
+/** The panel recorded in the current history entry, or null on the office entry. */
+function readPanelEntry(): ViewState | null {
+  const s = window.history.state as Record<string, unknown> | null
+  const v = s?.[HISTORY_KEY] as ViewState | undefined
+  return v ?? null
+}
 
 interface Session {
   email: string
@@ -42,27 +66,83 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setSession({ email, name: name.charAt(0).toUpperCase() + name.slice(1) })
   }, [])
 
-  const signOut = useCallback(() => {
-    setSession(null)
-    setActiveModule(null)
-    setActiveEmployee(null)
+  // Popstate handlers read the session through a ref so they never reopen a
+  // panel behind the login screen.
+  const sessionRef = useRef<Session | null>(null)
+  useEffect(() => {
+    sessionRef.current = session
+  }, [session])
+
+  // True between calling history.back() and receiving its popstate, so a
+  // double close (e.g. "Oficina" closes module + employee, or a double tap)
+  // never goes back twice and leaves the app.
+  const backPending = useRef(false)
+
+  const show = useCallback((view: ViewState) => {
+    setActiveModule(view.module)
+    setActiveEmployee(view.employee)
   }, [])
 
   // Only one side panel at a time: opening a module closes the employee card
-  // and vice versa.
-  const openModule = useCallback((m: ModuleId) => {
-    setActiveEmployee(null)
-    setActiveModule(m === "office" ? null : m)
-  }, [])
+  // and vice versa. From the office a panel adds one history entry; from
+  // another panel it replaces the current one.
+  const goTo = useCallback(
+    (view: ViewState) => {
+      const entry = { ...(window.history.state ?? {}), [HISTORY_KEY]: view }
+      if (readPanelEntry()) window.history.replaceState(entry, "")
+      else window.history.pushState(entry, "")
+      backPending.current = false
+      show(view)
+    },
+    [show],
+  )
 
-  const closeModule = useCallback(() => setActiveModule(null), [])
+  const closePanels = useCallback(() => {
+    if (backPending.current) return
+    if (readPanelEntry()) {
+      backPending.current = true
+      window.history.back() // popstate (below) updates the view
+    } else {
+      show(EMPTY_VIEW)
+    }
+  }, [show])
 
-  const openEmployee = useCallback((id: EmployeeId) => {
-    setActiveModule(null)
-    setActiveEmployee(id)
-  }, [])
+  useEffect(() => {
+    function onPopState() {
+      backPending.current = false
+      const view = readPanelEntry()
+      show(view && sessionRef.current ? view : EMPTY_VIEW)
+    }
+    window.addEventListener("popstate", onPopState)
+    return () => window.removeEventListener("popstate", onPopState)
+  }, [show])
 
-  const closeEmployee = useCallback(() => setActiveEmployee(null), [])
+  const signOut = useCallback(() => {
+    // Step off the panel's history entry so the next login starts clean.
+    if (readPanelEntry() && !backPending.current) {
+      backPending.current = true
+      window.history.back()
+    }
+    setSession(null)
+    show(EMPTY_VIEW)
+  }, [show])
+
+  const openModule = useCallback(
+    (m: ModuleId) => {
+      if (m === "office") closePanels()
+      else goTo({ module: m, employee: null })
+    },
+    [goTo, closePanels],
+  )
+
+  const openEmployee = useCallback(
+    (id: EmployeeId) => goTo({ module: null, employee: id }),
+    [goTo],
+  )
+
+  // Both close the (single) open panel.
+  const closeModule = closePanels
+  const closeEmployee = closePanels
 
   const value = useMemo<AppState>(
     () => ({
