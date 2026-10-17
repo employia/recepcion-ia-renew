@@ -39,7 +39,7 @@ export function SearchBox({
 /** Sticks to the top of the panel's scroll area so search + filters stay reachable. */
 export function Toolbar({ children }: { children: ReactNode }) {
   return (
-    <div className="glass-strong sticky -top-4 z-10 -mx-5 -mt-4 mb-4 space-y-3 border-b border-border/50 px-5 pb-3 pt-4">
+    <div className="sticky -top-4 z-10 -mx-5 -mt-4 mb-4 space-y-3 border-b border-border/50 bg-card/[0.97] px-5 pb-3 pt-4 backdrop-blur-md">
       {children}
     </div>
   )

@@ -1,15 +1,14 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { CalendarDays, MessageSquare, Phone, SearchX, Stethoscope } from "lucide-react"
+import { useEffect, useMemo, useState } from "react"
+import { CalendarDays, ChevronDown, MessageSquare, Phone, SearchX, Stethoscope } from "lucide-react"
 import { usePatients } from "@/lib/hooks"
-import type { Patient } from "@/lib/types"
-import { EmptyState, Initials, RowCard, SearchBox, SkeletonList, Toolbar } from "./shared"
+import { EmptyState, Initials, SearchBox, SkeletonList, Toolbar } from "./shared"
 
 export function PatientsModule() {
   const { data, isLoading } = usePatients()
   const [query, setQuery] = useState("")
-  const [selected, setSelected] = useState<Patient | null>(null)
+  const [openId, setOpenId] = useState<string | null>(null)
 
   const filtered = useMemo(() => {
     if (!data) return []
@@ -24,7 +23,21 @@ export function PatientsModule() {
       : data
   }, [data, query])
 
-  const active = selected && filtered.some((p) => p.id === selected.id) ? selected : null
+  // The patient's details open right where the patient is in the list (not in a
+  // fixed spot at the top). Once the expand animation has finished, make sure the
+  // whole row — header plus details — is on screen, so a patient near the bottom
+  // of a long list never opens out of view. `scroll-mt-*` on the row keeps it
+  // clear of the sticky search bar.
+  useEffect(() => {
+    if (!openId) return
+    const t = setTimeout(() => {
+      document.getElementById(`patient-${openId}`)?.scrollIntoView({
+        block: "nearest",
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      })
+    }, 320)
+    return () => clearTimeout(t)
+  }, [openId])
 
   return (
     <div>
@@ -38,56 +51,79 @@ export function PatientsModule() {
         )}
       </Toolbar>
 
-      {active && (
-        <div className="mb-4 rounded-2xl border border-accent/30 bg-accent/5 p-4">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-3">
-              <Initials name={active.name} />
-              <h3 className="truncate text-base font-semibold">{active.name}</h3>
-            </div>
-            <button
-              onClick={() => setSelected(null)}
-              className="shrink-0 text-[11px] text-muted-foreground underline-offset-2 hover:underline"
-            >
-              Cerrar
-            </button>
-          </div>
-          <div className="mt-3 grid grid-cols-2 gap-2.5">
-            <Stat icon={<CalendarDays className="h-3.5 w-3.5" />} label="Citas" value={active.appointments} />
-            <Stat icon={<MessageSquare className="h-3.5 w-3.5" />} label="Conversaciones" value={active.conversations} />
-            <Stat icon={<Stethoscope className="h-3.5 w-3.5" />} label="Servicio" value={active.service} />
-            <Stat icon={<Phone className="h-3.5 w-3.5" />} label="Teléfono" value={active.phone} />
-          </div>
-          <p className="mt-3 text-xs text-muted-foreground">
-            Última interacción: <span className="text-foreground">{active.lastInteraction}</span>
-          </p>
-        </div>
-      )}
-
       {isLoading && !data ? (
         <SkeletonList />
       ) : filtered.length === 0 ? (
         <EmptyState icon={SearchX}>No se encontró ningún paciente.</EmptyState>
       ) : (
         <div className="space-y-2.5">
-          {filtered.map((p) => (
-            <RowCard key={p.id} onClick={() => setSelected(p)} active={active?.id === p.id}>
-              <div className="flex items-center gap-3">
-                <Initials name={p.name} />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold">{p.name}</p>
-                  <p className="mt-0.5 truncate text-xs text-muted-foreground">{p.service}</p>
-                </div>
-                <div className="shrink-0 text-right text-[11px] text-muted-foreground">
-                  <span className="tabular-nums">{p.appointments}</span> citas ·{" "}
-                  <span className="tabular-nums">{p.conversations}</span> conv.
+          {filtered.map((p) => {
+            const open = openId === p.id
+            return (
+              <div
+                key={p.id}
+                id={`patient-${p.id}`}
+                className={`scroll-mt-32 scroll-mb-4 rounded-xl border transition-colors ${
+                  open
+                    ? "border-accent/40 bg-accent/5"
+                    : "border-border/70 bg-card/60 hover:border-border hover:bg-card"
+                }`}
+              >
+                <button
+                  onClick={() => setOpenId(open ? null : p.id)}
+                  aria-expanded={open}
+                  aria-controls={`patient-${p.id}-details`}
+                  className="flex w-full items-center gap-3 rounded-xl p-3.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Initials name={p.name} />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold">{p.name}</p>
+                    <p className="mt-0.5 truncate text-xs text-muted-foreground">{p.service}</p>
+                  </div>
+                  <div className="shrink-0 text-right text-[11px] text-muted-foreground">
+                    <span className="tabular-nums">{p.appointments}</span> citas ·{" "}
+                    <span className="tabular-nums">{p.conversations}</span> conv.
+                  </div>
+                  <ChevronDown
+                    aria-hidden
+                    className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 motion-reduce:transition-none ${
+                      open ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {/* Details expand in place (grid-rows 0fr -> 1fr animates height) */}
+                <div
+                  id={`patient-${p.id}-details`}
+                  role="region"
+                  aria-label={`Información de ${p.name}`}
+                  className={`grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none ${
+                    open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                  }`}
+                >
+                  <div className="overflow-hidden" inert={!open}>
+                    <div className="px-3.5 pb-3.5">
+                      <div className="grid grid-cols-2 gap-2.5">
+                        <Stat icon={<CalendarDays className="h-3.5 w-3.5" />} label="Citas" value={p.appointments} />
+                        <Stat
+                          icon={<MessageSquare className="h-3.5 w-3.5" />}
+                          label="Conversaciones"
+                          value={p.conversations}
+                        />
+                        <Stat icon={<Stethoscope className="h-3.5 w-3.5" />} label="Servicio" value={p.service} />
+                        <Stat icon={<Phone className="h-3.5 w-3.5" />} label="Teléfono" value={p.phone} />
+                      </div>
+                      <p className="mt-3 text-xs text-muted-foreground">
+                        Última interacción: <span className="text-foreground">{p.lastInteraction}</span>
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </RowCard>
-          ))}
+            )
+          })}
         </div>
       )}
-
     </div>
   )
 }
