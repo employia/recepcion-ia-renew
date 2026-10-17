@@ -7,6 +7,7 @@ import type { ModuleId } from "@/lib/types"
 import { ConversationsModule } from "@/components/modules/conversations"
 import { AgendaModule } from "@/components/modules/agenda"
 import { PatientsModule } from "@/components/modules/patients"
+import { EscalationsModule } from "@/components/modules/escalations"
 import { MetricsModule } from "@/components/modules/metrics"
 import { AccountModule } from "@/components/modules/account"
 
@@ -14,6 +15,7 @@ const META: Record<Exclude<ModuleId, "office">, { title: string; subtitle: strin
   conversations: { title: "Conversaciones", subtitle: "Atención de Valentina", employee: "Valentina · Recepción" },
   agenda: { title: "Agenda", subtitle: "Citas gestionadas por Carlos", employee: "Carlos · Agenda" },
   patients: { title: "Pacientes", subtitle: "Datos y CRM de Elena", employee: "Elena · Datos" },
+  escalations: { title: "Escalamientos", subtitle: "Cuando una persona debe intervenir", employee: "Steven · Supervisión" },
   metrics: { title: "Métricas", subtitle: "Rendimiento diario del sistema" },
   account: { title: "Cuenta", subtitle: "Sesión y preferencias" },
 }
@@ -82,6 +84,7 @@ export function ModulePanel() {
                 {activeModule === "conversations" && <ConversationsModule />}
                 {activeModule === "agenda" && <AgendaModule />}
                 {activeModule === "patients" && <PatientsModule />}
+                {activeModule === "escalations" && <EscalationsModule />}
                 {activeModule === "metrics" && <MetricsModule />}
                 {activeModule === "account" && <AccountModule />}
               </div>

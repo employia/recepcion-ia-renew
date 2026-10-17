@@ -9,6 +9,7 @@ import {
   BRANCHES,
   getAppointments,
   getConversations,
+  getEscalations,
   getMetrics,
   getPatients,
 } from "./mock-data"
@@ -16,6 +17,7 @@ import type {
   Appointment,
   BranchMetrics,
   Conversation,
+  Escalation,
   MetricPoint,
   Patient,
 } from "./types"
@@ -84,6 +86,7 @@ export const dataService = {
     delay(isAll(branchId) ? everyBranch(getAppointments) : getAppointments(branchId)),
   patients: (branchId: string): Promise<Patient[]> =>
     delay(isAll(branchId) ? everyBranch(getPatients) : getPatients(branchId)),
+  escalations: (branchId: string): Promise<Escalation[]> => delay(getEscalations(branchId)),
   metrics: (branchId: string): Promise<BranchMetrics> =>
     delay(isAll(branchId) ? getCombinedMetrics() : getMetrics(branchId)),
 }

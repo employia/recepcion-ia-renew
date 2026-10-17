@@ -117,6 +117,8 @@ const STATUS_STYLES: Record<string, string> = {
   resolved: "bg-emerald-500/10 text-emerald-700 border-emerald-500/20",
   "waiting-human": "bg-amber-500/12 text-amber-700 border-amber-500/25",
   "human-attending": "bg-accent/10 text-accent border-accent/20",
+  "waiting-person": "bg-amber-500/12 text-amber-700 border-amber-500/25",
+  resumed: "bg-secondary text-muted-foreground border-border",
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -124,6 +126,8 @@ const STATUS_LABEL: Record<string, string> = {
   resolved: "Conversación resuelta",
   "waiting-human": "Esperando humano",
   "human-attending": "Humano atendiendo",
+  "waiting-person": "Esperando persona",
+  resumed: "Retomado",
 }
 
 export function StatusPill({ status, label }: { status: string; label?: string }) {
@@ -193,5 +197,26 @@ export function ReadOnlyNote({ children }: { children: ReactNode }) {
     <p className="mt-4 rounded-lg bg-secondary/70 px-3 py-2 text-[11px] leading-relaxed text-muted-foreground">
       {children}
     </p>
+  )
+}
+
+/** Small labelled tile used in the expanded details of a row. */
+export function Stat({
+  icon,
+  label,
+  value,
+}: {
+  icon: ReactNode
+  label: string
+  value: string | number
+}) {
+  return (
+    <div className="rounded-xl border border-border/60 bg-card/70 p-2.5">
+      <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+        {icon}
+        {label}
+      </p>
+      <p className="mt-1 truncate text-sm font-semibold">{value}</p>
+    </div>
   )
 }

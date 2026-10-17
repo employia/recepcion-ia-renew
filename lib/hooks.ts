@@ -31,6 +31,14 @@ export function usePatients() {
   })
 }
 
+export function useEscalations() {
+  const branchId = ALL_BRANCHES_ID
+  return useSWR(["escalations", branchId], () => dataService.escalations(branchId), {
+    refreshInterval: REFRESH_MS,
+    keepPreviousData: true,
+  })
+}
+
 export function useMetrics() {
   const branchId = ALL_BRANCHES_ID
   return useSWR(["metrics", branchId], () => dataService.metrics(branchId), {

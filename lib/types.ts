@@ -6,6 +6,7 @@ export type ModuleId =
   | "conversations"
   | "agenda"
   | "patients"
+  | "escalations"
   | "metrics"
   | "account"
 
@@ -58,6 +59,34 @@ export interface Conversation {
   status: ConversationStatus
   time: string
   intent: string
+}
+
+/** A conversation handed off to a person. The digital reception is paused on it
+ * until five minutes pass without messages from either side, then it resumes. */
+export type EscalationStatus = "waiting-person" | "resumed"
+
+export type EscalationTrigger = "explicit-request" | "complaint" | "failed-attempts"
+
+export interface Escalation {
+  id: string
+  branchId: string
+  branchName: string
+  patientName: string
+  phone: string
+  /** One line: why a person is needed. */
+  reason: string
+  trigger: EscalationTrigger
+  status: EscalationStatus
+  /** Minutes since the handoff — drives the "hace 6 min" label and the ordering. */
+  minutesAgo: number
+  /** Clock time the team was notified by email. */
+  noticeTime: string
+  /** Clock time of the patient's last message. */
+  lastMessageTime: string
+  /** Clock time the digital reception took the conversation back (status "resumed"). */
+  resumedTime?: string
+  /** Two or three lines: what the patient asked and what was answered. */
+  summary: string
 }
 
 export interface Appointment {

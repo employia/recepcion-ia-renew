@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { CalendarDays, ChevronDown, MessageSquare, Phone, SearchX, Stethoscope } from "lucide-react"
 import { usePatients } from "@/lib/hooks"
-import { EmptyState, Initials, SearchBox, SkeletonList, Toolbar } from "./shared"
+import { EmptyState, Initials, SearchBox, SkeletonList, Stat, Toolbar } from "./shared"
 
 export function PatientsModule() {
   const { data, isLoading } = usePatients()
@@ -124,18 +124,6 @@ export function PatientsModule() {
           })}
         </div>
       )}
-    </div>
-  )
-}
-
-function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | number }) {
-  return (
-    <div className="rounded-xl border border-border/60 bg-card/70 p-2.5">
-      <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-        {icon}
-        {label}
-      </p>
-      <p className="mt-1 truncate text-sm font-semibold">{value}</p>
     </div>
   )
 }
