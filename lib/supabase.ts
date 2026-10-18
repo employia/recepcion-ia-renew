@@ -22,10 +22,6 @@ export function authErrorMessage(error: { message?: string; code?: string } | nu
     return "Correo o contraseña incorrectos."
   if (code === "email_not_confirmed" || msg.includes("email not confirmed"))
     return "Confirme su correo: le enviamos un enlace de verificación."
-  if (code === "user_already_exists" || msg.includes("already registered"))
-    return "Ya existe una cuenta con ese correo. Inicie sesión."
-  if (code === "weak_password" || msg.includes("password should be"))
-    return "La contraseña es muy débil. Use al menos 8 caracteres."
   if (code === "over_request_rate_limit" || code === "over_email_send_rate_limit" || msg.includes("rate limit"))
     return "Demasiados intentos. Espere unos minutos e intente de nuevo."
   if (msg.includes("failed to fetch") || msg.includes("network"))

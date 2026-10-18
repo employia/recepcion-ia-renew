@@ -41,12 +41,6 @@ interface Session {
   name: string
 }
 
-export interface SignUpResult {
-  error: string | null
-  /** True when the account was created but the email must be confirmed first. */
-  needsConfirmation: boolean
-}
-
 interface AppState {
   // auth (Supabase)
   session: Session | null
@@ -54,7 +48,6 @@ interface AppState {
   authLoading: boolean
   /** Returns an error message in Spanish, or null on success. */
   signIn: (email: string, password: string) => Promise<string | null>
-  signUp: (name: string, email: string, password: string) => Promise<SignUpResult>
   signOut: () => Promise<void>
   // active module panel (null = office view, no panel)
   activeModule: ModuleId | null
@@ -105,20 +98,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const signIn = useCallback(async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     return error ? authErrorMessage(error) : null
-  }, [])
-
-  const signUp = useCallback(async (name: string, email: string, password: string): Promise<SignUpResult> => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: name },
-        emailRedirectTo: typeof window !== "undefined" ? window.location.origin : undefined,
-      },
-    })
-    if (error) return { error: authErrorMessage(error), needsConfirmation: false }
-    // With email confirmation on, no session is returned until the link is opened.
-    return { error: null, needsConfirmation: !data.session }
   }, [])
 
   // Popstate handlers read the session through a ref so they never reopen a
@@ -205,7 +184,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       session,
       authLoading,
       signIn,
-      signUp,
       signOut,
       activeModule,
       openModule,
@@ -218,7 +196,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       session,
       authLoading,
       signIn,
-      signUp,
       signOut,
       activeModule,
       openModule,
