@@ -6,45 +6,80 @@ import { useApp } from "@/lib/store"
 import { EMPLOYEES } from "@/lib/mock-data"
 import { StatusDot, Thumb } from "@/components/shell/team-bar"
 
-// Demo access: the form comes filled in, so entering the office is one click.
-const DEMO_EMAIL = "equipo@renew.do"
-const DEMO_PASSWORD = "renew-demo"
+const MIN_PASSWORD = 8
+
+type Mode = "login" | "register"
 
 interface FieldErrors {
+  name?: string
   email?: string
   password?: string
 }
 
 export function LoginScreen() {
-  const { signIn } = useApp()
-  const [email, setEmail] = useState(DEMO_EMAIL)
-  const [password, setPassword] = useState(DEMO_PASSWORD)
+  const { signIn, signUp } = useApp()
+  const [mode, setMode] = useState<Mode>("login")
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [formError, setFormError] = useState("")
+  const [notice, setNotice] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [capsLock, setCapsLock] = useState(false)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [loading, setLoading] = useState(false)
+  const nameRef = useRef<HTMLInputElement>(null)
   const emailRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
 
   function validate(): FieldErrors {
     const next: FieldErrors = {}
+    if (mode === "register" && !name.trim()) next.name = "Escriba su nombre."
     const value = email.trim()
     if (!value) next.email = "Escriba su correo electrónico."
     else if (!/^\S+@\S+\.\S+$/.test(value)) next.email = "Escriba un correo válido, por ejemplo nombre@renew.do."
     if (!password) next.password = "Escriba su contraseña."
+    else if (mode === "register" && password.length < MIN_PASSWORD)
+      next.password = `Use al menos ${MIN_PASSWORD} caracteres.`
     return next
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  function switchMode(next: Mode) {
+    setMode(next)
+    setErrors({})
+    setFormError("")
+    setNotice("")
+    setPassword("")
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (loading) return
+    setFormError("")
+    setNotice("")
     const found = validate()
     setErrors(found)
+    if (found.name) return nameRef.current?.focus()
     if (found.email) return emailRef.current?.focus()
     if (found.password) return passwordRef.current?.focus()
     setLoading(true)
-    // Mock authentication for the demo.
-    setTimeout(() => signIn(email.trim()), 650)
+    try {
+      if (mode === "login") {
+        // On success the session listener swaps this screen for the office.
+        const error = await signIn(email.trim(), password)
+        if (error) setFormError(error)
+      } else {
+        const result = await signUp(name.trim(), email.trim(), password)
+        if (result.error) setFormError(result.error)
+        else if (result.needsConfirmation) {
+          setNotice(`Le enviamos un enlace de confirmación a ${email.trim()}. Ábralo para activar su cuenta y luego inicie sesión.`)
+          setMode("login")
+          setPassword("")
+        }
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   const inputClass = (invalid: boolean) =>
@@ -72,10 +107,12 @@ export function LoginScreen() {
 
         <div className="mt-6 text-center">
           <h1 className="text-balance text-2xl font-medium tracking-tight">
-            Bienvenido a su recepción digital
+            {mode === "login" ? "Bienvenido a su recepción digital" : "Cree su cuenta"}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Su equipo ya está atendiendo a sus pacientes.
+            {mode === "login"
+              ? "Su equipo ya está atendiendo a sus pacientes."
+              : "Regístrese para entrar a la oficina."}
           </p>
         </div>
 
@@ -84,6 +121,41 @@ export function LoginScreen() {
           noValidate
           className="mt-8 w-full space-y-4 rounded-2xl border border-border bg-card p-6 shadow-float"
         >
+          {notice && (
+            <p role="status" className="rounded-xl bg-secondary px-3.5 py-2.5 text-sm text-foreground">
+              {notice}
+            </p>
+          )}
+
+          {mode === "register" && (
+            <div className="space-y-1.5">
+              <label htmlFor="name" className="text-sm font-medium text-foreground">
+                Nombre
+              </label>
+              <input
+                ref={nameRef}
+                id="name"
+                type="text"
+                autoComplete="name"
+                value={name}
+                disabled={loading}
+                onChange={(e) => {
+                  setName(e.target.value)
+                  if (errors.name) setErrors((p) => ({ ...p, name: undefined }))
+                }}
+                aria-invalid={!!errors.name}
+                aria-describedby={errors.name ? "name-error" : undefined}
+                className={inputClass(!!errors.name)}
+                placeholder="Su nombre"
+              />
+              {errors.name && (
+                <p id="name-error" role="alert" className="text-xs text-destructive">
+                  {errors.name}
+                </p>
+              )}
+            </div>
+          )}
+
           <div className="space-y-1.5">
             <label htmlFor="email" className="text-sm font-medium text-foreground">
               Correo electrónico
@@ -120,7 +192,7 @@ export function LoginScreen() {
                 ref={passwordRef}
                 id="password"
                 type={showPassword ? "text" : "password"}
-                autoComplete="current-password"
+                autoComplete={mode === "login" ? "current-password" : "new-password"}
                 value={password}
                 disabled={loading}
                 onChange={(e) => {
@@ -157,7 +229,16 @@ export function LoginScreen() {
                 </p>
               )
             )}
+            {mode === "register" && !errors.password && (
+              <p className="text-xs text-muted-foreground">Mínimo {MIN_PASSWORD} caracteres.</p>
+            )}
           </div>
+
+          {formError && (
+            <p role="alert" className="text-sm text-destructive">
+              {formError}
+            </p>
+          )}
 
           <button
             type="submit"
@@ -167,15 +248,27 @@ export function LoginScreen() {
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Entrando…
+                {mode === "login" ? "Entrando…" : "Creando cuenta…"}
               </>
             ) : (
               <>
-                Entrar a la oficina
+                {mode === "login" ? "Entrar a la oficina" : "Crear cuenta"}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </>
             )}
           </button>
+
+          <p className="pt-1 text-center text-sm text-muted-foreground">
+            {mode === "login" ? "¿Aún no tiene cuenta?" : "¿Ya tiene cuenta?"}{" "}
+            <button
+              type="button"
+              onClick={() => switchMode(mode === "login" ? "register" : "login")}
+              disabled={loading}
+              className="font-medium text-foreground underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
+            >
+              {mode === "login" ? "Regístrese" : "Inicie sesión"}
+            </button>
+          </p>
         </form>
 
         {/* The team, already at work */}

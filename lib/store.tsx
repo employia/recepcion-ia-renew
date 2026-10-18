@@ -10,6 +10,8 @@ import {
   useState,
   type ReactNode,
 } from "react"
+import type { Session as SupabaseSession } from "@supabase/supabase-js"
+import { authErrorMessage, supabase } from "./supabase"
 import type { EmployeeId, ModuleId } from "./types"
 
 // --- Browser history -------------------------------------------------------
@@ -39,11 +41,21 @@ interface Session {
   name: string
 }
 
+export interface SignUpResult {
+  error: string | null
+  /** True when the account was created but the email must be confirmed first. */
+  needsConfirmation: boolean
+}
+
 interface AppState {
-  // auth (mock for now)
+  // auth (Supabase)
   session: Session | null
-  signIn: (email: string) => void
-  signOut: () => void
+  /** True until the stored session (if any) has been restored on load. */
+  authLoading: boolean
+  /** Returns an error message in Spanish, or null on success. */
+  signIn: (email: string, password: string) => Promise<string | null>
+  signUp: (name: string, email: string, password: string) => Promise<SignUpResult>
+  signOut: () => Promise<void>
   // active module panel (null = office view, no panel)
   activeModule: ModuleId | null
   openModule: (m: ModuleId) => void
@@ -58,12 +70,55 @@ const AppContext = createContext<AppState | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
+  const [authLoading, setAuthLoading] = useState(true)
   const [activeModule, setActiveModule] = useState<ModuleId | null>(null)
   const [activeEmployee, setActiveEmployee] = useState<EmployeeId | null>(null)
 
-  const signIn = useCallback((email: string) => {
-    const name = email.split("@")[0].replace(/[._]/g, " ")
-    setSession({ email, name: name.charAt(0).toUpperCase() + name.slice(1) })
+  const toSession = useCallback((s: SupabaseSession | null): Session | null => {
+    if (!s?.user) return null
+    const email = s.user.email ?? ""
+    const meta = s.user.user_metadata as { full_name?: string } | undefined
+    const fallback = email.split("@")[0].replace(/[._]/g, " ")
+    const name = (meta?.full_name || fallback).trim()
+    return { email, name: name.charAt(0).toUpperCase() + name.slice(1) }
+  }, [])
+
+  // Restore the stored session on load and follow sign-in / sign-out / token
+  // refresh (including from another tab).
+  useEffect(() => {
+    let active = true
+    supabase.auth.getSession().then(({ data }) => {
+      if (!active) return
+      setSession(toSession(data.session))
+      setAuthLoading(false)
+    })
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => {
+      setSession(toSession(next))
+      setAuthLoading(false)
+    })
+    return () => {
+      active = false
+      sub.subscription.unsubscribe()
+    }
+  }, [toSession])
+
+  const signIn = useCallback(async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    return error ? authErrorMessage(error) : null
+  }, [])
+
+  const signUp = useCallback(async (name: string, email: string, password: string): Promise<SignUpResult> => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: name },
+        emailRedirectTo: typeof window !== "undefined" ? window.location.origin : undefined,
+      },
+    })
+    if (error) return { error: authErrorMessage(error), needsConfirmation: false }
+    // With email confirmation on, no session is returned until the link is opened.
+    return { error: null, needsConfirmation: !data.session }
   }, [])
 
   // Popstate handlers read the session through a ref so they never reopen a
@@ -117,14 +172,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("popstate", onPopState)
   }, [show])
 
-  const signOut = useCallback(() => {
+  const signOut = useCallback(async () => {
     // Step off the panel's history entry so the next login starts clean.
     if (readPanelEntry() && !backPending.current) {
       backPending.current = true
       window.history.back()
     }
-    setSession(null)
     show(EMPTY_VIEW)
+    await supabase.auth.signOut()
+    setSession(null)
   }, [show])
 
   const openModule = useCallback(
@@ -147,7 +203,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const value = useMemo<AppState>(
     () => ({
       session,
+      authLoading,
       signIn,
+      signUp,
       signOut,
       activeModule,
       openModule,
@@ -158,7 +216,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }),
     [
       session,
+      authLoading,
       signIn,
+      signUp,
       signOut,
       activeModule,
       openModule,
