@@ -2,10 +2,22 @@ import { createClient } from "@supabase/supabase-js"
 
 // Publishable (public) credentials: safe to ship to the browser. Access is
 // governed by Row Level Security in the database, not by hiding these.
+// The Vercel <-> Supabase integration names the key NEXT_PUBLIC_SUPABASE_ANON_KEY,
+// so both names are accepted. (Literal references so Next.js can inline them.)
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+const key =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 export const supabaseConfigured = Boolean(url && key)
+
+if (!supabaseConfigured && typeof window !== "undefined") {
+  console.error(
+    "[auth] Supabase no está configurado en este despliegue. Falta:",
+    [!url && "NEXT_PUBLIC_SUPABASE_URL", !key && "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (o NEXT_PUBLIC_SUPABASE_ANON_KEY)"]
+      .filter(Boolean)
+      .join(", "),
+  )
+}
 
 export const supabase = createClient(
   url ?? "http://localhost:54321",
