@@ -11,7 +11,7 @@ import {
   type ReactNode,
 } from "react"
 import type { Session as SupabaseSession } from "@supabase/supabase-js"
-import { authErrorMessage, supabase } from "./supabase"
+import { authErrorMessage, supabase, supabaseConfigured } from "./supabase"
 import type { EmployeeId, ModuleId } from "./types"
 
 // --- Browser history -------------------------------------------------------
@@ -96,6 +96,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [toSession])
 
   const signIn = useCallback(async (email: string, password: string) => {
+    if (!supabaseConfigured)
+      return "Este despliegue no tiene configurada la conexión con Supabase. Avise al administrador."
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     return error ? authErrorMessage(error) : null
   }, [])
