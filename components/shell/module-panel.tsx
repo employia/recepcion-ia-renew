@@ -17,7 +17,7 @@ const META: Record<Exclude<ModuleId, "office">, { title: string; subtitle: strin
   patients: { title: "Pacientes", subtitle: "Datos y CRM de Elena", employee: "Elena · Datos" },
   escalations: { title: "Escalamientos", subtitle: "Cuando una persona debe intervenir", employee: "Steven · Supervisión" },
   metrics: { title: "Métricas", subtitle: "Rendimiento diario del sistema" },
-  account: { title: "Cuenta", subtitle: "Sesión y preferencias" },
+  account: { title: "Cuenta", subtitle: "Soporte y sesión" },
 }
 
 export function ModulePanel() {
