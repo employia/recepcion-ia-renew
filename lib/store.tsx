@@ -12,6 +12,7 @@ import {
 } from "react"
 import type { Session as SupabaseSession } from "@supabase/supabase-js"
 import { authErrorMessage, supabase, supabaseConfigured } from "./supabase"
+import { LEGAL_DOCS, LEGAL_VERSION } from "./legal"
 import type { EmployeeId, ModuleId } from "./types"
 
 // --- Browser history -------------------------------------------------------
@@ -37,6 +38,7 @@ function readPanelEntry(): ViewState | null {
 }
 
 interface Session {
+  id: string
   email: string
   name: string
 }
@@ -46,6 +48,10 @@ interface AppState {
   session: Session | null
   /** True until the stored session (if any) has been restored on load. */
   authLoading: boolean
+  /** Acceptance of the current legal documents: null while it is being checked. */
+  legalAccepted: boolean | null
+  /** Records the acceptance of the current legal documents. Returns an error message or null. */
+  acceptLegal: () => Promise<string | null>
   /** Returns an error message in Spanish, or null on success. */
   signIn: (email: string, password: string) => Promise<string | null>
   signOut: () => Promise<void>
@@ -64,6 +70,7 @@ const AppContext = createContext<AppState | null>(null)
 export function AppProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [authLoading, setAuthLoading] = useState(true)
+  const [legalAccepted, setLegalAccepted] = useState<boolean | null>(null)
   const [activeModule, setActiveModule] = useState<ModuleId | null>(null)
   const [activeEmployee, setActiveEmployee] = useState<EmployeeId | null>(null)
 
@@ -73,7 +80,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const meta = s.user.user_metadata as { full_name?: string } | undefined
     const fallback = email.split("@")[0].replace(/[._]/g, " ")
     const name = (meta?.full_name || fallback).trim()
-    return { email, name: name.charAt(0).toUpperCase() + name.slice(1) }
+    return { id: s.user.id, email, name: name.charAt(0).toUpperCase() + name.slice(1) }
   }, [])
 
   // Restore the stored session on load and follow sign-in / sign-out / token
@@ -108,6 +115,46 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     sessionRef.current = session
   }, [session])
+
+  // Has this person already accepted the current version of the legal
+  // documents? Checked once per sign-in (keyed by user id, so token refreshes do
+  // not repeat it). On any error we fail closed: the acceptance screen shows.
+  const userId = session?.id ?? null
+  useEffect(() => {
+    if (!userId) {
+      setLegalAccepted(null)
+      return
+    }
+    let active = true
+    setLegalAccepted(null)
+    supabase
+      .from("legal_acceptances")
+      .select("document")
+      .eq("user_id", userId)
+      .eq("version", LEGAL_VERSION)
+      .then(({ data, error }) => {
+        if (!active) return
+        if (error) return setLegalAccepted(false)
+        const done = new Set((data ?? []).map((r) => r.document as string))
+        setLegalAccepted(LEGAL_DOCS.every((d) => done.has(d)))
+      })
+    return () => {
+      active = false
+    }
+  }, [userId])
+
+  const acceptLegal = useCallback(async () => {
+    const uid = sessionRef.current?.id
+    if (!uid) return "Su sesión ya no es válida. Inicie sesión de nuevo."
+    const rows = LEGAL_DOCS.map((document) => ({ user_id: uid, document, version: LEGAL_VERSION }))
+    // Append-only record; a duplicate (already accepted) is simply ignored.
+    const { error } = await supabase
+      .from("legal_acceptances")
+      .upsert(rows, { onConflict: "user_id,document,version", ignoreDuplicates: true })
+    if (error) return "No pudimos registrar su aceptación. Intente de nuevo."
+    setLegalAccepted(true)
+    return null
+  }, [])
 
   // True between calling history.back() and receiving its popstate, so a
   // double close (e.g. "Oficina" closes module + employee, or a double tap)
@@ -185,6 +232,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     () => ({
       session,
       authLoading,
+      legalAccepted,
+      acceptLegal,
       signIn,
       signOut,
       activeModule,
@@ -197,6 +246,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [
       session,
       authLoading,
+      legalAccepted,
+      acceptLegal,
       signIn,
       signOut,
       activeModule,

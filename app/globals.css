@@ -135,3 +135,10 @@
     background: transparent;
   }
 }
+
+/* Edge/IE draw their own "show password" eye inside password inputs. The app
+   already has its own toggle, so hide the browser's to avoid showing two. */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}

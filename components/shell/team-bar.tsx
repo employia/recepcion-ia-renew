@@ -1,5 +1,6 @@
 "use client"
 
+import { Settings } from "lucide-react"
 import { useApp } from "@/lib/store"
 import { EMPLOYEES } from "@/lib/mock-data"
 import type { Employee, EmployeeStatus } from "@/lib/types"
@@ -71,7 +72,8 @@ export function Thumb({
  * and shows who is "working". One click opens the employee's card.
  */
 export function TeamBar() {
-  const { activeEmployee, activeModule, openEmployee } = useApp()
+  const { activeEmployee, activeModule, openEmployee, openModule } = useApp()
+  const settingsActive = activeModule === "account"
   // On wide screens a side panel covers the right 440px: keep the bar in the visible part.
   const panelOpen = activeEmployee !== null || (activeModule !== null && activeModule !== "office")
 
@@ -109,6 +111,24 @@ export function TeamBar() {
             </li>
           )
         })}
+
+        {/* Settings (account, support, legal): a gear at the end of the roster */}
+        <li aria-hidden className="mx-0.5 my-1 w-px shrink-0 bg-border/70" />
+        <li className="shrink-0">
+          <button
+            onClick={() => openModule("account")}
+            aria-pressed={settingsActive}
+            aria-label="Configuración"
+            title="Configuración"
+            className={`flex h-full min-h-[52px] w-11 items-center justify-center rounded-xl transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+              settingsActive
+                ? "bg-secondary text-foreground"
+                : "text-muted-foreground hover:bg-secondary/70 hover:text-foreground"
+            }`}
+          >
+            <Settings className="h-[18px] w-[18px]" />
+          </button>
+        </li>
       </ul>
     </div>
   )

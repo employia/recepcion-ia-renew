@@ -7,7 +7,6 @@ import {
   LineChart,
   MessageSquare,
   TriangleAlert,
-  UserRound,
   Users,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
@@ -22,7 +21,6 @@ const NAV: { id: ModuleId; label: string; short: string; icon: LucideIcon }[] = 
   { id: "patients", label: "Pacientes", short: "Pacientes", icon: Users },
   { id: "escalations", label: "Escalamientos", short: "Casos", icon: TriangleAlert },
   { id: "metrics", label: "Métricas", short: "Métricas", icon: LineChart },
-  { id: "account", label: "Cuenta", short: "Cuenta", icon: UserRound },
 ]
 
 /**
@@ -53,11 +51,8 @@ export function Sidebar() {
             ? activeModule === null && activeEmployee === null
             : activeModule === item.id
           const Icon = item.icon
-          const isAccount = item.id === "account"
           return (
             <div key={item.id} className="contents">
-              {/* Divider before Cuenta (desktop only) */}
-              {isAccount && <div className="my-1 hidden h-px bg-border/70 md:block" />}
               <button
                 onClick={() => {
                   if (isOffice) {
