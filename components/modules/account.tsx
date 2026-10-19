@@ -19,7 +19,7 @@ function openSupportEmail(e: React.MouseEvent<HTMLAnchorElement>) {
   const url =
     "https://mail.google.com/mail/?view=cm&fs=1" +
     `&to=${encodeURIComponent(SUPPORT_EMAIL)}&su=${encodeURIComponent(SUPPORT_SUBJECT)}`
-  window.location.assign(url) // same tab; the browser's Back button returns to the office
+  window.open(url, "_blank", "noopener,noreferrer") // new tab: the office stays open
 }
 
 export function AccountModule() {
