@@ -49,7 +49,7 @@ export function LegalGate() {
             <input type="checkbox" checked={terms} onChange={(e) => setTerms(e.target.checked)} className={box} />
             <span>
               He leído y acepto los{" "}
-              <a href={LEGAL_PATH.terms} target="_blank" rel="noopener noreferrer" className={link}>
+              <a href={LEGAL_PATH.terms} className={link}>
                 Términos y Condiciones de Uso
               </a>
               .
@@ -60,7 +60,7 @@ export function LegalGate() {
             <input type="checkbox" checked={privacy} onChange={(e) => setPrivacy(e.target.checked)} className={box} />
             <span>
               He leído y acepto la{" "}
-              <a href={LEGAL_PATH.privacy} target="_blank" rel="noopener noreferrer" className={link}>
+              <a href={LEGAL_PATH.privacy} className={link}>
                 Política de Privacidad
               </a>
               .

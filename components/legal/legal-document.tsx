@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import { LEGAL_UPDATED } from "@/lib/legal"
+import { BackLink } from "./back-link"
 
 export interface LegalSection {
   title: string
@@ -11,12 +12,7 @@ export function LegalDocument({ title, intro, sections }: { title: string; intro
   return (
     <main className="min-h-screen w-full bg-background px-6 py-10">
       <article className="mx-auto w-full max-w-[720px]">
-        <a
-          href="/"
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition hover:text-foreground"
-        >
-          <span aria-hidden>←</span> Volver a la oficina
-        </a>
+        <BackLink />
 
         <header className="mt-6 flex items-center gap-4 border-b border-border/70 pb-6">
           {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -1,6 +1,6 @@
 "use client"
 
-import { ExternalLink, LogOut, Mail } from "lucide-react"
+import { ChevronRight, LogOut, Mail } from "lucide-react"
 import { useApp } from "@/lib/store"
 import { LEGAL_PATH } from "@/lib/legal"
 
@@ -19,7 +19,7 @@ function openSupportEmail(e: React.MouseEvent<HTMLAnchorElement>) {
   const url =
     "https://mail.google.com/mail/?view=cm&fs=1" +
     `&to=${encodeURIComponent(SUPPORT_EMAIL)}&su=${encodeURIComponent(SUPPORT_SUBJECT)}`
-  window.open(url, "_blank", "noopener,noreferrer")
+  window.location.assign(url) // same tab; the browser's Back button returns to the office
 }
 
 export function AccountModule() {
@@ -74,14 +74,12 @@ export function AccountModule() {
             <a
               key={d.href}
               href={d.href}
-              target="_blank"
-              rel="noopener noreferrer"
               className={`flex items-center justify-between gap-3 px-4 py-3 text-sm transition hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring ${
                 i > 0 ? "border-t border-border/60" : ""
               }`}
             >
               <span>{d.label}</span>
-              <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+              <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
             </a>
           ))}
         </div>
