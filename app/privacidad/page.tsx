@@ -3,7 +3,7 @@ import { LegalDocument, type LegalSection } from "@/components/legal/legal-docum
 import { LEGAL_CONTACT } from "@/lib/legal"
 
 export const metadata: Metadata = {
-  title: "Política de Privacidad · Recepción Digital Renew",
+  title: "Política de Privacidad · Recepción Renew",
 }
 
 const sections: LegalSection[] = [
