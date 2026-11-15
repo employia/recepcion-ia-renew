@@ -4,6 +4,7 @@ import { useRef, useState } from "react"
 import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react"
 import { useApp } from "@/lib/store"
 import { EMPLOYEES } from "@/lib/mock-data"
+import { LEGAL_PATH } from "@/lib/legal"
 import { StatusDot, Thumb } from "@/components/shell/team-bar"
 
 interface FieldErrors {
@@ -204,7 +205,14 @@ export function LoginScreen() {
         </div>
 
         <p className="mt-8 text-center text-xs text-muted-foreground">
-          Fortaleciendo &amp; Restaurando su Salud
+          Si avanza, acepta nuestros{" "}
+          <a
+            href={LEGAL_PATH.terms}
+            className="underline underline-offset-4 transition hover:text-foreground"
+          >
+            términos y condiciones de uso
+          </a>
+          .
         </p>
       </div>
     </main>
