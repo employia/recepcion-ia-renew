@@ -79,7 +79,7 @@ export function LoginScreen() {
             Bienvenido a su recepción digital
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Su equipo ya está atendiendo a sus pacientes.
+            Acceso privado para el equipo autorizado de Renew.
           </p>
         </div>
 
