@@ -18,6 +18,9 @@ export const metadata: Metadata = {
     ],
     apple: "/apple-icon.png",
   },
+  appleWebApp: {
+    title: "Renew IA",
+  },
 }
 
 export const viewport: Viewport = {
