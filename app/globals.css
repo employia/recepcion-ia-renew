@@ -183,10 +183,12 @@
 
 @layer utilities {
   /* Floating surfaces only (team bar, sheets over the 3D scene). Content cards are solid. */
+  /* No backdrop-filter on purpose: these surfaces sit over the live WebGL
+     canvas (frameloop "always"). Blurring a continuously repainting canvas
+     made it gray out / flicker on desktop before (see commits 491ce8e,
+     1905414). A near-opaque fill keeps the look without the compositor cost. */
   .glass {
-    background: color-mix(in srgb, var(--card) 78%, transparent);
-    backdrop-filter: blur(16px) saturate(1.4);
-    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    background: color-mix(in srgb, var(--card) 94%, transparent);
   }
   .shadow-float {
     box-shadow:
