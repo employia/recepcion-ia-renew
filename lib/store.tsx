@@ -15,12 +15,14 @@ import { authErrorMessage, supabase, supabaseConfigured } from "./supabase"
 import { LEGAL_DOCS, LEGAL_VERSION } from "./legal"
 import type { EmployeeId, ModuleId } from "./types"
 
+const SPLIT_MIN = 1024 // keep in sync with lib/layout.ts (that file imports React hooks only for the client shell)
+
 // --- Browser history -------------------------------------------------------
 // The app is a single page, so the browser (and the Android/iOS back gesture)
 // has nothing to go back to inside it: "Back" used to leave the app entirely.
-// Opening a panel (module or employee card) from the office now pushes one
-// history entry; switching between panels replaces it. So one "Back" always
-// closes the open panel and lands on the office, and "Forward" reopens it.
+// Opening a view (dashboard or employee profile) from the office pushes one
+// history entry; changing views replaces it. So one "Back" always lands on the
+// office, and "Forward" reopens it.
 const HISTORY_KEY = "renewView"
 
 interface ViewState {
@@ -61,7 +63,9 @@ interface AppState {
   closeModule: () => void
   // employee presentation panel (opened by clicking a 3D employee)
   activeEmployee: EmployeeId | null
-  openEmployee: (id: EmployeeId) => void
+  /** Screen point (px) of the avatar the profile grows from, when known. */
+  employeeOrigin: { x: number; y: number } | null
+  openEmployee: (id: EmployeeId, origin?: { x: number; y: number }) => void
   closeEmployee: () => void
 }
 
@@ -73,6 +77,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [legalAccepted, setLegalAccepted] = useState<boolean | null>(null)
   const [activeModule, setActiveModule] = useState<ModuleId | null>(null)
   const [activeEmployee, setActiveEmployee] = useState<EmployeeId | null>(null)
+  const [employeeOrigin, setEmployeeOrigin] = useState<{ x: number; y: number } | null>(null)
+  // Mirror of the current view for callbacks that must not re-create on every change.
+  const viewRef = useRef<ViewState>(EMPTY_VIEW)
 
   const toSession = useCallback((s: SupabaseSession | null): Session | null => {
     if (!s?.user) return null
@@ -162,13 +169,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const backPending = useRef(false)
 
   const show = useCallback((view: ViewState) => {
+    viewRef.current = view
     setActiveModule(view.module)
     setActiveEmployee(view.employee)
   }, [])
 
-  // Only one side panel at a time: opening a module closes the employee card
-  // and vice versa. From the office a panel adds one history entry; from
-  // another panel it replaces the current one.
+  // A dashboard and an employee profile can be open together (split view on
+  // wide screens). From the office a view adds one history entry; from another
+  // view it replaces the current one.
   const goTo = useCallback(
     (view: ViewState) => {
       const entry = { ...(window.history.state ?? {}), [HISTORY_KEY]: view }
@@ -211,22 +219,36 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setSession(null)
   }, [show])
 
+  // Below 1024px a dashboard covers the office, so a dashboard and a profile
+  // never share the screen there.
   const openModule = useCallback(
     (m: ModuleId) => {
       if (m === "office") closePanels()
-      else goTo({ module: m, employee: null })
+      else goTo({ module: m, employee: window.innerWidth >= SPLIT_MIN ? viewRef.current.employee : null })
     },
     [goTo, closePanels],
   )
 
   const openEmployee = useCallback(
-    (id: EmployeeId) => goTo({ module: null, employee: id }),
+    (id: EmployeeId, origin?: { x: number; y: number }) => {
+      setEmployeeOrigin(origin ?? null)
+      goTo({ module: window.innerWidth >= SPLIT_MIN ? viewRef.current.module : null, employee: id })
+    },
     [goTo],
   )
 
-  // Both close the (single) open panel.
-  const closeModule = closePanels
-  const closeEmployee = closePanels
+  // Closing one half keeps the other; closing the last one steps back to the office.
+  const closeModule = useCallback(() => {
+    const { employee } = viewRef.current
+    if (employee) goTo({ module: null, employee })
+    else closePanels()
+  }, [goTo, closePanels])
+
+  const closeEmployee = useCallback(() => {
+    const { module } = viewRef.current
+    if (module) goTo({ module, employee: null })
+    else closePanels()
+  }, [goTo, closePanels])
 
   const value = useMemo<AppState>(
     () => ({
@@ -240,6 +262,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       openModule,
       closeModule,
       activeEmployee,
+      employeeOrigin,
       openEmployee,
       closeEmployee,
     }),
@@ -254,6 +277,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       openModule,
       closeModule,
       activeEmployee,
+      employeeOrigin,
       openEmployee,
       closeEmployee,
     ],

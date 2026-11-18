@@ -1,6 +1,6 @@
 "use client"
 
-import { EMPLOYEES } from "@/lib/mock-data"
+import { EMPLOYEES } from "@/lib/employees"
 import { EmployeeZone } from "./employee-zone"
 import { Room } from "./room"
 

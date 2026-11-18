@@ -1,31 +1,33 @@
-// Domain types for Recepción Digital · Renew
+// Domain types for Renew IA.
 // Read-only visualization layer. No mutations anywhere in the app.
 
-export type ModuleId =
-  | "office"
-  | "conversations"
-  | "agenda"
-  | "patients"
-  | "escalations"
-  | "metrics"
-  | "account"
+/** Sections reachable from the App Sidebar. "office" means no dashboard is open. */
+export type ModuleId = "office" | "conversations" | "escalations" | "metrics" | "account"
 
 export type EmployeeId = "valentina" | "carlos" | "elena" | "steven"
 
-// Simulated presence state for each employee.
-export type EmployeeStatus = "working" | "resting"
+/**
+ * Presence of an employee. "attention" (terracotta) is reserved for when a
+ * real signal says a person must step in; nothing sets it today.
+ */
+export type EmployeeStatus = "working" | "resting" | "attention"
 
 export interface Employee {
   id: EmployeeId
   name: string
+  /** Job title, e.g. "Recepcionista IA". */
   role: string
-  /** One-line description shown under the name in the presentation panel. */
+  /** Department the employee belongs to. */
+  department: string
+  /** One-line description shown under the name in the profile. */
   tagline: string
   /** Short paragraph presenting who the employee is. */
   summary: string
-  /** "What they do" bullets in the presentation panel. */
+  /** Responsibilities listed in the profile. */
   duties: string[]
-  /** Static frame of the avatar shown in the presentation panel. */
+  /** Dashboard that is this employee's main tool, when there is one. */
+  tool?: { module: Exclude<ModuleId, "office" | "account">; label: string }
+  /** Static frame of the avatar shown in the profile. */
   portrait: string
   /** Where the face sits in the portrait, as [x, y] fractions — used to crop round thumbnails. */
   portraitFace: [number, number]
@@ -36,7 +38,7 @@ export interface Employee {
   accent: string
   // URL of the fused GLB model (person + chair + desk as one piece)
   model: string
-  // Simulated presence state
+  // Presence state
   status: EmployeeStatus
 }
 
@@ -89,50 +91,40 @@ export interface Escalation {
   summary: string
 }
 
-export interface Appointment {
-  id: string
-  branchId: string
-  patientName: string
-  branchLabel: string
-  service: string
-  date: string
-  time: string
-}
-
-export interface Patient {
-  id: string
-  branchId: string
-  name: string
-  appointments: number
-  conversations: number
-  lastInteraction: string
-  service: string
-  phone: string
-}
-
 export interface MetricPoint {
   label: string
   value: number
 }
 
-export interface BranchMetrics {
-  operation: {
-    conversationsAttended: number
-    messagesProcessed: number
-    avgResponseSeconds: number
-    conversationsResolved: number
-    trend: MetricPoint[]
+/**
+ * Everything the MÉTRICAS dashboard can show. Every field is nullable or
+ * empty: a missing value means "no data", never zero. The shape is independent
+ * of any Renew internal database or program.
+ */
+export interface MetricsData {
+  activity: {
+    interactions: number | null
+    queries: number | null
+    conversations: number | null
+    hourly: MetricPoint[]
   }
-  agenda: {
-    created: number
-    canceled: number
-    rescheduled: number
-    noShows: number
-    trend: MetricPoint[]
+  attention: {
+    avgResponseSeconds: number | null
+    resolutionRate: number | null
   }
-  business: {
-    conversionRate: number
-    newClients: number
-    topServices: MetricPoint[]
+  performance: {
+    attended: number | null
+    escalations: number | null
+    errors: number | null
+  }
+  queries: {
+    categories: MetricPoint[]
+    frequent: MetricPoint[]
+    unresolved: number | null
+  }
+  branches: MetricPoint[]
+  trends: {
+    weekly: MetricPoint[]
+    monthly: MetricPoint[]
   }
 }

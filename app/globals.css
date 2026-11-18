@@ -2,9 +2,11 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
+@custom-variant dark (&:is(.dark *));
+
 @theme inline {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -31,11 +33,14 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
 
-  /* Renew brand colors */
+  /* Renew brand: teal = activity / correct state / positive action,
+     terracotta = a person must step in. Neutrals = everything else. */
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
+  --color-brand-ink: var(--brand-ink);
   --color-terracotta: var(--terracotta);
   --color-terracotta-foreground: var(--terracotta-foreground);
+  --color-terracotta-ink: var(--terracotta-ink);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -46,93 +51,292 @@
 
 :root {
   color-scheme: light;
-  /* Warm neutral palette — white / warm gray / black + one restrained accent */
-  --background: oklch(0.965 0.006 85);
-  --foreground: oklch(0.2 0 0);
-  --card: oklch(0.995 0.003 85);
-  --card-foreground: oklch(0.2 0 0);
-  --popover: oklch(0.995 0.003 85);
-  --popover-foreground: oklch(0.2 0 0);
-  --primary: oklch(0.2 0 0);
-  --primary-foreground: oklch(0.98 0.004 85);
-  --secondary: oklch(0.93 0.006 85);
-  --secondary-foreground: oklch(0.28 0 0);
-  --muted: oklch(0.94 0.005 85);
-  --muted-foreground: oklch(0.55 0.008 75);
-  /* Teal #2E8B7D — Renew primary brand color */
-  --accent: oklch(0.58 0.075 175);
-  --accent-foreground: oklch(0.98 0.004 85);
-  --destructive: oklch(0.58 0.16 28);
-  --destructive-foreground: oklch(0.98 0.004 85);
-  --border: oklch(0.89 0.006 85);
-  --input: oklch(0.89 0.006 85);
-  --ring: oklch(0.58 0.075 175);
+  --background: #faf9f6;
+  --foreground: #1f1e1c;
+  --card: #ffffff;
+  --card-foreground: #1f1e1c;
+  --popover: #ffffff;
+  --popover-foreground: #1f1e1c;
+  --primary: #1f1e1c;
+  --primary-foreground: #faf9f6;
+  --secondary: #f1efea;
+  --secondary-foreground: #3a3835;
+  --muted: #f1efea;
+  --muted-foreground: #6b675f; /* 5.3:1 on white */
+  --accent: #2e8b7d;
+  --accent-foreground: #ffffff;
+  --destructive: #b4432b;
+  --destructive-foreground: #ffffff;
+  --border: #e7e4dd;
+  --input: #dcd8cf;
+  --ring: #2e8b7d;
 
-  /* Renew brand palette */
-  --brand: oklch(0.58 0.075 175); /* teal #2E8B7D */
-  --brand-foreground: oklch(0.98 0.004 85);
-  --terracotta: oklch(0.58 0.11 45); /* terracotta #C4693D */
-  --terracotta-foreground: oklch(0.98 0.004 85);
+  --brand: #2e8b7d;
+  --brand-foreground: #ffffff;
+  --brand-ink: #236f64; /* teal for text on light surfaces, 5.9:1 */
+  --terracotta: #c4693d;
+  --terracotta-foreground: #ffffff;
+  --terracotta-ink: #a4502a; /* terracotta for text on light surfaces, 5.7:1 */
 
-  --chart-1: oklch(0.58 0.075 175); /* teal */
-  --chart-2: oklch(0.62 0.09 150);
-  --chart-3: oklch(0.66 0.1 60);
-  --chart-4: oklch(0.58 0.11 45); /* terracotta accent */
-  --chart-5: oklch(0.5 0 0);
+  --chart-1: #2e8b7d;
+  --chart-2: #6fb3a7;
+  --chart-3: #d9a47f;
+  --chart-4: #c4693d;
+  --chart-5: #8a857b;
 
   --radius: 0.75rem;
+
+  --scene-bg: #f2efe9;
+  --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #1a1917;
+  --foreground: #f2efe9;
+  --card: #242220;
+  --card-foreground: #f2efe9;
+  --popover: #2a2826;
+  --popover-foreground: #f2efe9;
+  --primary: #f2efe9;
+  --primary-foreground: #1a1917;
+  --secondary: #2e2c29;
+  --secondary-foreground: #e6e2da;
+  --muted: #2e2c29;
+  --muted-foreground: #a8a398;
+  --accent: #3f9d8f;
+  --accent-foreground: #0f1f1c;
+  --destructive: #e07a5f;
+  --destructive-foreground: #1a1917;
+  --border: #38352f;
+  --input: #433f38;
+  --ring: #4fb3a3;
+
+  --brand: #3f9d8f;
+  --brand-foreground: #0f1f1c;
+  --brand-ink: #67c2b3;
+  --terracotta: #d9835a;
+  --terracotta-foreground: #1a1917;
+  --terracotta-ink: #e59a74;
+
+  --chart-1: #4fb3a3;
+  --chart-2: #2e8b7d;
+  --chart-3: #d9a47f;
+  --chart-4: #d9835a;
+  --chart-5: #8a857b;
+
+  --scene-bg: #2a2825;
 }
 
 @layer base {
   * {
     @apply border-border;
   }
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    overscroll-behavior: none;
+  }
   body {
     @apply bg-background text-foreground;
+    overscroll-behavior: none;
+  }
+  /* 16px minimum stops iOS Safari from zooming the page on focus. */
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+  @media (min-width: 768px) and (pointer: fine) {
+    input,
+    textarea,
+    select {
+      font-size: 0.875rem;
+    }
+  }
+  button,
+  a,
+  [role='button'] {
+    touch-action: manipulation;
+  }
+  button,
+  [role='button'] {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
   }
 }
 
 @layer utilities {
-  /* Moderate glassmorphism — kept subtle so content stays legible */
+  /* Floating surfaces only (team bar, sheets over the 3D scene). Content cards are solid. */
   .glass {
-    background: color-mix(in oklch, var(--card) 72%, transparent);
-    backdrop-filter: blur(18px) saturate(1.3);
-    -webkit-backdrop-filter: blur(18px) saturate(1.3);
-  }
-  .glass-strong {
-    background: color-mix(in oklch, var(--card) 88%, transparent);
-    backdrop-filter: blur(24px) saturate(1.3);
-    -webkit-backdrop-filter: blur(24px) saturate(1.3);
+    background: color-mix(in srgb, var(--card) 78%, transparent);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
   }
   .shadow-float {
     box-shadow:
-      0 1px 2px oklch(0.2 0 0 / 0.04),
-      0 8px 24px oklch(0.2 0 0 / 0.06),
-      0 24px 60px oklch(0.2 0 0 / 0.08);
+      0 1px 2px rgb(31 30 28 / 0.04),
+      0 8px 24px rgb(31 30 28 / 0.07),
+      0 24px 56px rgb(31 30 28 / 0.08);
   }
   .shadow-soft {
     box-shadow:
-      0 1px 2px oklch(0.2 0 0 / 0.04),
-      0 4px 16px oklch(0.2 0 0 / 0.05);
+      0 1px 2px rgb(31 30 28 / 0.04),
+      0 2px 8px rgb(31 30 28 / 0.04);
   }
+  .dark .shadow-float {
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.3),
+      0 12px 32px rgb(0 0 0 / 0.4);
+  }
+  .dark .shadow-soft {
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.3);
+  }
+
+  /* Press feedback: starts on pointer down, 100 ms. */
+  .press {
+    transition:
+      transform 100ms var(--ease-out),
+      background-color 200ms,
+      border-color 200ms,
+      color 200ms,
+      opacity 200ms;
+  }
+  .press:active {
+    transform: scale(0.97);
+  }
+
+  /* One-shot terracotta pulse for a new escalation. Never loops. */
+  .pulse-once {
+    animation: pulse-once 1.2s var(--ease-out) 1;
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .pl-safe {
+    padding-left: env(safe-area-inset-left, 0px);
+  }
+  .pr-safe {
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+}
+
+/* Employee profile: bottom sheet below 1024px, floating panel that grows from
+   the clicked avatar above it. Closed state is hidden and non-interactive. */
+.profile-panel {
+  transition:
+    transform 350ms var(--ease-out),
+    opacity 250ms var(--ease-out),
+    visibility 350ms;
+}
+.profile-panel[data-state='closed'] {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(100%);
+}
+@media (min-width: 1024px) {
+  .profile-panel[data-state='closed'] {
+    transform: scale(0.6);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .profile-panel {
+    transition:
+      opacity 150ms linear,
+      visibility 150ms;
+  }
+  .profile-panel[data-state='closed'] {
+    transform: none;
+  }
+}
+
+@keyframes pulse-once {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--terracotta) 55%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
+/* Theme change cross-fades for ~300 ms; added by ThemeProvider and removed afterwards. */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    color 300ms ease,
+    fill 300ms ease,
+    stroke 300ms ease !important;
 }
 
 /* Thin, discreet scrollbars for panels */
 @layer base {
   .scroll-slim {
     scrollbar-width: thin;
-    scrollbar-color: oklch(0.8 0.006 85) transparent;
+    scrollbar-color: var(--input) transparent;
+    overscroll-behavior: contain;
   }
   .scroll-slim::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
   .scroll-slim::-webkit-scrollbar-thumb {
-    background: oklch(0.82 0.006 85);
+    background: var(--input);
     border-radius: 999px;
   }
   .scroll-slim::-webkit-scrollbar-track {
     background: transparent;
+  }
+}
+
+/* Touch devices have no hover: no stuck hover states. */
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    background: var(--card);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --border: #8a857b;
+    --muted-foreground: #4a4640;
+  }
+  .dark {
+    --border: #8a857b;
+    --muted-foreground: #cfcabf;
+  }
+  .glass {
+    background: var(--card);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .press:active {
+    transform: none;
+  }
+  .pulse-once {
+    animation: none;
+  }
+  .theme-transition,
+  .theme-transition * {
+    transition: none !important;
   }
 }
 

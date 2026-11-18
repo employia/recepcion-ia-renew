@@ -75,7 +75,8 @@ export function EmployeeZone({ employee, index }: { employee: Employee; index: n
 
   function handleClick(e: ThreeEvent<MouseEvent>) {
     e.stopPropagation()
-    openEmployee(employee.id)
+    const { clientX, clientY } = e.nativeEvent
+    openEmployee(employee.id, { x: clientX, y: clientY })
   }
 
   return (

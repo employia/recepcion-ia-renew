@@ -3,9 +3,9 @@
 import { useRef, useState } from "react"
 import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react"
 import { useApp } from "@/lib/store"
-import { EMPLOYEES } from "@/lib/mock-data"
+import { EMPLOYEES } from "@/lib/employees"
 import { LEGAL_PATH } from "@/lib/legal"
-import { StatusDot, Thumb } from "@/components/shell/team-bar"
+import { StatusDot, Thumb } from "@/components/shell/employee-avatar"
 
 interface FieldErrors {
   email?: string
