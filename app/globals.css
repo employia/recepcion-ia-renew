@@ -128,6 +128,16 @@
   --scene-bg: #2a2825;
 }
 
+/* The 3D office and its loading surface stay light regardless of app theme. */
+.office-surface {
+  color-scheme: light;
+  --background: #faf9f6;
+  --foreground: #1f1e1c;
+  --muted-foreground: #6b675f;
+  --scene-bg: #f2efe9;
+  background-color: var(--scene-bg);
+}
+
 @layer base {
   * {
     @apply border-border;

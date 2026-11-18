@@ -203,7 +203,7 @@ export function OfficeView({
   }, [])
 
   return (
-    <div ref={containerRef} className="absolute inset-0">
+    <div ref={containerRef} className="office-surface absolute inset-0">
       <HoverProvider>
         <Canvas
           // Shadows are toggled off entirely (not just per-mesh) once a
