@@ -7,14 +7,21 @@ import { dataService } from "./data-service"
 const REFRESH_MS = 60_000
 const options = { refreshInterval: REFRESH_MS, keepPreviousData: true }
 
+/** SWR cache keys, shared with the manual refresh (button and pull-to-refresh). */
+export const SWR_KEYS = {
+  conversations: "conversations",
+  escalations: "escalations",
+  metrics: "metrics",
+} as const
+
 export function useConversations() {
-  return useSWR("conversations", () => dataService.conversations(), options)
+  return useSWR(SWR_KEYS.conversations, () => dataService.conversations(), options)
 }
 
 export function useEscalations() {
-  return useSWR("escalations", () => dataService.escalations(), options)
+  return useSWR(SWR_KEYS.escalations, () => dataService.escalations(), options)
 }
 
 export function useMetrics() {
-  return useSWR("metrics", () => dataService.metrics(), options)
+  return useSWR(SWR_KEYS.metrics, () => dataService.metrics(), options)
 }

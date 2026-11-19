@@ -4,12 +4,16 @@ import { useEffect, useMemo, useState } from "react"
 import {
   Building2,
   ChevronDown,
+  ChevronUp,
   CircleAlert,
+  Info,
   Mail,
   MessageSquare,
   Phone,
+  RefreshCw,
   RotateCcw,
   SearchX,
+  UserRoundCheck,
 } from "lucide-react"
 import { useEscalations } from "@/lib/hooks"
 import type { Escalation, EscalationTrigger } from "@/lib/types"
@@ -23,6 +27,7 @@ import {
   StatusPill,
   Toolbar,
 } from "./shared"
+import { SwipeRow } from "./swipe-row"
 
 const FILTERS = [
   { id: "all", label: "Todos" },
@@ -46,7 +51,7 @@ function ago(minutes: number) {
  * Pacientes: the details open in place, under the row that was clicked.
  */
 export function EscalationsModule() {
-  const { data, isLoading } = useEscalations()
+  const { data, isLoading, error, mutate } = useEscalations()
   const [query, setQuery] = useState("")
   const [filter, setFilter] = useState<string>("all")
   const [openId, setOpenId] = useState<string | null>(null)
@@ -91,17 +96,60 @@ export function EscalationsModule() {
 
       {isLoading && !data ? (
         <SkeletonList rows={4} />
+      ) : error && !data ? (
+        <EmptyState
+          icon={CircleAlert}
+          title="No se pudieron cargar los escalamientos"
+          description="Vuelve a intentarlo en unos segundos."
+          action={{ label: "Reintentar", icon: RefreshCw, onClick: () => void mutate() }}
+        />
+      ) : data && data.length === 0 ? (
+        <EmptyState
+          icon={UserRoundCheck}
+          title="Sin escalamientos"
+          description="Ninguna conversación ha necesitado a una persona. Aquí aparecerán cuando ocurra."
+          action={{ label: "Actualizar", icon: RefreshCw, onClick: () => void mutate() }}
+        />
       ) : filtered.length === 0 ? (
-        <EmptyState icon={SearchX}>No hay escalamientos con estos filtros.</EmptyState>
+        <EmptyState
+          icon={SearchX}
+          title="Sin resultados"
+          description="Ningún escalamiento coincide con la búsqueda o el filtro."
+          action={{
+            label: "Limpiar filtros",
+            onClick: () => {
+              setQuery("")
+              setFilter("all")
+            },
+          }}
+        />
       ) : (
         <div className="space-y-2.5">
           {filtered.map((e) => (
-            <EscalationRow
+            <SwipeRow
               key={e.id}
-              escalation={e}
-              open={openId === e.id}
-              onToggle={() => setOpenId(openId === e.id ? null : e.id)}
-            />
+              actions={[
+                {
+                  id: "details",
+                  label: openId === e.id ? "Cerrar" : "Detalles",
+                  icon: openId === e.id ? ChevronUp : Info,
+                  onSelect: () => setOpenId(openId === e.id ? null : e.id),
+                },
+                {
+                  id: "call",
+                  label: "Llamar",
+                  icon: Phone,
+                  href: `tel:${e.phone.replace(/[^\d+]/g, "")}`,
+                  tone: "brand",
+                },
+              ]}
+            >
+              <EscalationRow
+                escalation={e}
+                open={openId === e.id}
+                onToggle={() => setOpenId(openId === e.id ? null : e.id)}
+              />
+            </SwipeRow>
           ))}
         </div>
       )}

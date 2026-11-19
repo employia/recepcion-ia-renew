@@ -1,6 +1,6 @@
 "use client"
 
-import { BarChart3 } from "lucide-react"
+import { BarChart3, ChartNoAxesColumn, CircleAlert, RefreshCw } from "lucide-react"
 import {
   Area,
   AreaChart,
@@ -13,7 +13,7 @@ import {
 import { useMetrics } from "@/lib/hooks"
 import { useTheme } from "@/lib/theme"
 import type { MetricPoint } from "@/lib/types"
-import { EmptyState, SkeletonList } from "./shared"
+import { EmptyState, Skeleton } from "./shared"
 
 // Recharts renders these as SVG presentation attributes, where CSS custom
 // properties (var(--x)) do NOT resolve, so each theme has explicit colors that
@@ -39,28 +39,30 @@ function formatPercent(n: number | null) {
 }
 
 export function MetricsModule() {
-  const { data, isLoading, error } = useMetrics()
+  const { data, isLoading, error, mutate } = useMetrics()
   const C = PALETTE[useTheme().resolved]
 
-  if (isLoading && data === undefined) return <SkeletonList rows={4} />
+  if (isLoading && data === undefined) return <MetricsSkeleton />
 
   if (error) {
     return (
-      <EmptyState icon={BarChart3}>
-        <p className="font-medium text-foreground">No se pudieron cargar las métricas</p>
-        <p className="max-w-[28ch] text-balance">Vuelve a intentarlo en unos minutos.</p>
-      </EmptyState>
+      <EmptyState
+        icon={CircleAlert}
+        title="No se pudieron cargar las métricas"
+        description="Vuelve a intentarlo en unos minutos."
+        action={{ label: "Reintentar", icon: RefreshCw, onClick: () => void mutate() }}
+      />
     )
   }
 
   if (!data) {
     return (
-      <EmptyState icon={BarChart3}>
-        <p className="font-medium text-foreground">Aún no hay métricas conectadas</p>
-        <p className="max-w-[30ch] text-balance">
-          Cuando se conecte una fuente de datos, aquí verás la actividad del equipo.
-        </p>
-      </EmptyState>
+      <EmptyState
+        icon={BarChart3}
+        title="Aún no hay métricas conectadas"
+        description="Cuando se conecte una fuente de datos, aquí verás la actividad del equipo."
+        action={{ label: "Actualizar", icon: RefreshCw, onClick: () => void mutate() }}
+      />
     )
   }
 
@@ -170,8 +172,42 @@ function ChartCard({ label, children }: { label: string; children: React.ReactNo
   )
 }
 
+/** Same height as a chart, so a chart without data does not collapse the card. */
 function NoData() {
-  return <p className="py-6 text-center text-xs text-muted-foreground">{NO_DATA}</p>
+  return (
+    <div className="flex h-[96px] flex-col items-center justify-center gap-1.5 text-xs text-muted-foreground">
+      <ChartNoAxesColumn aria-hidden className="h-4 w-4 opacity-60" />
+      {NO_DATA}
+    </div>
+  )
+}
+
+/** Mirrors the dashboard's sections (KPIs, chart cards, ranked lists) while data loads. */
+function MetricsSkeleton() {
+  return (
+    <div aria-busy="true" className="space-y-6">
+      <p role="status" className="sr-only">
+        Cargando métricas…
+      </p>
+      {[0, 1].map((section) => (
+        <div key={section} aria-hidden className="space-y-3">
+          <Skeleton className="h-3.5 w-24" />
+          <div className="grid grid-cols-2 gap-2.5">
+            {[0, 1, 2, 3].slice(0, section === 0 ? 3 : 2).map((i) => (
+              <div key={i} className="rounded-xl border border-border/60 bg-card p-3">
+                <Skeleton className="h-2.5 w-16" />
+                <Skeleton className="mt-2.5 h-7 w-14" />
+              </div>
+            ))}
+          </div>
+          <div className="rounded-2xl border border-border/60 bg-card p-4">
+            <Skeleton className="mb-3 h-2.5 w-28" />
+            <Skeleton className="h-[110px] w-full rounded-lg" />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
 }
 
 function RankedList({ label, points }: { label: string; points: MetricPoint[] }) {

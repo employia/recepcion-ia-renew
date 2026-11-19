@@ -143,17 +143,58 @@ export function StatusPill({ status, label }: { status: string; label?: string }
   )
 }
 
+/**
+ * Empty area. With only `children` it renders the original compact message
+ * (the FAQ panel uses it that way). With `title` it becomes a full state:
+ * contextual icon, short message and an optional useful action.
+ */
 export function EmptyState({
   children,
   icon: Icon,
+  title,
+  description,
+  action,
 }: {
-  children: ReactNode
+  children?: ReactNode
   icon?: LucideIcon
+  title?: string
+  description?: string
+  action?: { label: string; onClick: () => void; icon?: LucideIcon }
 }) {
+  if (!title) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
+        {Icon && <Icon className="h-5 w-5 opacity-60" />}
+        {children}
+      </div>
+    )
+  }
+  const ActionIcon = action?.icon
   return (
-    <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
-      {Icon && <Icon className="h-5 w-5 opacity-60" />}
+    <div
+      role="status"
+      className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-border px-6 py-12 text-center text-sm text-muted-foreground animate-in fade-in duration-300 motion-reduce:animate-none"
+    >
+      {Icon && (
+        <span
+          aria-hidden
+          className="mb-1.5 flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-muted-foreground"
+        >
+          <Icon className="h-5 w-5" />
+        </span>
+      )}
+      <p className="font-medium text-foreground">{title}</p>
+      {description && <p className="max-w-[32ch] text-balance">{description}</p>}
       {children}
+      {action && (
+        <button
+          onClick={action.onClick}
+          className="press mt-3 inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-border bg-card px-3.5 text-xs font-medium text-foreground hover:bg-secondary"
+        >
+          {ActionIcon && <ActionIcon className="h-3.5 w-3.5" />}
+          {action.label}
+        </button>
+      )}
     </div>
   )
 }
@@ -182,11 +223,34 @@ export function RowCard({
   )
 }
 
+/** A block that sweeps a soft highlight while content loads. Decorative. */
+export function Skeleton({ className = "" }: { className?: string }) {
+  // A caller-supplied radius (rounded-full for avatars) replaces the default one.
+  return <div aria-hidden className={`skeleton ${/\brounded/.test(className) ? "" : "rounded-md"} ${className}`} />
+}
+
+/**
+ * Placeholder rows shaped like the real ones (avatar, two lines, status), so
+ * the list does not jump when data arrives. Announces itself once to screen readers.
+ */
 export function SkeletonList({ rows = 5 }: { rows?: number }) {
   return (
-    <div className="space-y-2.5">
+    <div aria-busy="true" className="space-y-2.5">
+      <p role="status" className="sr-only">
+        Cargando…
+      </p>
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="h-[68px] animate-pulse rounded-xl border border-border/60 bg-secondary/50 motion-reduce:animate-none" />
+        <div key={i} aria-hidden className="flex items-start gap-3 rounded-xl border border-border/60 bg-card p-3.5">
+          <Skeleton className="h-9 w-9 shrink-0 rounded-full" />
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="flex items-center justify-between gap-3">
+              <Skeleton className="h-3.5 w-2/5" />
+              <Skeleton className="h-3 w-10" />
+            </div>
+            <Skeleton className="h-3 w-3/4" />
+            <Skeleton className="mt-3 h-5 w-28 rounded-full" />
+          </div>
+        </div>
       ))}
     </div>
   )
