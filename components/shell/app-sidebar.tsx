@@ -8,8 +8,8 @@ import { useEscalations } from "@/lib/hooks"
 import { NAV_ITEMS, SETTINGS_ITEM, type NavItem } from "@/lib/nav"
 
 /**
- * Main navigation. A 64px rail on tablet and desktop that expands to half the
- * screen on demand; a drawer on phones. Expanding overlays the content, so the
+ * Main navigation. A 64px rail on tablet and desktop that expands to a fixed
+ * 280px on demand; a drawer on phones. Expanding overlays the content, so the
  * office and the dashboards never resize underneath it.
  */
 export function AppSidebar() {
@@ -88,7 +88,7 @@ export function AppSidebar() {
         aria-label="Navegación principal"
         className={`pt-safe pb-safe pl-safe fixed left-0 top-0 z-50 flex h-dvh flex-col border-r border-border bg-card transition-[transform,width,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-none ${
           navOpen
-            ? "w-[min(86vw,320px)] translate-x-0 shadow-float md:w-1/2 md:min-w-[320px]"
+            ? "w-[min(86vw,320px)] translate-x-0 shadow-float md:w-[280px]"
             : "w-[min(86vw,320px)] max-md:invisible max-md:-translate-x-full md:w-16"
         }`}
       >
