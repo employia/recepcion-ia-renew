@@ -14,7 +14,7 @@ export type ThemePreference = "light" | "dark" | "system"
 export type ResolvedTheme = "light" | "dark"
 
 export const THEME_STORAGE_KEY = "renew-theme"
-export const THEME_COLORS: Record<ResolvedTheme, string> = { light: "#faf9f6", dark: "#1a1917" }
+export const THEME_COLORS: Record<ResolvedTheme, string> = { light: "#f5f5f7", dark: "#1f1e1c" }
 
 /** Runs before first paint (see layout.tsx) so the saved theme never flashes. */
 export const THEME_INIT_SCRIPT = `(function(){try{var p=localStorage.getItem("${THEME_STORAGE_KEY}")||"system";var d=p==="dark"||(p==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);var r=document.documentElement;r.classList.toggle("dark",d);r.style.colorScheme=d?"dark":"light"}catch(e){}})()`

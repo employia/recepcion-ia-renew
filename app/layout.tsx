@@ -1,7 +1,16 @@
 import { Analytics } from "@vercel/analytics/next"
 import type { Metadata, Viewport } from "next"
+import { Figtree, Newsreader } from "next/font/google"
 import { ThemeProvider, THEME_COLORS, THEME_INIT_SCRIPT } from "@/lib/theme"
 import "./globals.css"
+
+const figtree = Figtree({ subsets: ["latin"], variable: "--font-figtree", display: "swap" })
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  variable: "--font-newsreader",
+  display: "swap",
+  style: ["normal", "italic"],
+})
 
 export const metadata: Metadata = {
   title: "Recepción Digital",
@@ -40,7 +49,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning className="bg-background">
+    <html lang="es" suppressHydrationWarning className={`bg-background ${figtree.variable} ${newsreader.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>

@@ -66,7 +66,7 @@ export function LoginScreen() {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(1000px 520px at 50% -10%, oklch(0.985 0.02 80 / 0.9), transparent 65%), radial-gradient(800px 420px at 50% 115%, oklch(0.95 0.02 215 / 0.3), transparent 60%)",
+            "radial-gradient(900px 480px at 50% -10%, color-mix(in srgb, var(--brand) 12%, transparent), transparent 65%)",
         }}
       />
 
@@ -75,7 +75,7 @@ export function LoginScreen() {
         <img src="/brand/renew-symbol.svg" alt="Renew" className="h-[76px] w-auto" />
 
         <div className="mt-6 text-center">
-          <h1 className="text-balance text-2xl font-medium tracking-tight">
+          <h1 className="text-balance font-serif text-3xl font-medium tracking-tight">
             Bienvenido a su recepción digital
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -156,7 +156,7 @@ export function LoginScreen() {
               </p>
             ) : (
               capsLock && (
-                <p id="password-caps" className="text-xs text-amber-700">
+                <p id="password-caps" className="text-xs text-warning-ink">
                   Bloq Mayús está activado.
                 </p>
               )
@@ -172,7 +172,7 @@ export function LoginScreen() {
           <button
             type="submit"
             disabled={loading}
-            className="group flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-70"
+            className="press group flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-70"
           >
             {loading ? (
               <>

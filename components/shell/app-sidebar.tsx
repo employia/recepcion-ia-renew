@@ -50,7 +50,7 @@ export function AppSidebar() {
           <span className="relative flex h-6 w-6 shrink-0 items-center justify-center">
             <Icon className={`h-5 w-5 ${active ? "text-brand-ink" : ""}`} />
             {badge > 0 && !navOpen && (
-              <span aria-hidden className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-terracotta ring-2 ring-card" />
+              <span aria-hidden className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-warning ring-2 ring-card" />
             )}
           </span>
           <span className={`min-w-0 flex-1 ${navOpen ? "" : "md:sr-only"}`}>
@@ -61,7 +61,7 @@ export function AppSidebar() {
             <>
               <span
                 aria-hidden
-                className={`shrink-0 rounded-full bg-terracotta px-2 py-0.5 text-xs font-semibold tabular-nums text-terracotta-foreground ${
+                className={`shrink-0 rounded-full bg-warning px-2 py-0.5 text-xs font-semibold tabular-nums text-warning-foreground ${
                   navOpen ? "" : "md:hidden"
                 }`}
               >

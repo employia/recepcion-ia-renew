@@ -6,8 +6,8 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "Renew IA",
     start_url: "/",
     display: "standalone",
-    background_color: "#faf9f6",
-    theme_color: "#faf9f6",
+    background_color: "#f5f5f7",
+    theme_color: "#f5f5f7",
     icons: [
       { src: "/icon-192.png", type: "image/png", sizes: "192x192" },
       { src: "/icon-512.png", type: "image/png", sizes: "512x512" },

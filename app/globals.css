@@ -5,7 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: var(--font-figtree), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: var(--font-newsreader), 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --color-background: var(--background);
@@ -33,97 +34,118 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
 
-  /* Renew brand: teal = activity / correct state / positive action,
-     terracotta = a person must step in. Neutrals = everything else. */
+  /* Theme accent: terracotta in Claude Dark, teal in Apple Light. */
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-ink: var(--brand-ink);
-  --color-terracotta: var(--terracotta);
-  --color-terracotta-foreground: var(--terracotta-foreground);
-  --color-terracotta-ink: var(--terracotta-ink);
+  /* Status colors never change with the accent. */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-ink: var(--success-ink);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-ink: var(--warning-ink);
+  --color-surface-raised: var(--surface-raised);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 }
 
+/* Apple Light: neutral white surfaces, near-black text, teal accent. */
 :root {
   color-scheme: light;
-  --background: #faf9f6;
-  --foreground: #1f1e1c;
+  --background: #f5f5f7;
+  --foreground: #1d1d1f;
   --card: #ffffff;
-  --card-foreground: #1f1e1c;
+  --card-foreground: #1d1d1f;
   --popover: #ffffff;
-  --popover-foreground: #1f1e1c;
-  --primary: #1f1e1c;
-  --primary-foreground: #faf9f6;
-  --secondary: #f1efea;
-  --secondary-foreground: #3a3835;
-  --muted: #f1efea;
-  --muted-foreground: #6b675f; /* 5.3:1 on white */
+  --popover-foreground: #1d1d1f;
+  --surface-raised: #fafafc;
+  --primary: #236f64;
+  --primary-foreground: #ffffff;
+  --secondary: #efeff2;
+  --secondary-foreground: #3a3a3c;
+  --muted: #efeff2;
+  --muted-foreground: #66666c; /* 5.4:1 on white, 4.9:1 on the page background */
   --accent: #2e8b7d;
   --accent-foreground: #ffffff;
-  --destructive: #b4432b;
+  --destructive: #c4372b;
   --destructive-foreground: #ffffff;
-  --border: #e7e4dd;
-  --input: #dcd8cf;
+  --border: #e3e3e8;
+  --input: #d2d2d8;
   --ring: #2e8b7d;
 
   --brand: #2e8b7d;
   --brand-foreground: #ffffff;
-  --brand-ink: #236f64; /* teal for text on light surfaces, 5.9:1 */
-  --terracotta: #c4693d;
-  --terracotta-foreground: #ffffff;
-  --terracotta-ink: #a4502a; /* terracotta for text on light surfaces, 5.7:1 */
+  --brand-ink: #236f64; /* 5.9:1 on white */
+
+  --success: #2e8b7d;
+  --success-foreground: #ffffff;
+  --success-ink: #236f64;
+  --warning: #b86a0a;
+  --warning-foreground: #ffffff;
+  --warning-ink: #8f5006; /* 6.6:1 on white */
 
   --chart-1: #2e8b7d;
-  --chart-2: #6fb3a7;
-  --chart-3: #d9a47f;
-  --chart-4: #c4693d;
-  --chart-5: #8a857b;
+  --chart-2: #7bb9ae;
+  --chart-3: #c9a24a;
+  --chart-4: #b86a0a;
+  --chart-5: #8e8e93;
 
   --radius: 0.75rem;
 
   --scene-bg: #f2efe9;
   --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+  --motion-quick: 150ms;
+  --motion-standard: 250ms;
+  --motion-slow: 400ms;
 }
 
+/* Claude Dark: warm charcoal surfaces, warm light text, terracotta accent. */
 .dark {
   color-scheme: dark;
-  --background: #1a1917;
-  --foreground: #f2efe9;
-  --card: #242220;
-  --card-foreground: #f2efe9;
-  --popover: #2a2826;
-  --popover-foreground: #f2efe9;
-  --primary: #f2efe9;
-  --primary-foreground: #1a1917;
-  --secondary: #2e2c29;
-  --secondary-foreground: #e6e2da;
-  --muted: #2e2c29;
-  --muted-foreground: #a8a398;
-  --accent: #3f9d8f;
-  --accent-foreground: #0f1f1c;
-  --destructive: #e07a5f;
-  --destructive-foreground: #1a1917;
-  --border: #38352f;
-  --input: #433f38;
-  --ring: #4fb3a3;
+  --background: #1f1e1c;
+  --foreground: #f4f1ea;
+  --card: #2a2927;
+  --card-foreground: #f4f1ea;
+  --popover: #31302d;
+  --popover-foreground: #f4f1ea;
+  --surface-raised: #2f2d2a;
+  --primary: #d97757;
+  --primary-foreground: #1f1e1c;
+  --secondary: #353330;
+  --secondary-foreground: #e8e4db;
+  --muted: #353330;
+  --muted-foreground: #b3aea3; /* 6.6:1 on the card surface */
+  --accent: #d97757;
+  --accent-foreground: #1f1e1c;
+  --destructive: #ee8a74;
+  --destructive-foreground: #1f1e1c;
+  --border: #3f3d39;
+  --input: #4d4a44;
+  --ring: #e08a6b;
 
-  --brand: #3f9d8f;
-  --brand-foreground: #0f1f1c;
-  --brand-ink: #67c2b3;
-  --terracotta: #d9835a;
-  --terracotta-foreground: #1a1917;
-  --terracotta-ink: #e59a74;
+  --brand: #d97757;
+  --brand-foreground: #1f1e1c;
+  --brand-ink: #eb9a7a; /* 6.6:1 on the card surface */
 
-  --chart-1: #4fb3a3;
-  --chart-2: #2e8b7d;
-  --chart-3: #d9a47f;
-  --chart-4: #d9835a;
-  --chart-5: #8a857b;
+  --success: #4fb3a3;
+  --success-foreground: #0f1f1c;
+  --success-ink: #6ccabb;
+  --warning: #e0a63c;
+  --warning-foreground: #1f1e1c;
+  --warning-ink: #efc067;
+
+  --chart-1: #d97757;
+  --chart-2: #e8a78f;
+  --chart-3: #4fb3a3;
+  --chart-4: #e0a63c;
+  --chart-5: #8e8a80;
 
   --scene-bg: #2a2825;
 }
@@ -192,14 +214,14 @@
   }
   .shadow-float {
     box-shadow:
-      0 1px 2px rgb(31 30 28 / 0.04),
-      0 8px 24px rgb(31 30 28 / 0.07),
-      0 24px 56px rgb(31 30 28 / 0.08);
+      0 1px 2px rgb(0 0 0 / 0.04),
+      0 8px 24px rgb(0 0 0 / 0.07),
+      0 24px 56px rgb(0 0 0 / 0.08);
   }
   .shadow-soft {
     box-shadow:
-      0 1px 2px rgb(31 30 28 / 0.04),
-      0 2px 8px rgb(31 30 28 / 0.04);
+      0 1px 2px rgb(0 0 0 / 0.04),
+      0 2px 8px rgb(0 0 0 / 0.04);
   }
   .dark .shadow-float {
     box-shadow:
@@ -223,7 +245,7 @@
     transform: scale(0.97);
   }
 
-  /* One-shot terracotta pulse for a new escalation. Never loops. */
+  /* One-shot warning pulse for a new escalation. Never loops. */
   .pulse-once {
     animation: pulse-once 1.2s var(--ease-out) 1;
   }
@@ -274,7 +296,7 @@
 
 @keyframes pulse-once {
   0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--terracotta) 55%, transparent);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--warning) 55%, transparent);
   }
   100% {
     box-shadow: 0 0 0 10px transparent;
@@ -325,12 +347,12 @@
 
 @media (prefers-contrast: more) {
   :root {
-    --border: #8a857b;
-    --muted-foreground: #4a4640;
+    --border: #8e8e93;
+    --muted-foreground: #48484a;
   }
   .dark {
     --border: #8a857b;
-    --muted-foreground: #cfcabf;
+    --muted-foreground: #d4cfc4;
   }
   .glass {
     background: var(--card);
