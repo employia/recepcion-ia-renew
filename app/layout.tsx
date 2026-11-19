@@ -4,7 +4,7 @@ import { ThemeProvider, THEME_COLORS, THEME_INIT_SCRIPT } from "@/lib/theme"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Recepción Digital · Renew IA",
+  title: "Recepción Digital",
   description:
     "Panel de supervisión de la Recepción Digital de Renew: una oficina digital donde trabajan Valentina, Carlos, Elena y Steven.",
   generator: "v0.app",
