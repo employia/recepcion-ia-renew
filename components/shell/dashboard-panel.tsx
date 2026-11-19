@@ -75,9 +75,11 @@ export function DashboardPanel() {
               aria-label="Abrir el menú"
               className="press flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground md:hidden"
             >
-              <Menu className="h-5 w-5" />
-            </button>
-            <div className="min-w-0 flex-1">
+  <Menu className="h-5 w-5" />
+  </button>
+  {/* Room for the floating help button, which sits above this corner. */}
+  <span aria-hidden className="h-11 w-11 shrink-0" />
+  <div className="min-w-0 flex-1">
               <h2
                 ref={titleRef}
                 tabIndex={-1}
