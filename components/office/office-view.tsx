@@ -5,6 +5,7 @@ import { Canvas, useThree } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
 import { HoverProvider } from "@/lib/store"
 import { GlRecoveryWatcher } from "./gl-recovery-watcher"
+import { OfficeWebglFallback } from "./office-webgl-fallback"
 import { Scene } from "./scene"
 
 // Known software rasterizers (no real GPU behind WebGL): SwiftShader (Chrome's
@@ -32,6 +33,27 @@ function isSoftwareRenderer(gl: WebGLRenderingContext | WebGL2RenderingContext) 
   return SOFTWARE_RENDERER_PATTERNS.some((p) => renderer.includes(p))
 }
 
+
+// Probes WebGL support with a throwaway canvas before mounting <Canvas>. When
+// the browser refuses (hardware acceleration off, GPU blocked), mounting the
+// R3F canvas just produces repeated unhandled rejections and a blank area;
+// detecting it up front lets us show an explanation instead. The probe context
+// is released immediately so it doesn't count against the browser's limit.
+function canCreateWebgl(): boolean {
+  if (typeof document === "undefined") return true
+  try {
+    const probe = document.createElement("canvas")
+    const gl = (probe.getContext("webgl2") ?? probe.getContext("webgl")) as
+      | WebGLRenderingContext
+      | WebGL2RenderingContext
+      | null
+    if (!gl) return false
+    gl.getExtension("WEBGL_lose_context")?.loseContext()
+    return true
+  } catch {
+    return false
+  }
+}
 
 // --- Responsive framing -----------------------------------------------------
 // The room is a fixed isometric box. Its footprint on screen, in world units
@@ -124,6 +146,7 @@ export function OfficeView({
   const lowPower = true
 
   const containerRef = useRef<HTMLDivElement>(null)
+  const [glStatus, setGlStatus] = useState<"ok" | "failed">(() => (canCreateWebgl() ? "ok" : "failed"))
   const [fit, setFit] = useState(() =>
     typeof window === "undefined"
       ? { zoom: 78, targetX: 0, targetY: 0.6, targetZ: 0, minZoom: 54 }
@@ -196,11 +219,14 @@ export function OfficeView({
       const message = String(event.reason?.message ?? event.reason ?? "")
       if (message.includes("WebGL context") || message.includes("WebGLRenderer")) {
         console.warn("[office] Unrecoverable WebGL context creation failure:", message)
+        setGlStatus("failed")
       }
     }
     window.addEventListener("unhandledrejection", handleRejection)
     return () => window.removeEventListener("unhandledrejection", handleRejection)
   }, [])
+
+  if (glStatus === "failed") return <OfficeWebglFallback />
 
   return (
     <div ref={containerRef} className="office-surface absolute inset-0">
