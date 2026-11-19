@@ -91,7 +91,7 @@ export function DashboardPanel() {
               <button
                 onClick={(e) => {
                   const r = e.currentTarget.getBoundingClientRect()
-                  openEmployee(owner.id, { x: r.left + r.width / 2, y: r.top + r.height / 2 }, { keepModule: true })
+                  openEmployee(owner.id, { x: r.left + r.width / 2, y: r.top + r.height / 2 })
                 }}
                 aria-label={`Ver la ficha de ${owner.name}`}
                 className="press flex h-11 w-11 shrink-0 items-center justify-center rounded-full"

@@ -15,8 +15,6 @@ import { authErrorMessage, supabase, supabaseConfigured } from "./supabase"
 import { LEGAL_DOCS, LEGAL_VERSION } from "./legal"
 import type { EmployeeId, ModuleId } from "./types"
 
-const SPLIT_MIN = 1024 // keep in sync with lib/layout.ts (that file imports React hooks only for the client shell)
-
 // --- Browser history -------------------------------------------------------
 // The app is a single page, so the browser (and the Android/iOS back gesture)
 // has nothing to go back to inside it: "Back" used to leave the app entirely.
@@ -65,12 +63,8 @@ interface AppState {
   activeEmployee: EmployeeId | null
   /** Screen point (px) of the avatar the profile grows from, when known. */
   employeeOrigin: { x: number; y: number } | null
-  /**
-   * Opens an employee's profile. By default it closes any open dashboard, so
-   * the two panels never animate against each other. Pass `keepModule` to show
-   * the profile beside the dashboard instead (desktop split view only).
-   */
-  openEmployee: (id: EmployeeId, origin?: { x: number; y: number }, options?: { keepModule?: boolean }) => void
+  /** Opens an employee's profile and closes any open dashboard: only one panel at a time. */
+  openEmployee: (id: EmployeeId, origin?: { x: number; y: number }) => void
   closeEmployee: () => void
 }
 
@@ -179,9 +173,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setActiveEmployee(view.employee)
   }, [])
 
-  // A dashboard and an employee profile can be open together (split view on
-  // wide screens). From the office a view adds one history entry; from another
-  // view it replaces the current one.
+  // Only one panel is ever open: a dashboard or an employee profile, never
+  // both, so the office is framed for one side at a time. From the office a view
+  // adds one history entry; from another view it replaces the current one.
   const goTo = useCallback(
     (view: ViewState) => {
       const entry = { ...(window.history.state ?? {}), [HISTORY_KEY]: view }
@@ -224,37 +218,26 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setSession(null)
   }, [show])
 
-  // Below 1024px a dashboard covers the office, so a dashboard and a profile
-  // never share the screen there.
+  // Opening either panel replaces the other one.
   const openModule = useCallback(
     (m: ModuleId) => {
       if (m === "office") closePanels()
-      else goTo({ module: m, employee: window.innerWidth >= SPLIT_MIN ? viewRef.current.employee : null })
+      else goTo({ module: m, employee: null })
     },
     [goTo, closePanels],
   )
 
   const openEmployee = useCallback(
-    (id: EmployeeId, origin?: { x: number; y: number }, options?: { keepModule?: boolean }) => {
+    (id: EmployeeId, origin?: { x: number; y: number }) => {
       setEmployeeOrigin(origin ?? null)
-      const keepModule = options?.keepModule === true && window.innerWidth >= SPLIT_MIN
-      goTo({ module: keepModule ? viewRef.current.module : null, employee: id })
+      goTo({ module: null, employee: id })
     },
     [goTo],
   )
 
-  // Closing one half keeps the other; closing the last one steps back to the office.
-  const closeModule = useCallback(() => {
-    const { employee } = viewRef.current
-    if (employee) goTo({ module: null, employee })
-    else closePanels()
-  }, [goTo, closePanels])
-
-  const closeEmployee = useCallback(() => {
-    const { module } = viewRef.current
-    if (module) goTo({ module, employee: null })
-    else closePanels()
-  }, [goTo, closePanels])
+  // With a single panel open, closing it steps back to the office.
+  const closeModule = useCallback(() => closePanels(), [closePanels])
+  const closeEmployee = useCallback(() => closePanels(), [closePanels])
 
   const value = useMemo<AppState>(
     () => ({
