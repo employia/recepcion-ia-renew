@@ -8,6 +8,7 @@ import { PROFILE_WIDTH, RAIL_MIN, RAIL_WIDTH, SPLIT_MIN, dashboardWidth, useView
 import { AppSidebar, MobileMenuButton } from "./app-sidebar"
 import { DashboardPanel } from "./dashboard-panel"
 import { EmployeePanel } from "./employee-panel"
+import { HelpCenter } from "./help-center"
 import { TeamBar } from "./team-bar"
 
 // The 3D office is client-only; avoid SSR of the WebGL canvas.
@@ -53,6 +54,7 @@ function Shell() {
 
       <DashboardPanel />
       <EmployeePanel />
+      <HelpCenter />
       <AppSidebar />
     </main>
   )

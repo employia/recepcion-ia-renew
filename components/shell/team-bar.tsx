@@ -1,6 +1,8 @@
 "use client"
 
+import { Moon, Sun } from "lucide-react"
 import { useApp } from "@/lib/store"
+import { useTheme } from "@/lib/theme"
 import { EMPLOYEES } from "@/lib/employees"
 import { STATUS_LABEL, StatusDot, Thumb } from "./employee-avatar"
 
@@ -19,6 +21,10 @@ export function TeamBar({
   hidden: boolean
 }) {
   const { activeEmployee, openEmployee } = useApp()
+  const { resolved, setPreference } = useTheme()
+  const nextTheme = resolved === "dark" ? "light" : "dark"
+  const ThemeIcon = nextTheme === "dark" ? Moon : Sun
+  const themeLabel = nextTheme === "dark" ? "Cambiar a tema oscuro" : "Cambiar a tema claro"
 
   return (
     <div
@@ -63,6 +69,27 @@ export function TeamBar({
             </li>
           )
         })}
+        <li aria-hidden className="mx-1 h-7 w-px self-center bg-border" />
+        <li className="group relative">
+          <button
+            onClick={() => setPreference(nextTheme)}
+            aria-label={themeLabel}
+            className="press flex h-12 w-12 items-center justify-center rounded-full hover:scale-105"
+          >
+            <span className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-secondary text-foreground transition-colors duration-200 group-hover:bg-accent">
+              <ThemeIcon
+                key={nextTheme}
+                className="h-5 w-5 animate-in fade-in zoom-in-50 spin-in-90 duration-300 motion-reduce:animate-none"
+              />
+            </span>
+          </button>
+          <span
+            aria-hidden
+            className="pointer-events-none absolute bottom-full right-0 mb-3 hidden whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-2 text-sm font-semibold leading-tight opacity-0 shadow-float transition-opacity duration-150 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100 md:block"
+          >
+            {themeLabel}
+          </span>
+        </li>
       </ul>
     </div>
   )
