@@ -65,7 +65,12 @@ interface AppState {
   activeEmployee: EmployeeId | null
   /** Screen point (px) of the avatar the profile grows from, when known. */
   employeeOrigin: { x: number; y: number } | null
-  openEmployee: (id: EmployeeId, origin?: { x: number; y: number }) => void
+  /**
+   * Opens an employee's profile. By default it closes any open dashboard, so
+   * the two panels never animate against each other. Pass `keepModule` to show
+   * the profile beside the dashboard instead (desktop split view only).
+   */
+  openEmployee: (id: EmployeeId, origin?: { x: number; y: number }, options?: { keepModule?: boolean }) => void
   closeEmployee: () => void
 }
 
@@ -230,9 +235,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   )
 
   const openEmployee = useCallback(
-    (id: EmployeeId, origin?: { x: number; y: number }) => {
+    (id: EmployeeId, origin?: { x: number; y: number }, options?: { keepModule?: boolean }) => {
       setEmployeeOrigin(origin ?? null)
-      goTo({ module: window.innerWidth >= SPLIT_MIN ? viewRef.current.module : null, employee: id })
+      const keepModule = options?.keepModule === true && window.innerWidth >= SPLIT_MIN
+      goTo({ module: keepModule ? viewRef.current.module : null, employee: id })
     },
     [goTo],
   )
