@@ -27,11 +27,15 @@ function searchFaq(query: string): FaqItem[] {
 }
 
 /**
- * Floating help: a button in the top-left corner of the app that slides a
+ * Floating help: a button in the top-right corner of the app that slides a
  * searchable FAQ down from the top. It lives in the shell, so it stays
  * reachable from the office and from every module.
+ *
+ * `insetRight` is the width taken by the employee profile panel on desktop
+ * (the same value the office and team bar use), so the button and its panel
+ * step aside instead of hiding underneath it.
  */
-export function HelpCenter() {
+export function HelpCenter({ insetRight = 0 }: { insetRight?: number }) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -78,7 +82,10 @@ export function HelpCenter() {
 
   return (
     <>
-      <div className="group fixed left-16 top-3 z-[32] md:left-[84px]" style={{ marginTop: "env(safe-area-inset-top, 0px)" }}>
+      <div
+        className="group fixed right-3 top-3 z-[32] transition-[right] duration-300 ease-[var(--ease-out)] motion-reduce:transition-none md:right-[calc(1.25rem+var(--help-inset,0px))]"
+        style={{ marginTop: "env(safe-area-inset-top, 0px)", ["--help-inset" as string]: `${insetRight}px` }}
+      >
         <button
           ref={fabRef}
           onClick={toggle}
@@ -93,7 +100,7 @@ export function HelpCenter() {
         </button>
         <span
           aria-hidden
-          className={`pointer-events-none absolute left-0 top-full mt-2 hidden whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-1.5 text-sm font-semibold opacity-0 shadow-float transition-opacity duration-150 md:block ${
+          className={`pointer-events-none absolute right-0 top-full mt-2 hidden whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-1.5 text-sm font-semibold opacity-0 shadow-float transition-opacity duration-150 md:block ${
             open ? "" : "group-hover:opacity-100 group-has-[:focus-visible]:opacity-100"
           }`}
         >
@@ -115,7 +122,8 @@ export function HelpCenter() {
         aria-modal="false"
         aria-labelledby={titleId}
         inert={!open}
-        className={`fixed inset-x-3 top-[calc(4rem+env(safe-area-inset-top,0px))] z-[42] flex max-h-[calc(100dvh-4.75rem-env(safe-area-inset-top,0px))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-float transition-[transform,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-opacity md:inset-x-auto md:left-[84px] md:w-[min(26rem,calc(100vw-100px))] ${
+        style={{ ["--help-inset" as string]: `${insetRight}px` }}
+        className={`fixed inset-x-3 top-[calc(4rem+env(safe-area-inset-top,0px))] z-[42] flex max-h-[calc(100dvh-4.75rem-env(safe-area-inset-top,0px))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-float transition-[transform,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-opacity md:inset-x-auto md:right-[calc(1.25rem+var(--help-inset,0px))] md:w-[min(26rem,calc(100vw-100px))] ${
           open
             ? "visible translate-y-0 opacity-100"
             : "pointer-events-none invisible -translate-y-3 opacity-0 motion-reduce:translate-y-0"

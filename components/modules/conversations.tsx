@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { MessageSquare, SearchX } from "lucide-react"
+import { CircleAlert, MessageSquare, MessagesSquare, RefreshCw, SearchX } from "lucide-react"
 import { useConversations } from "@/lib/hooks"
 import {
   EmptyState,
@@ -22,7 +22,7 @@ const FILTERS = [
 ] as const
 
 export function ConversationsModule() {
-  const { data, isLoading } = useConversations()
+  const { data, isLoading, error, mutate } = useConversations()
   const [query, setQuery] = useState("")
   const [filter, setFilter] = useState<string>("all")
 
@@ -54,8 +54,33 @@ export function ConversationsModule() {
 
       {isLoading && !data ? (
         <SkeletonList />
+      ) : error && !data ? (
+        <EmptyState
+          icon={CircleAlert}
+          title="No se pudieron cargar las conversaciones"
+          description="Vuelve a intentarlo en unos segundos."
+          action={{ label: "Reintentar", icon: RefreshCw, onClick: () => void mutate() }}
+        />
+      ) : data && data.length === 0 ? (
+        <EmptyState
+          icon={MessagesSquare}
+          title="Aún no hay conversaciones"
+          description="Cuando la recepción digital atienda a alguien, la conversación aparecerá aquí."
+          action={{ label: "Actualizar", icon: RefreshCw, onClick: () => void mutate() }}
+        />
       ) : filtered.length === 0 ? (
-        <EmptyState icon={SearchX}>No hay conversaciones con estos filtros.</EmptyState>
+        <EmptyState
+          icon={SearchX}
+          title="Sin resultados"
+          description="Ninguna conversación coincide con la búsqueda o el filtro."
+          action={{
+            label: "Limpiar filtros",
+            onClick: () => {
+              setQuery("")
+              setFilter("all")
+            },
+          }}
+        />
       ) : (
         <div className="space-y-2.5">
           {filtered.map((c) => (

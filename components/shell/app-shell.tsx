@@ -54,7 +54,7 @@ function Shell() {
 
       <DashboardPanel />
       <EmployeePanel />
-      <HelpCenter />
+      <HelpCenter insetRight={insetRight} />
       <AppSidebar />
     </main>
   )

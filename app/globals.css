@@ -294,6 +294,51 @@
   }
 }
 
+/* Loading skeletons: a soft highlight sweeps across a tinted block. */
+.skeleton {
+  --sk-base: color-mix(in srgb, var(--secondary) 75%, transparent);
+  --sk-hi: color-mix(in srgb, var(--foreground) 7%, var(--secondary));
+  background: linear-gradient(100deg, var(--sk-base) 30%, var(--sk-hi) 50%, var(--sk-base) 70%);
+  background-size: 250% 100%;
+  animation: skeleton-shimmer 1.6s linear infinite;
+}
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+/* Indeterminate bar under a panel header while a manual refresh runs. */
+@keyframes refresh-bar {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+
+/* Pull to refresh: the content follows --ptr (px) while the finger is down and
+   eases back afterwards. --ptr-p (0..1) drives the indicator. */
+.ptr-content {
+  transform: translateY(var(--ptr, 0px));
+  transition: transform 300ms var(--ease-out);
+}
+[data-pulling='true'] .ptr-content,
+[data-pulling='true'] .ptr-indicator {
+  transition: none;
+}
+.ptr-indicator {
+  transform: translateY(calc(var(--ptr, 0px) - 44px));
+  opacity: var(--ptr-p, 0);
+  transition:
+    transform 300ms var(--ease-out),
+    opacity 200ms;
+}
+
 @keyframes pulse-once {
   0% {
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--warning) 55%, transparent);
@@ -364,6 +409,13 @@
 @media (prefers-reduced-motion: reduce) {
   .press:active {
     transform: none;
+  }
+  .skeleton {
+    animation: none;
+  }
+  .ptr-content,
+  .ptr-indicator {
+    transition: none;
   }
   .pulse-once {
     animation: none;
