@@ -226,7 +226,7 @@ export function OfficeView({
     return () => window.removeEventListener("unhandledrejection", handleRejection)
   }, [])
 
-  if (glStatus === "failed") return <OfficeWebglFallback />
+  if (glStatus === "failed") return <OfficeWebglFallback insetLeft={insetLeft} insetRight={insetRight} />
 
   return (
     <div ref={containerRef} className="office-surface absolute inset-0">
