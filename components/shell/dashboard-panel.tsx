@@ -81,7 +81,7 @@ export function DashboardPanel() {
               <h2
                 ref={titleRef}
                 tabIndex={-1}
-                className="truncate text-lg font-semibold tracking-tight outline-none"
+                className="truncate font-serif text-xl font-medium tracking-tight outline-none"
               >
                 {item.label}
               </h2>

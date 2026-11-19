@@ -126,7 +126,7 @@ export function EmployeePanel() {
 
             <header className="flex items-start justify-between gap-3 px-5 pb-3 pt-1 lg:pt-5">
               <div className="min-w-0">
-                <h2 className="truncate text-xl font-semibold tracking-tight">{shown.name}</h2>
+                <h2 className="truncate font-serif text-2xl font-medium tracking-tight">{shown.name}</h2>
                 <p className="truncate text-sm text-muted-foreground">{shown.role}</p>
               </div>
               <button

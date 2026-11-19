@@ -122,10 +122,10 @@ function EscalationRow({
   return (
     <div
       id={`escalation-${e.id}`}
-      className={`scroll-mt-32 scroll-mb-4 rounded-xl border transition-colors ${
+      className={`scroll-mt-32 scroll-mb-4 rounded-xl border transition-colors duration-200 ${
         open
-          ? "border-accent/40 bg-accent/5"
-          : "border-border/70 bg-card/60 hover:border-border hover:bg-card"
+          ? "border-brand/40 bg-brand/5"
+          : "border-border/70 bg-card hover:border-border hover:bg-surface-raised"
       }`}
     >
       <button

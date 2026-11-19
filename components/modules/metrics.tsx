@@ -11,17 +11,18 @@ import {
   XAxis,
 } from "recharts"
 import { useMetrics } from "@/lib/hooks"
+import { useTheme } from "@/lib/theme"
 import type { MetricPoint } from "@/lib/types"
 import { EmptyState, SkeletonList } from "./shared"
 
 // Recharts renders these as SVG presentation attributes, where CSS custom
-// properties (var(--x)) do NOT resolve, so explicit theme colors are used.
-const C = {
-  accent: "oklch(0.6 0.07 215)",
-  chart2: "oklch(0.62 0.09 150)",
-  axis: "oklch(0.55 0.008 75)",
-  grid: "oklch(0.89 0.006 85)",
+// properties (var(--x)) do NOT resolve, so each theme has explicit colors that
+// mirror the chart tokens in globals.css.
+const PALETTE = {
+  light: { accent: "#2e8b7d", chart2: "#7bb9ae", axis: "#66666c", grid: "#e3e3e8", cursor: "#efeff2" },
+  dark: { accent: "#d97757", chart2: "#e8a78f", axis: "#b3aea3", grid: "#3f3d39", cursor: "#353330" },
 }
+type Palette = (typeof PALETTE)["light"]
 
 const NO_DATA = "Sin datos"
 
@@ -39,6 +40,7 @@ function formatPercent(n: number | null) {
 
 export function MetricsModule() {
   const { data, isLoading, error } = useMetrics()
+  const C = PALETTE[useTheme().resolved]
 
   if (isLoading && data === undefined) return <SkeletonList rows={4} />
 
@@ -132,8 +134,8 @@ export function MetricsModule() {
       </Section>
 
       <Section title="Tendencias">
-        <TrendChart label="Semanal" points={trends.weekly} />
-        <TrendChart label="Mensual" points={trends.monthly} />
+        <TrendChart label="Semanal" points={trends.weekly} colors={C} />
+        <TrendChart label="Mensual" points={trends.monthly} colors={C} />
       </Section>
     </div>
   )
@@ -142,7 +144,7 @@ export function MetricsModule() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="space-y-3">
-      <h3 className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+      <h3 className="text-sm font-semibold text-foreground">
         {title}
       </h3>
       {children}
@@ -152,16 +154,16 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Kpi({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-card/70 p-3">
+    <div className="rounded-xl border border-border/60 bg-card p-3">
       <p className="text-[11px] text-muted-foreground">{label}</p>
-      <p className="mt-1 text-2xl font-semibold tabular-nums">{value}</p>
+      <p className="mt-1 font-serif text-3xl font-medium tabular-nums tracking-tight">{value}</p>
     </div>
   )
 }
 
 function ChartCard({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-border/60 bg-card/70 p-4">
+    <div className="rounded-2xl border border-border/60 bg-card p-4">
       <p className="mb-1 text-xs font-medium text-muted-foreground">{label}</p>
       {children}
     </div>
@@ -175,7 +177,7 @@ function NoData() {
 function RankedList({ label, points }: { label: string; points: MetricPoint[] }) {
   const max = points.reduce((m, p) => Math.max(m, p.value), 0)
   return (
-    <div className="rounded-2xl border border-border/60 bg-card/70 p-4">
+    <div className="rounded-2xl border border-border/60 bg-card p-4">
       <p className="mb-3 text-xs font-medium text-muted-foreground">{label}</p>
       {points.length === 0 ? (
         <NoData />
@@ -191,7 +193,7 @@ function RankedList({ label, points }: { label: string; points: MetricPoint[] })
               </div>
               <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
                 <div
-                  className="h-full rounded-full bg-accent/70"
+                  className="h-full rounded-full bg-brand/70"
                   style={{ width: `${max > 0 ? (p.value / max) * 100 : 0}%` }}
                 />
               </div>
@@ -203,7 +205,7 @@ function RankedList({ label, points }: { label: string; points: MetricPoint[] })
   )
 }
 
-function TrendChart({ label, points }: { label: string; points: MetricPoint[] }) {
+function TrendChart({ label, points, colors: C }: { label: string; points: MetricPoint[]; colors: Palette }) {
   return (
     <ChartCard label={label}>
       {points.length > 0 ? (
@@ -215,7 +217,7 @@ function TrendChart({ label, points }: { label: string; points: MetricPoint[] })
               axisLine={false}
               tick={{ fontSize: 10, fill: C.axis }}
             />
-            <Tooltip content={<MiniTooltip suffix="" />} cursor={{ fill: "oklch(0.93 0.006 85)" }} />
+            <Tooltip content={<MiniTooltip suffix="" />} cursor={{ fill: C.cursor }} />
             <Bar dataKey="value" radius={[4, 4, 0, 0]} fill={C.chart2} />
           </BarChart>
         </ResponsiveContainer>

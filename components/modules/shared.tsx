@@ -21,15 +21,15 @@ export function SearchBox({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         aria-label={placeholder}
-        className="w-full rounded-xl border border-input bg-card/60 py-2.5 pl-9 pr-9 text-sm outline-none transition focus:border-ring focus:ring-4 focus:ring-ring/10"
+        className="w-full rounded-xl border border-input bg-background py-2.5 pl-9 pr-9 text-sm outline-none transition focus:border-ring focus:ring-4 focus:ring-ring/10"
       />
       {value && (
         <button
           onClick={() => onChange("")}
           aria-label="Borrar búsqueda"
-          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+          className="press absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground"
         >
-          <X className="h-3.5 w-3.5" />
+          <X className="h-4 w-4" />
         </button>
       )}
     </div>
@@ -39,7 +39,7 @@ export function SearchBox({
 /** Sticks to the top of the panel's scroll area so search + filters stay reachable. */
 export function Toolbar({ children }: { children: ReactNode }) {
   return (
-    <div className="sticky -top-4 z-10 -mx-5 -mt-4 mb-4 space-y-3 border-b border-border/50 bg-card/[0.97] px-5 pb-3 pt-4 backdrop-blur-md">
+    <div className="sticky -top-4 z-10 -mx-5 -mt-4 mb-4 space-y-3 border-b border-border/50 bg-card px-5 pb-3 pt-4">
       {children}
     </div>
   )
@@ -71,10 +71,10 @@ export function FilterChips({
             role="tab"
             aria-selected={active}
             onClick={() => onChange(o.id)}
-            className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition ${
+            className={`press inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium ${
               active
                 ? "border-primary bg-primary text-primary-foreground"
-                : "border-border/70 bg-card/60 text-muted-foreground hover:border-border hover:text-foreground"
+                : "border-border bg-card text-muted-foreground hover:border-input hover:text-foreground"
             }`}
           >
             {o.label}
@@ -91,10 +91,10 @@ export function FilterChips({
 }
 
 const AVATAR_TONES = [
-  "bg-accent/15 text-accent",
-  "bg-terracotta/15 text-terracotta",
-  "bg-amber-500/15 text-amber-700",
-  "bg-emerald-500/15 text-emerald-700",
+  "bg-brand/15 text-brand-ink",
+  "bg-warning/15 text-warning-ink",
+  "bg-success/15 text-success-ink",
+  "bg-secondary text-secondary-foreground",
 ]
 
 /** Initials circle with a stable tone per name. */
@@ -113,11 +113,11 @@ export function Initials({ name }: { name: string }) {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  attending: "bg-accent/10 text-accent border-accent/20",
-  resolved: "bg-emerald-500/10 text-emerald-700 border-emerald-500/20",
-  "waiting-human": "bg-amber-500/12 text-amber-700 border-amber-500/25",
-  "human-attending": "bg-accent/10 text-accent border-accent/20",
-  "waiting-person": "bg-amber-500/12 text-amber-700 border-amber-500/25",
+  attending: "bg-brand/10 text-brand-ink border-brand/25",
+  resolved: "bg-success/10 text-success-ink border-success/25",
+  "waiting-human": "bg-warning/12 text-warning-ink border-warning/30",
+  "human-attending": "bg-brand/10 text-brand-ink border-brand/25",
+  "waiting-person": "bg-warning/12 text-warning-ink border-warning/30",
   resumed: "bg-secondary text-muted-foreground border-border",
 }
 
@@ -171,10 +171,10 @@ export function RowCard({
   return (
     <Comp
       onClick={onClick}
-      className={`w-full rounded-xl border p-3.5 text-left transition ${
+      className={`press w-full rounded-xl border p-3.5 text-left ${
         active
-          ? "border-accent/40 bg-accent/5"
-          : "border-border/70 bg-card/60 hover:border-border hover:bg-card"
+          ? "border-brand/40 bg-brand/5"
+          : "border-border/70 bg-card hover:border-border hover:bg-surface-raised"
       } ${onClick ? "cursor-pointer" : ""}`}
     >
       {children}
@@ -211,7 +211,7 @@ export function Stat({
   value: string | number
 }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-card/70 p-2.5">
+    <div className="rounded-xl border border-border/60 bg-card p-2.5">
       <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
         {icon}
         {label}

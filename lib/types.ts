@@ -7,7 +7,7 @@ export type ModuleId = "office" | "conversations" | "escalations" | "metrics" | 
 export type EmployeeId = "valentina" | "carlos" | "elena" | "steven"
 
 /**
- * Presence of an employee. "attention" (terracotta) is reserved for when a
+ * Presence of an employee. "attention" (amber warning) is reserved for when a
  * real signal says a person must step in; nothing sets it today.
  */
 export type EmployeeStatus = "working" | "resting" | "attention"
