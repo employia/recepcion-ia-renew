@@ -36,11 +36,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   interactiveWidget: "resizes-content",
-  colorScheme: "light dark",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: THEME_COLORS.light },
-    { media: "(prefers-color-scheme: dark)", color: THEME_COLORS.dark },
-  ],
+  colorScheme: "light",
+  themeColor: THEME_COLORS.light,
 }
 
 export default function RootLayout({

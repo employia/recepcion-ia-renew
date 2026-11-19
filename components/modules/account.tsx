@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronRight, LogOut, Mail, Monitor, Moon, Sun, type LucideIcon } from "lucide-react"
+import { ChevronRight, LogOut, Mail, Moon, Palette, Sun, type LucideIcon } from "lucide-react"
 import { useApp } from "@/lib/store"
 import { LEGAL_PATH } from "@/lib/legal"
 import { useTheme, type ThemePreference } from "@/lib/theme"
@@ -102,7 +102,7 @@ export function AccountModule() {
 const THEME_OPTIONS: { id: ThemePreference; label: string; icon: LucideIcon }[] = [
   { id: "light", label: "Claro", icon: Sun },
   { id: "dark", label: "Oscuro", icon: Moon },
-  { id: "system", label: "Sistema", icon: Monitor },
+  { id: "default", label: "Predeterminado", icon: Palette },
 ]
 
 function Appearance() {
@@ -125,14 +125,14 @@ function Appearance() {
               role="radio"
               aria-checked={selected}
               onClick={() => setPreference(id)}
-              className={`press flex min-h-11 items-center justify-center gap-2 rounded-xl px-2 text-sm font-medium ${
+              className={`press flex min-h-11 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-1 py-1.5 text-[13px] font-medium sm:flex-row sm:gap-2 sm:px-2 sm:text-sm ${
                 selected
                   ? "bg-card text-foreground shadow-soft"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <Icon className="h-4 w-4 shrink-0" />
-              <span className="truncate">{label}</span>
+              <span className="min-w-0 text-center [overflow-wrap:anywhere]">{label}</span>
             </button>
           )
         })}
