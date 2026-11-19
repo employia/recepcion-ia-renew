@@ -79,7 +79,7 @@ export function LoginScreen() {
             Bienvenido a su recepción digital
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Acceso privado para el equipo autorizado de Renew.
+            Acceso exclusivo para el equipo de Renew.
           </p>
         </div>
 
@@ -205,7 +205,7 @@ export function LoginScreen() {
         </div>
 
         <p className="mt-8 text-center text-xs text-muted-foreground">
-          Si avanza, acepta nuestros{" "}
+          Al continuar aceptas nuestros{" "}
           <a
             href={LEGAL_PATH.terms}
             className="underline underline-offset-4 transition hover:text-foreground"
