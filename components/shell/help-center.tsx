@@ -27,7 +27,7 @@ function searchFaq(query: string): FaqItem[] {
 }
 
 /**
- * Floating help: a button in the top-left corner of the app that slides a
+ * Floating help: a button in the top-right corner of the app that slides a
  * searchable FAQ down from the top. It lives in the shell, so it stays
  * reachable from the office and from every module.
  */
@@ -78,7 +78,7 @@ export function HelpCenter() {
 
   return (
     <>
-      <div className="group fixed left-16 top-3 z-[32] md:left-[84px]" style={{ marginTop: "env(safe-area-inset-top, 0px)" }}>
+      <div className="group fixed right-3 top-3 z-[32] md:right-6" style={{ marginTop: "env(safe-area-inset-top, 0px)" }}>
         <button
           ref={fabRef}
           onClick={toggle}
