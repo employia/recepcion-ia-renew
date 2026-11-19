@@ -10,14 +10,15 @@ import {
   type ReactNode,
 } from "react"
 
-export type ThemePreference = "light" | "dark" | "system"
+/** "default" always resolves to the light theme; it never follows the operating system. */
+export type ThemePreference = "default" | "light" | "dark"
 export type ResolvedTheme = "light" | "dark"
 
 export const THEME_STORAGE_KEY = "renew-theme"
 export const THEME_COLORS: Record<ResolvedTheme, string> = { light: "#f5f5f7", dark: "#1f1e1c" }
 
 /** Runs before first paint (see layout.tsx) so the saved theme never flashes. */
-export const THEME_INIT_SCRIPT = `(function(){try{var p=localStorage.getItem("${THEME_STORAGE_KEY}")||"system";var d=p==="dark"||(p==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);var r=document.documentElement;r.classList.toggle("dark",d);r.style.colorScheme=d?"dark":"light"}catch(e){}})()`
+export const THEME_INIT_SCRIPT = `(function(){try{var d=localStorage.getItem("${THEME_STORAGE_KEY}")==="dark";var r=document.documentElement;r.classList.toggle("dark",d);r.style.colorScheme=d?"dark":"light";var c=d?"${THEME_COLORS.dark}":"${THEME_COLORS.light}";document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.removeAttribute("media");m.setAttribute("content",c)})}catch(e){}})()`
 
 interface ThemeState {
   preference: ThemePreference
@@ -27,8 +28,13 @@ interface ThemeState {
 
 const ThemeContext = createContext<ThemeState | null>(null)
 
-function systemTheme(): ResolvedTheme {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+function resolve(p: ThemePreference): ResolvedTheme {
+  return p === "dark" ? "dark" : "light"
+}
+
+/** Stored values from before "default" existed (such as "system") fall back to the default. */
+function parseStored(value: string | null): ThemePreference {
+  return value === "light" || value === "dark" ? value : "default"
 }
 
 function apply(resolved: ResolvedTheme, animate: boolean) {
@@ -47,31 +53,24 @@ function apply(resolved: ResolvedTheme, animate: boolean) {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [preference, setPreferenceState] = useState<ThemePreference>("system")
+  const [preference, setPreferenceState] = useState<ThemePreference>("default")
   const [resolved, setResolved] = useState<ResolvedTheme>("light")
 
   // Sync React state with what the init script already applied.
   useEffect(() => {
-    const stored = (localStorage.getItem(THEME_STORAGE_KEY) as ThemePreference | null) ?? "system"
-    setPreferenceState(stored)
-    setResolved(stored === "system" ? systemTheme() : stored)
+    let stored: string | null = null
+    try {
+      stored = localStorage.getItem(THEME_STORAGE_KEY)
+    } catch {
+      // Storage can be blocked; fall back to the default theme.
+    }
+    const p = parseStored(stored)
+    setPreferenceState(p)
+    setResolved(resolve(p))
   }, [])
 
-  // Follow the operating system while the preference is "system".
-  useEffect(() => {
-    if (preference !== "system") return
-    const mq = window.matchMedia("(prefers-color-scheme: dark)")
-    const onChange = () => {
-      const next = mq.matches ? "dark" : "light"
-      setResolved(next)
-      apply(next, true)
-    }
-    mq.addEventListener("change", onChange)
-    return () => mq.removeEventListener("change", onChange)
-  }, [preference])
-
   const setPreference = useCallback((p: ThemePreference) => {
-    const next = p === "system" ? systemTheme() : p
+    const next = resolve(p)
     setPreferenceState(p)
     setResolved(next)
     apply(next, true)
