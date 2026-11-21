@@ -84,7 +84,7 @@ export function HelpCenter({
   return (
     <>
       <div
-        className="group pointer-events-auto fixed bottom-[calc(max(1rem,env(safe-area-inset-bottom,0px))+8px)] left-3 z-[32] transition-[left,opacity] duration-300 ease-[var(--ease-out)] motion-reduce:transition-none md:absolute md:bottom-auto md:left-auto md:right-full md:top-1/2 md:mr-2 md:-translate-y-1/2"
+        className="group pointer-events-auto fixed right-3 top-3 z-[32] mt-[env(safe-area-inset-top,0px)] transition-opacity duration-300 ease-[var(--ease-out)] motion-reduce:transition-none md:absolute md:right-full md:top-1/2 md:mr-2 md:mt-0 md:-translate-y-1/2"
         style={{ ["--help-center" as string]: `calc((100vw + ${insetLeft}px - ${insetRight}px) / 2)` }}
       >
         <button
@@ -93,11 +93,11 @@ export function HelpCenter({
           aria-expanded={open}
           aria-controls={panelId}
           aria-label="Preguntas frecuentes"
-          className={`press glass flex h-11 w-11 items-center justify-center rounded-full border shadow-soft hover:scale-105 ${
+          className={`press glass flex h-12 w-12 items-center justify-center rounded-full border shadow-soft hover:scale-105 md:h-11 md:w-11 ${
             open ? "border-brand/60 text-brand" : "border-border/60 text-muted-foreground hover:text-foreground"
           }`}
         >
-          <CircleHelp className="h-5 w-5" />
+          <CircleHelp className="h-6 w-6 md:h-5 md:w-5" />
         </button>
         <span
           aria-hidden
@@ -124,10 +124,10 @@ export function HelpCenter({
         aria-labelledby={titleId}
         inert={!open}
         style={{ ["--help-center" as string]: `calc((100vw + ${insetLeft}px - ${insetRight}px) / 2)` }}
-        className={`fixed inset-x-3 bottom-[calc(max(1rem,env(safe-area-inset-bottom,0px))+4.25rem)] z-[42] flex max-h-[calc(100dvh-7rem-env(safe-area-inset-bottom,0px))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-float transition-[transform,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-opacity md:inset-x-auto md:bottom-24 md:left-[var(--help-center)] md:w-[min(26rem,calc(100vw-100px))] md:-translate-x-1/2 ${
+        className={`fixed inset-x-3 top-[calc(4.75rem+env(safe-area-inset-top,0px))] z-[42] flex max-h-[calc(100dvh-5.75rem-env(safe-area-inset-top,0px))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-float transition-[transform,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-opacity md:inset-x-auto md:bottom-24 md:top-auto md:max-h-[calc(100dvh-7rem-env(safe-area-inset-bottom,0px))] md:left-[var(--help-center)] md:w-[min(26rem,calc(100vw-100px))] md:-translate-x-1/2 ${
           open
             ? "pointer-events-auto visible translate-y-0 opacity-100"
-            : "pointer-events-none invisible translate-y-3 opacity-0 motion-reduce:translate-y-0"
+            : "pointer-events-none invisible -translate-y-3 opacity-0 md:translate-y-3 motion-reduce:translate-y-0"
         }`}
       >
         <div className="shrink-0 space-y-3 border-b border-border/60 p-4">
