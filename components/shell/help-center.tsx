@@ -27,15 +27,16 @@ function searchFaq(query: string): FaqItem[] {
 }
 
 /**
- * Floating help: a button in the top-right corner of the app that slides a
- * searchable FAQ down from the top. It lives in the shell, so it stays
- * reachable from the office and from every module.
- *
- * `insetRight` is the width taken by the employee profile panel on desktop
- * (the same value the office and team bar use), so the button and its panel
- * step aside instead of hiding underneath it.
+ * Help lives beside the office team dock, not in the global navigation. The
+ * shell only mounts it while the office itself is active.
  */
-export function HelpCenter({ insetRight = 0 }: { insetRight?: number }) {
+export function HelpCenter({
+  insetLeft = 0,
+  insetRight = 0,
+}: {
+  insetLeft?: number
+  insetRight?: number
+}) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -83,8 +84,8 @@ export function HelpCenter({ insetRight = 0 }: { insetRight?: number }) {
   return (
     <>
       <div
-        className="group fixed right-3 top-3 z-[32] transition-[right] duration-300 ease-[var(--ease-out)] motion-reduce:transition-none md:right-[calc(1.25rem+var(--help-inset,0px))]"
-        style={{ marginTop: "env(safe-area-inset-top, 0px)", ["--help-inset" as string]: `${insetRight}px` }}
+        className="group pointer-events-auto fixed bottom-[calc(max(1rem,env(safe-area-inset-bottom,0px))+8px)] left-3 z-[32] transition-[left,opacity] duration-300 ease-[var(--ease-out)] motion-reduce:transition-none md:absolute md:bottom-auto md:left-auto md:right-full md:top-1/2 md:mr-2 md:-translate-y-1/2"
+        style={{ ["--help-center" as string]: `calc((100vw + ${insetLeft}px - ${insetRight}px) / 2)` }}
       >
         <button
           ref={fabRef}
@@ -112,7 +113,7 @@ export function HelpCenter({ insetRight = 0 }: { insetRight?: number }) {
         aria-hidden
         onClick={close}
         className={`fixed inset-0 z-[41] bg-black/30 transition-opacity duration-300 motion-reduce:transition-none md:hidden ${
-          open ? "opacity-100" : "pointer-events-none opacity-0"
+          open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
 
@@ -122,11 +123,11 @@ export function HelpCenter({ insetRight = 0 }: { insetRight?: number }) {
         aria-modal="false"
         aria-labelledby={titleId}
         inert={!open}
-        style={{ ["--help-inset" as string]: `${insetRight}px` }}
-        className={`fixed inset-x-3 top-[calc(4rem+env(safe-area-inset-top,0px))] z-[42] flex max-h-[calc(100dvh-4.75rem-env(safe-area-inset-top,0px))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-float transition-[transform,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-opacity md:inset-x-auto md:right-[calc(1.25rem+var(--help-inset,0px))] md:w-[min(26rem,calc(100vw-100px))] ${
+        style={{ ["--help-center" as string]: `calc((100vw + ${insetLeft}px - ${insetRight}px) / 2)` }}
+        className={`fixed inset-x-3 bottom-[calc(max(1rem,env(safe-area-inset-bottom,0px))+4.25rem)] z-[42] flex max-h-[calc(100dvh-7rem-env(safe-area-inset-bottom,0px))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-float transition-[transform,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-opacity md:inset-x-auto md:bottom-24 md:left-[var(--help-center)] md:w-[min(26rem,calc(100vw-100px))] md:-translate-x-1/2 ${
           open
-            ? "visible translate-y-0 opacity-100"
-            : "pointer-events-none invisible -translate-y-3 opacity-0 motion-reduce:translate-y-0"
+            ? "pointer-events-auto visible translate-y-0 opacity-100"
+            : "pointer-events-none invisible translate-y-3 opacity-0 motion-reduce:translate-y-0"
         }`}
       >
         <div className="shrink-0 space-y-3 border-b border-border/60 p-4">
