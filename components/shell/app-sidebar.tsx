@@ -6,6 +6,7 @@ import { useApp } from "@/lib/store"
 import { useShellUi } from "@/lib/shell-ui"
 import { useEscalations } from "@/lib/hooks"
 import { NAV_ITEMS, SETTINGS_ITEM, type NavItem } from "@/lib/nav"
+import { useRecordManagement } from "@/lib/record-management"
 
 /**
  * Main navigation. A 64px rail on tablet and desktop that expands to a fixed
@@ -16,7 +17,8 @@ export function AppSidebar() {
   const { activeModule, openModule } = useApp()
   const { navOpen, setNavOpen } = useShellUi()
   const { data: escalations } = useEscalations()
-  const waiting = escalations?.filter((e) => e.status === "waiting-person").length ?? 0
+  const { records } = useRecordManagement()
+  const waiting = escalations?.filter((e) => e.status === "waiting-person" && !records.some((record) => record.key === `escalation:${e.id}`)).length ?? 0
 
   useEffect(() => {
     if (!navOpen) return
@@ -35,7 +37,11 @@ export function AppSidebar() {
   function renderItem(item: NavItem) {
     const active = item.id === "office" ? activeModule === null : activeModule === item.id
     const Icon = item.icon
-    const badge = item.id === "escalations" && waiting > 0 ? waiting : 0
+    const badge = item.id === "escalations"
+      ? waiting
+      : item.id === "archived" || item.id === "trash"
+        ? records.filter((record) => record.status === item.id).length
+        : 0
     return (
       <li key={item.id}>
         <button

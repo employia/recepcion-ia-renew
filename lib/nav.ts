@@ -1,4 +1,4 @@
-import { BarChart3, Building2, MessagesSquare, Settings, UserRoundCheck, type LucideIcon } from "lucide-react"
+import { Archive, BarChart3, Building2, MessagesSquare, Settings, Trash2, UserRoundCheck, type LucideIcon } from "lucide-react"
 import type { EmployeeId, ModuleId } from "./types"
 
 export interface NavItem {
@@ -38,6 +38,8 @@ export const NAV_ITEMS: NavItem[] = [
     owner: "carlos",
     subtitle: "Analizadas por Carlos",
   },
+  { id: "archived", label: "Archivados", description: "Elementos guardados", icon: Archive, subtitle: "Conversaciones y escalamientos archivados" },
+  { id: "trash", label: "Papelera", description: "Elementos eliminados", icon: Trash2, subtitle: "Elementos pendientes de eliminación definitiva" },
 ]
 
 export const SETTINGS_ITEM: NavItem = {

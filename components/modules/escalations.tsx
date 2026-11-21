@@ -2,20 +2,21 @@
 
 import { useEffect, useMemo, useState } from "react"
 import {
+  Archive,
   Building2,
   ChevronDown,
-  ChevronUp,
   CircleAlert,
-  Info,
   Mail,
   MessageSquare,
   Phone,
   RefreshCw,
   RotateCcw,
   SearchX,
+  Trash2,
   UserRoundCheck,
 } from "lucide-react"
 import { useEscalations } from "@/lib/hooks"
+import { useRecordManagement } from "@/lib/record-management"
 import type { Escalation, EscalationTrigger } from "@/lib/types"
 import {
   EmptyState,
@@ -52,6 +53,8 @@ function ago(minutes: number) {
  */
 export function EscalationsModule() {
   const { data, isLoading, error, mutate } = useEscalations()
+  const { isManaged, archive, moveToTrash, isLoading: recordsLoading } = useRecordManagement()
+  const visibleData = useMemo(() => data?.filter((item) => !isManaged("escalation", item.id)), [data, isManaged])
   const [query, setQuery] = useState("")
   const [filter, setFilter] = useState<string>("all")
   const [openId, setOpenId] = useState<string | null>(null)
@@ -60,20 +63,20 @@ export function EscalationsModule() {
     () =>
       FILTERS.map((f) => ({
         ...f,
-        count: !data ? 0 : f.id === "all" ? data.length : data.filter((e) => e.status === f.id).length,
+        count: !visibleData ? 0 : f.id === "all" ? visibleData.length : visibleData.filter((e) => e.status === f.id).length,
       })),
-    [data],
+    [visibleData],
   )
 
   const filtered = useMemo(() => {
-    if (!data) return []
+    if (!visibleData) return []
     const q = query.trim().toLowerCase()
-    return data.filter(
+    return visibleData.filter(
       (e) =>
         (filter === "all" || e.status === filter) &&
         (!q || e.patientName.toLowerCase().includes(q) || e.reason.toLowerCase().includes(q)),
     )
-  }, [data, query, filter])
+  }, [visibleData, query, filter])
 
   // Once the expand animation ends, make sure the whole row is on screen.
   useEffect(() => {
@@ -94,7 +97,7 @@ export function EscalationsModule() {
         <FilterChips options={options} value={filter} onChange={setFilter} />
       </Toolbar>
 
-      {isLoading && !data ? (
+      {(isLoading && !data) || recordsLoading ? (
         <SkeletonList rows={4} />
       ) : error && !data ? (
         <EmptyState
@@ -103,7 +106,7 @@ export function EscalationsModule() {
           description="Vuelve a intentarlo en unos segundos."
           action={{ label: "Reintentar", icon: RefreshCw, onClick: () => void mutate() }}
         />
-      ) : data && data.length === 0 ? (
+      ) : visibleData && visibleData.length === 0 ? (
         <EmptyState
           icon={UserRoundCheck}
           title="Sin escalamientos"
@@ -129,25 +132,16 @@ export function EscalationsModule() {
             <SwipeRow
               key={e.id}
               actions={[
-                {
-                  id: "details",
-                  label: openId === e.id ? "Cerrar" : "Detalles",
-                  icon: openId === e.id ? ChevronUp : Info,
-                  onSelect: () => setOpenId(openId === e.id ? null : e.id),
-                },
-                {
-                  id: "call",
-                  label: "Llamar",
-                  icon: Phone,
-                  href: `tel:${e.phone.replace(/[^\d+]/g, "")}`,
-                  tone: "brand",
-                },
+                { id: "archive", label: "Archivar", icon: Archive, onSelect: () => void archive("escalation", e), tone: "brand" },
+                { id: "trash", label: "Eliminar", icon: Trash2, onSelect: () => void moveToTrash("escalation", e), tone: "danger" },
               ]}
             >
               <EscalationRow
                 escalation={e}
                 open={openId === e.id}
                 onToggle={() => setOpenId(openId === e.id ? null : e.id)}
+                onArchive={() => void archive("escalation", e)}
+                onTrash={() => void moveToTrash("escalation", e)}
               />
             </SwipeRow>
           ))}
@@ -161,10 +155,14 @@ function EscalationRow({
   escalation: e,
   open,
   onToggle,
+  onArchive,
+  onTrash,
 }: {
   escalation: Escalation
   open: boolean
   onToggle: () => void
+  onArchive: () => void
+  onTrash: () => void
 }) {
   const waiting = e.status === "waiting-person"
   return (
@@ -256,6 +254,14 @@ function EscalationRow({
                 Resumen
               </p>
               <p className="mt-1 text-xs leading-relaxed text-foreground/90">{e.summary}</p>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={onArchive} className="press inline-flex min-h-10 items-center gap-2 rounded-xl border border-border px-3 text-xs font-semibold hover:bg-secondary">
+                <Archive aria-hidden className="size-3.5" /> Archivar
+              </button>
+              <button onClick={onTrash} className="press inline-flex min-h-10 items-center gap-2 rounded-xl border border-destructive/30 px-3 text-xs font-semibold text-destructive hover:bg-destructive/10">
+                <Trash2 aria-hidden className="size-3.5" /> Eliminar
+              </button>
             </div>
           </div>
         </div>

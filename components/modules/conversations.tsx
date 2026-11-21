@@ -1,8 +1,10 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { CircleAlert, MessageSquare, MessagesSquare, RefreshCw, SearchX } from "lucide-react"
+import { Archive, CircleAlert, MessageSquare, MessagesSquare, RefreshCw, SearchX, Trash2 } from "lucide-react"
 import { useConversations } from "@/lib/hooks"
+import { useRecordManagement } from "@/lib/record-management"
+import { SwipeRow } from "./swipe-row"
 import {
   EmptyState,
   FilterChips,
@@ -23,6 +25,8 @@ const FILTERS = [
 
 export function ConversationsModule() {
   const { data, isLoading, error, mutate } = useConversations()
+  const { isManaged, archive, moveToTrash, isLoading: recordsLoading } = useRecordManagement()
+  const visibleData = useMemo(() => data?.filter((item) => !isManaged("conversation", item.id)), [data, isManaged])
   const [query, setQuery] = useState("")
   const [filter, setFilter] = useState<string>("all")
 
@@ -30,20 +34,20 @@ export function ConversationsModule() {
     () =>
       FILTERS.map((f) => ({
         ...f,
-        count: !data ? 0 : f.id === "all" ? data.length : data.filter((c) => c.status === f.id).length,
+        count: !visibleData ? 0 : f.id === "all" ? visibleData.length : visibleData.filter((c) => c.status === f.id).length,
       })),
-    [data],
+    [visibleData],
   )
 
   const filtered = useMemo(() => {
-    if (!data) return []
+    if (!visibleData) return []
     const q = query.trim().toLowerCase()
-    return data.filter(
+    return visibleData.filter(
       (c) =>
         (filter === "all" || c.status === filter) &&
         (!q || c.patientName.toLowerCase().includes(q) || c.intent.toLowerCase().includes(q)),
     )
-  }, [data, query, filter])
+  }, [visibleData, query, filter])
 
   return (
     <div>
@@ -52,7 +56,7 @@ export function ConversationsModule() {
         <FilterChips options={options} value={filter} onChange={setFilter} />
       </Toolbar>
 
-      {isLoading && !data ? (
+      {(isLoading && !data) || recordsLoading ? (
         <SkeletonList />
       ) : error && !data ? (
         <EmptyState
@@ -61,7 +65,7 @@ export function ConversationsModule() {
           description="Vuelve a intentarlo en unos segundos."
           action={{ label: "Reintentar", icon: RefreshCw, onClick: () => void mutate() }}
         />
-      ) : data && data.length === 0 ? (
+      ) : visibleData && visibleData.length === 0 ? (
         <EmptyState
           icon={MessagesSquare}
           title="Aún no hay conversaciones"
@@ -84,7 +88,14 @@ export function ConversationsModule() {
       ) : (
         <div className="space-y-2.5">
           {filtered.map((c) => (
-            <RowCard key={c.id}>
+            <SwipeRow
+              key={c.id}
+              actions={[
+                { id: "archive", label: "Archivar", icon: Archive, onSelect: () => void archive("conversation", c), tone: "brand" },
+                { id: "trash", label: "Eliminar", icon: Trash2, onSelect: () => void moveToTrash("conversation", c), tone: "danger" },
+              ]}
+            >
+              <RowCard>
               <div className="flex items-start gap-3">
                 <Initials name={c.patientName} />
                 <div className="min-w-0 flex-1">
@@ -104,7 +115,16 @@ export function ConversationsModule() {
                   </div>
                 </div>
               </div>
-            </RowCard>
+              <div className="mt-3 flex justify-end gap-2 border-t border-border/70 pt-3">
+                <button onClick={() => void archive("conversation", c)} className="press inline-flex min-h-9 items-center gap-2 rounded-lg px-3 text-xs font-semibold hover:bg-secondary">
+                  <Archive aria-hidden className="size-3.5" /> Archivar
+                </button>
+                <button onClick={() => void moveToTrash("conversation", c)} className="press inline-flex min-h-9 items-center gap-2 rounded-lg px-3 text-xs font-semibold text-destructive hover:bg-destructive/10">
+                  <Trash2 aria-hidden className="size-3.5" /> Eliminar
+                </button>
+              </div>
+              </RowCard>
+            </SwipeRow>
           ))}
         </div>
       )}
