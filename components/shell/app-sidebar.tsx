@@ -133,10 +133,10 @@ export function MobileMenuButton() {
     <button
       onClick={() => setNavOpen(true)}
       aria-label="Abrir el menú"
-      className="press glass pt-safe-offset fixed left-3 top-3 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-border/60 shadow-soft md:hidden"
+      className="press glass pt-safe-offset fixed left-3 top-3 z-20 flex h-12 w-12 items-center justify-center rounded-full border border-border/60 shadow-soft md:hidden"
       style={{ marginTop: "env(safe-area-inset-top, 0px)" }}
     >
-      <Menu className="h-5 w-5" />
+      <Menu className="h-6 w-6" />
     </button>
   )
 }

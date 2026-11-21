@@ -37,11 +37,11 @@ export function TeamBar({
         hidden ? "opacity-0" : ""
       }`}
     >
-      <div className="relative flex items-center max-md:ml-12">
+      <div className="relative flex items-center">
         {children}
         <ul
           aria-label="Equipo de la oficina"
-          className="pointer-events-auto glass flex items-center gap-1 rounded-full border border-border/60 p-1.5 shadow-float max-md:gap-0 max-md:p-1"
+          className="pointer-events-auto glass flex items-center gap-1 rounded-full border border-border/60 p-1.5 shadow-float max-md:gap-1.5"
         >
           {EMPLOYEES.map((e) => {
             const active = activeEmployee === e.id
