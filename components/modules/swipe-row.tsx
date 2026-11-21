@@ -11,7 +11,7 @@ export interface SwipeAction {
   onSelect?: () => void
   /** Renders a link instead of a button (for example tel:). */
   href?: string
-  tone?: "brand" | "neutral"
+  tone?: "brand" | "neutral" | "danger"
 }
 
 const ACTION_W = 76 // px per action
@@ -125,7 +125,7 @@ export function SwipeRow({ actions, children }: { actions: SwipeAction[]; childr
         {actions.map((a) => {
           const Icon = a.icon
           const cls = `press flex flex-1 flex-col items-center justify-center gap-1 px-1 text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring ${
-            a.tone === "brand" ? "bg-brand text-brand-foreground" : "bg-secondary text-foreground"
+            a.tone === "brand" ? "bg-brand text-brand-foreground" : a.tone === "danger" ? "bg-destructive text-destructive-foreground" : "bg-secondary text-foreground"
           }`
           const body = (
             <>

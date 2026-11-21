@@ -14,6 +14,7 @@ import { ConversationsModule } from "@/components/modules/conversations"
 import { EscalationsModule } from "@/components/modules/escalations"
 import { MetricsModule } from "@/components/modules/metrics"
 import { AccountModule } from "@/components/modules/account"
+import { ManagedRecordsModule } from "@/components/modules/managed-records"
 
 function ModuleBody({ id }: { id: ModuleId }) {
   switch (id) {
@@ -25,6 +26,9 @@ function ModuleBody({ id }: { id: ModuleId }) {
       return <MetricsModule />
     case "account":
       return <AccountModule />
+    case "archived":
+    case "trash":
+      return <ManagedRecordsModule status={id} />
     default:
       return null
   }
@@ -125,9 +129,6 @@ export function DashboardPanel() {
             >
               <X className="h-5 w-5" />
             </button>
-            {/* Room for the floating help button, which sits above this corner
-                whenever the panel covers the full width (below lg). */}
-            <span aria-hidden className="h-11 w-11 shrink-0 lg:hidden" />
             {refreshing && (
               <span aria-hidden className="absolute inset-x-0 -bottom-px h-0.5 overflow-hidden">
                 <span className="block h-full w-1/3 animate-[refresh-bar_1s_var(--ease-out)_infinite] bg-brand motion-reduce:w-full motion-reduce:animate-none motion-reduce:opacity-60" />

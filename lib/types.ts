@@ -2,7 +2,7 @@
 // Read-only visualization layer. No mutations anywhere in the app.
 
 /** Sections reachable from the App Sidebar. "office" means no dashboard is open. */
-export type ModuleId = "office" | "conversations" | "escalations" | "metrics" | "account"
+export type ModuleId = "office" | "conversations" | "escalations" | "metrics" | "archived" | "trash" | "account"
 
 export type EmployeeId = "valentina" | "carlos" | "elena" | "steven"
 

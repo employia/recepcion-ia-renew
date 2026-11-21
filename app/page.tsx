@@ -4,6 +4,7 @@ import { AppProvider, useApp } from "@/lib/store"
 import { LoginScreen } from "@/components/auth/login-screen"
 import { LegalGate } from "@/components/auth/legal-gate"
 import { AppShell } from "@/components/shell/app-shell"
+import { RecordManagementProvider } from "@/lib/record-management"
 
 function Root() {
   const { session, authLoading, legalAccepted } = useApp()
@@ -19,7 +20,9 @@ function Root() {
 export default function Page() {
   return (
     <AppProvider>
-      <Root />
+      <RecordManagementProvider>
+        <Root />
+      </RecordManagementProvider>
     </AppProvider>
   )
 }
