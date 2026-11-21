@@ -49,12 +49,13 @@ function Shell() {
     >
       <OfficeView insetLeft={insetLeft} insetRight={insetRight} paused={officeCovered} />
 
-      <TeamBar insetLeft={insetLeft} insetRight={insetRight} hidden={officeCovered} />
+      <TeamBar insetLeft={insetLeft} insetRight={insetRight} hidden={officeCovered}>
+        {!dashboardOpen && !profileOpen ? <HelpCenter insetLeft={insetLeft} insetRight={insetRight} /> : null}
+      </TeamBar>
       {!dashboardOpen && <MobileMenuButton />}
 
       <DashboardPanel />
       <EmployeePanel />
-      <HelpCenter insetRight={insetRight} />
       <AppSidebar />
     </main>
   )

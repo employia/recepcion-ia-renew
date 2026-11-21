@@ -25,7 +25,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "Apariencia",
     question: "¿Cómo cambiar el tema de la Recepción Digital?",
     answer:
-      "Tienes dos caminos. En la Oficina, el botón con el sol o la luna, a la derecha del equipo en la barra inferior, alterna entre claro y oscuro con un toque. También puedes elegir en Configuración, dentro de Apariencia. La elección se guarda en este navegador.",
+      "En la Oficina, el botón con el sol o la luna, a la derecha del equipo en la barra inferior, alterna entre claro y oscuro. También puedes elegir en Configuración, dentro de Apariencia. Tu elección se guarda en este navegador.",
     keywords: ["apariencia", "modo", "color", "luna", "sol"],
   },
   {
@@ -33,7 +33,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "Apariencia",
     question: "¿Cuál es la diferencia entre Claro, Oscuro y Predeterminado?",
     answer:
-      "Claro usa fondos blancos con acento verde azulado. Oscuro usa fondos de carbón cálido con acento terracota. Predeterminado equivale a Claro y no cambia según el sistema operativo: siempre se ve claro hasta que elijas Oscuro.",
+      "Claro usa fondos blancos con acento verde azulado y Oscuro usa fondos de carbón cálido con acento terracota. Predeterminado sigue la apariencia de tu sistema operativo y cambia cuando el sistema cambia.",
     keywords: ["modo", "sistema", "operativo", "apariencia"],
   },
   {
@@ -41,7 +41,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "Apariencia",
     question: "¿Cómo recuperar el tema predeterminado?",
     answer:
-      "Abre Configuración, ve a Apariencia y elige Predeterminado. El botón rápido de la Oficina solo alterna entre Claro y Oscuro, así que la opción Predeterminado se recupera desde Configuración.",
+      "Abre Configuración, ve a Apariencia y elige Predeterminado para volver a seguir la apariencia del sistema. El botón rápido de la Oficina alterna entre Claro y Oscuro.",
     keywords: ["restablecer", "volver", "tema", "apariencia"],
   },
   {

@@ -1,7 +1,7 @@
 import { Analytics } from "@vercel/analytics/next"
 import type { Metadata, Viewport } from "next"
 import { Figtree, Newsreader } from "next/font/google"
-import { ThemeProvider, THEME_COLORS, THEME_INIT_SCRIPT } from "@/lib/theme"
+import { ThemeProvider, THEME_COLORS } from "@/lib/theme"
 import "./globals.css"
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-figtree", display: "swap" })
@@ -36,7 +36,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   interactiveWidget: "resizes-content",
-  colorScheme: "light",
+  colorScheme: "light dark",
   themeColor: THEME_COLORS.light,
 }
 
@@ -47,9 +47,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning className={`bg-background ${figtree.variable} ${newsreader.variable}`}>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-      </head>
       <body className="antialiased font-sans">
         <ThemeProvider>{children}</ThemeProvider>
         {process.env.NODE_ENV === "production" && <Analytics />}
