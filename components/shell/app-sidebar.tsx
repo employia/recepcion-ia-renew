@@ -9,9 +9,17 @@ import { NAV_ITEMS, SETTINGS_ITEM, type NavItem } from "@/lib/nav"
 import { useRecordManagement } from "@/lib/record-management"
 
 /**
- * Main navigation. A 64px rail on tablet and desktop that expands to a fixed
- * 320px on demand; a drawer on phones. Expanding overlays the content, so the
- * office and the dashboards never resize underneath it.
+ * Main navigation, floating variant: a detached rounded card inset 12px from
+ * the screen edges, never flush with them.
+ *
+ * - Tablet and desktop: a 68px floating rail that opens into a 320px floating
+ *   card on demand.
+ * - Phones: hidden until the floating menu button is tapped; the card then
+ *   grows out of that button (same top-left corner), so the origin of the
+ *   motion is the control that triggered it.
+ *
+ * Opening overlays the content, so the office and the dashboards never resize
+ * underneath it.
  */
 export function AppSidebar() {
   const { activeModule, openModule } = useApp()
@@ -54,7 +62,7 @@ export function AppSidebar() {
         >
           {active && <span aria-hidden className="absolute inset-y-2.5 left-0 w-[3px] rounded-full bg-brand" />}
           <span className="relative flex h-6 w-6 shrink-0 items-center justify-center">
-            <Icon className={`h-5 w-5 ${active ? "text-brand-ink" : ""}`} />
+            <Icon aria-hidden className={`h-5 w-5 ${active ? "text-brand-ink" : ""}`} />
             {badge > 0 && !navOpen && (
               <span aria-hidden className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-warning ring-2 ring-card" />
             )}
@@ -86,16 +94,16 @@ export function AppSidebar() {
       <div
         aria-hidden
         onClick={() => setNavOpen(false)}
-        className={`fixed inset-0 z-[45] bg-black/30 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[45] bg-black/30 transition-opacity duration-300 motion-reduce:duration-150 md:bg-black/10 ${
           navOpen ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
       <nav
         aria-label="Navegación principal"
-        className={`pt-safe pb-safe pl-safe fixed left-0 top-0 z-50 flex h-dvh flex-col border-r border-border bg-card transition-[transform,width,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-none ${
+        className={`fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] left-[calc(0.75rem+env(safe-area-inset-left,0px))] top-[calc(0.75rem+env(safe-area-inset-top,0px))] z-50 flex origin-top-left flex-col overflow-hidden rounded-2xl border border-border bg-card transition-[transform,translate,scale,opacity,width,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-[opacity,visibility] motion-reduce:duration-150 ${
           navOpen
-            ? "w-[min(86vw,320px)] translate-x-0 shadow-float md:w-[320px]"
-            : "w-[min(86vw,320px)] max-md:invisible max-md:-translate-x-full md:w-16"
+            ? "w-[min(86vw,320px)] translate-x-0 scale-100 opacity-100 shadow-float md:w-[320px]"
+            : "w-[min(86vw,320px)] shadow-soft max-md:invisible max-md:-translate-x-3 max-md:scale-95 max-md:opacity-0 max-md:motion-reduce:translate-x-0 max-md:motion-reduce:scale-100 md:w-[68px]"
         }`}
       >
         <div className="flex h-16 shrink-0 items-center gap-1 px-2.5">
@@ -106,10 +114,10 @@ export function AppSidebar() {
             className="press flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground"
           >
             <span className="md:hidden">
-              <Menu className="h-5 w-5" />
+              <Menu aria-hidden className="h-5 w-5" />
             </span>
             <span className="hidden md:inline">
-              {navOpen ? <PanelLeftClose className="h-5 w-5" /> : <PanelLeftOpen className="h-5 w-5" />}
+              {navOpen ? <PanelLeftClose aria-hidden className="h-5 w-5" /> : <PanelLeftOpen aria-hidden className="h-5 w-5" />}
             </span>
           </button>
           {navOpen && (
@@ -120,11 +128,11 @@ export function AppSidebar() {
           )}
         </div>
 
-        <ul className="scroll-slim mx-2.5 flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overflow-x-hidden md:max-w-lg">
+        <ul className="scroll-slim mx-2 flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overflow-x-hidden overscroll-contain">
           {NAV_ITEMS.map(renderItem)}
         </ul>
 
-        <ul className="mx-2.5 mb-3 mt-2 flex flex-col gap-1 border-t border-border pt-2 md:max-w-lg">
+        <ul className="mx-2 mb-2 mt-2 flex flex-col gap-1 border-t border-border pt-2">
           {renderItem(SETTINGS_ITEM)}
         </ul>
       </nav>
