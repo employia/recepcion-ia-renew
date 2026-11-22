@@ -19,11 +19,16 @@ import { useRecordManagement } from "@/lib/record-management"
  *   motion is the control that triggered it.
  *
  * Opening overlays the content, so the office and the dashboards never resize
- * underneath it.
+ * underneath it. With a dashboard open on tablet and desktop, the rail and the
+ * dashboard panel are joined into a single two-level floating card.
  */
 export function AppSidebar() {
   const { activeModule, openModule } = useApp()
   const { navOpen, setNavOpen } = useShellUi()
+  // While a dashboard is open the collapsed rail is the first level of a
+  // two-level floating card: it loses its right corners, border and shadow so
+  // it joins the panel beside it.
+  const joined = activeModule !== null && activeModule !== "office"
   const { data: escalations } = useEscalations()
   const { records } = useRecordManagement()
   const waiting = escalations?.filter((e) => e.status === "waiting-person" && !records.some((record) => record.key === `escalation:${e.id}`)).length ?? 0
@@ -100,11 +105,11 @@ export function AppSidebar() {
       />
       <nav
         aria-label="Navegación principal"
-        className={`fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] left-[calc(0.75rem+env(safe-area-inset-left,0px))] top-[calc(0.75rem+env(safe-area-inset-top,0px))] z-50 flex origin-top-left flex-col overflow-hidden rounded-2xl border border-border bg-card transition-[transform,translate,scale,opacity,width,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-[opacity,visibility] motion-reduce:duration-150 ${
+        className={`fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] left-[calc(0.75rem+env(safe-area-inset-left,0px))] top-[calc(0.75rem+env(safe-area-inset-top,0px))] z-50 flex origin-top-left flex-col overflow-hidden rounded-2xl border border-border bg-card transition-[transform,translate,scale,opacity,width,border-radius,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-[opacity,visibility] motion-reduce:duration-150 ${
           navOpen
             ? "w-[min(86vw,320px)] translate-x-0 scale-100 opacity-100 shadow-float md:w-[320px]"
             : "w-[min(86vw,320px)] shadow-soft max-md:invisible max-md:-translate-x-3 max-md:scale-95 max-md:opacity-0 max-md:motion-reduce:translate-x-0 max-md:motion-reduce:scale-100 md:w-[68px]"
-        }`}
+        } ${joined && !navOpen ? "md:rounded-r-none md:border-r-0 md:shadow-none" : ""}`}
       >
         <div className="flex h-16 shrink-0 items-center gap-1 px-2.5">
           <button

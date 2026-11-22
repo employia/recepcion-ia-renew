@@ -5,8 +5,10 @@ export const RAIL_WIDTH = 68
 /** Gap between the floating sidebar and the screen edge (and between it and the content). */
 export const FLOAT_GAP = 12
 /**
- * Horizontal space reserved for the floating sidebar: gap + rail + gap.
- * Keep in sync with `md:left-[92px]` in dashboard-panel.
+ * Horizontal space reserved for the floating sidebar: gap + rail + gap. The
+ * dashboard panel joins the rail (its left edge is gap + rail = 80px, see
+ * `md:left-[calc(80px+...)]` in dashboard-panel), so the office is framed to
+ * the right of that panel with one more gap.
  */
 export const RAIL_OFFSET = FLOAT_GAP + RAIL_WIDTH + FLOAT_GAP
 /** Width of the employee profile panel on desktop. */
