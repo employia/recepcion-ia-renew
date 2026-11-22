@@ -115,7 +115,8 @@ export function ConversationsModule() {
                   </div>
                 </div>
               </div>
-              <div className="mt-3 flex justify-end gap-2 border-t border-border/70 pt-3">
+              {/* Mouse / trackpad: buttons. Touch: the same actions live in SwipeRow; here they stay only for screen readers. */}
+              <div className="mt-3 flex justify-end gap-2 border-t border-border/70 pt-3 pointer-coarse:sr-only">
                 <button onClick={() => void archive("conversation", c)} className="press inline-flex min-h-9 items-center gap-2 rounded-lg px-3 text-xs font-semibold hover:bg-secondary">
                   <Archive aria-hidden className="size-3.5" /> Archivar
                 </button>
