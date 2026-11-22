@@ -255,7 +255,8 @@ function EscalationRow({
               </p>
               <p className="mt-1 text-xs leading-relaxed text-foreground/90">{e.summary}</p>
             </div>
-            <div className="flex gap-2">
+            {/* Mouse / trackpad: buttons. Touch: the same actions live in SwipeRow; here they stay only for screen readers. */}
+            <div className="flex gap-2 pointer-coarse:sr-only">
               <button onClick={onArchive} className="press inline-flex min-h-10 items-center gap-2 rounded-xl border border-border px-3 text-xs font-semibold hover:bg-secondary">
                 <Archive aria-hidden className="size-3.5" /> Archivar
               </button>
