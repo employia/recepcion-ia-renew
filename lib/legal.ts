@@ -12,6 +12,8 @@ export const LEGAL_PATH: Record<LegalDoc, string> = {
   privacy: "/privacidad",
 }
 
+export const COOKIE_POLICY_PATH = "/cookies"
+
 export const LEGAL_CONTACT = "employiahq@gmail.com"
 
 // Display date of the current version.
