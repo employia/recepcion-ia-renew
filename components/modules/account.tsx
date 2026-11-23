@@ -1,8 +1,9 @@
 "use client"
 
-import { ChevronRight, LogOut, Mail, Moon, Palette, Sun, type LucideIcon } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
+import { ChevronRight, LogOut, Mail, Moon, Palette, Sun, Trash2, type LucideIcon } from "lucide-react"
 import { useApp } from "@/lib/store"
-import { LEGAL_PATH } from "@/lib/legal"
+import { COOKIE_POLICY_PATH, LEGAL_PATH } from "@/lib/legal"
 import { useTheme, type ThemePreference } from "@/lib/theme"
 
 const SUPPORT_EMAIL = "employiahq@gmail.com"
@@ -25,6 +26,53 @@ function openSupportEmail(e: React.MouseEvent<HTMLAnchorElement>) {
 
 export function AccountModule() {
   const { signOut } = useApp()
+  const [confirmClear, setConfirmClear] = useState(false)
+  const [clearing, setClearing] = useState(false)
+  const dialogRef = useRef<HTMLDialogElement>(null)
+
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+    if (confirmClear && !dialog.open) dialog.showModal()
+    if (!confirmClear && dialog.open) dialog.close()
+  }, [confirmClear])
+
+  async function clearCookiesAndLocalData() {
+    if (clearing) return
+    setClearing(true)
+    try {
+      await signOut()
+    } catch {
+      // Local session data is still removed below if Supabase is unreachable.
+    } finally {
+      const prefixes = ["renew-", "sb-"]
+      try {
+        for (const storage of [localStorage, sessionStorage]) {
+          const keys = Array.from({ length: storage.length }, (_, index) => storage.key(index))
+          for (const key of keys) {
+            if (key && prefixes.some((prefix) => key.startsWith(prefix))) storage.removeItem(key)
+          }
+        }
+      } catch {
+        // Browser storage may be unavailable; Supabase sign-out was still attempted.
+      }
+
+      try {
+        const cookieNames = document.cookie
+          .split(";")
+          .map((cookie) => cookie.trim().split("=")[0])
+          .filter((name) => prefixes.some((prefix) => name.startsWith(prefix)))
+        for (const name of cookieNames) {
+          document.cookie = `${name}=; Max-Age=0; path=/; SameSite=Lax`
+          document.cookie = `${name}=; Max-Age=0; path=/; domain=${location.hostname}; SameSite=Lax`
+        }
+      } catch {
+        // Cookies may be unavailable in restricted browser contexts.
+      }
+
+      window.location.replace("/")
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -73,6 +121,7 @@ export function AccountModule() {
           {[
             { href: LEGAL_PATH.terms, label: "Términos y Condiciones de Uso" },
             { href: LEGAL_PATH.privacy, label: "Política de Privacidad" },
+            { href: COOKIE_POLICY_PATH, label: "Política de cookies" },
           ].map((d, i) => (
             <a
               key={d.href}
@@ -88,6 +137,20 @@ export function AccountModule() {
         </div>
       </section>
 
+      <section className="space-y-2.5">
+        <button
+          type="button"
+          onClick={() => setConfirmClear(true)}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-medium press hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <Trash2 className="h-4 w-4 text-muted-foreground" />
+          Eliminar cookies y datos locales
+        </button>
+        <p className="px-1 text-xs leading-relaxed text-muted-foreground">
+          Elimina la sesión y las preferencias guardadas en este navegador. No borra información de Renew ni datos del servidor.
+        </p>
+      </section>
+
       <button
         onClick={signOut}
         className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-medium press hover:bg-secondary"
@@ -95,6 +158,40 @@ export function AccountModule() {
         <LogOut className="h-4 w-4" />
         Cerrar sesión
       </button>
+
+      <dialog
+        ref={dialogRef}
+        aria-labelledby="clear-data-title"
+        aria-describedby="clear-data-description"
+        onCancel={() => setConfirmClear(false)}
+        onClose={() => setConfirmClear(false)}
+        className="m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl border border-border bg-card p-0 text-card-foreground shadow-float backdrop:bg-foreground/30"
+      >
+        <div className="p-5">
+          <h3 id="clear-data-title" className="text-base font-semibold">Eliminar cookies y datos locales</h3>
+          <p id="clear-data-description" className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            Se cerrará la sesión administrativa y volverá a la pantalla de inicio de sesión. Solo se eliminarán las cookies propias de la aplicación y sus datos locales de este navegador; la información de Renew, los registros de actividad y la configuración del servidor no se modificarán.
+          </p>
+          <div className="mt-5 flex justify-end gap-2">
+            <button
+              type="button"
+              disabled={clearing}
+              onClick={() => setConfirmClear(false)}
+              className="rounded-xl border border-border px-3 py-2 text-sm font-medium press hover:bg-secondary disabled:opacity-60"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              disabled={clearing}
+              onClick={() => void clearCookiesAndLocalData()}
+              className="rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground press hover:opacity-90 disabled:opacity-60"
+            >
+              {clearing ? "Eliminando…" : "Eliminar y cerrar sesión"}
+            </button>
+          </div>
+        </div>
+      </dialog>
     </div>
   )
 }
