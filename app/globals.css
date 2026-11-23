@@ -348,17 +348,18 @@
   }
 }
 
-/* Theme change cross-fades for ~300 ms; added by ThemeProvider and removed afterwards. */
+/* A soft, coordinated cross-fade makes the palette shift feel intentional. */
 .theme-transition,
 .theme-transition *,
 .theme-transition *::before,
 .theme-transition *::after {
   transition:
-    background-color 300ms ease,
-    border-color 300ms ease,
-    color 300ms ease,
-    fill 300ms ease,
-    stroke 300ms ease !important;
+    background-color 400ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 400ms cubic-bezier(0.2, 0, 0, 1),
+    color 400ms cubic-bezier(0.2, 0, 0, 1),
+    fill 400ms cubic-bezier(0.2, 0, 0, 1),
+    stroke 400ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 400ms cubic-bezier(0.2, 0, 0, 1) !important;
 }
 
 /* Thin, discreet scrollbars for panels */
