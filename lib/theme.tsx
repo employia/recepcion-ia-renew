@@ -56,7 +56,7 @@ function apply(resolved: ResolvedTheme, preference: ThemePreference, animate: bo
   const root = document.documentElement
   if (animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     root.classList.add("theme-transition")
-    window.setTimeout(() => root.classList.remove("theme-transition"), 350)
+    window.setTimeout(() => root.classList.remove("theme-transition"), 450)
   }
   root.classList.toggle("dark", resolved === "dark")
   root.dataset.theme = preference
