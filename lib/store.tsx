@@ -12,7 +12,7 @@ import {
 } from "react"
 import type { Session as SupabaseSession } from "@supabase/supabase-js"
 import { authErrorMessage, supabase, supabaseConfigured } from "./supabase"
-import { LEGAL_DOCS, LEGAL_VERSION } from "./legal"
+import { LEGAL_DOCS, hasLegalSentinel, setLegalSentinel } from "./legal"
 import type { EmployeeId, ModuleId } from "./types"
 
 // --- Browser history -------------------------------------------------------
@@ -122,10 +122,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     sessionRef.current = session
   }, [session])
 
-  // Has this person already accepted the current version of the legal
-  // documents? Checked once per sign-in (keyed by user id, so token refreshes do
-  // not repeat it). On any error we fail closed: the acceptance screen shows.
+  // Does this person still have to accept the legal documents? The database is
+  // the source of truth (RPC legal_acceptance_status): it compares against the
+  // version in force and against the last cookie reset. Checked once per
+  // sign-in (keyed by user id, so token refreshes do not repeat it). On any
+  // error we fail closed: the acceptance screen shows.
   const userId = session?.id ?? null
+  const legalVersions = useRef<Record<string, string>>({})
   useEffect(() => {
     if (!userId) {
       setLegalAccepted(null)
@@ -133,17 +136,37 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
     let active = true
     setLegalAccepted(null)
-    supabase
-      .from("legal_acceptances")
-      .select("document")
-      .eq("user_id", userId)
-      .eq("version", LEGAL_VERSION)
-      .then(({ data, error }) => {
+
+    type Row = { document: string; current_version: string; needs_acceptance: boolean }
+    const fetchStatus = async () => {
+      const { data, error } = await supabase.rpc("legal_acceptance_status")
+      if (error || !data) return null
+      const rows = data as Row[]
+      legalVersions.current = Object.fromEntries(rows.map((r) => [r.document, r.current_version]))
+      return rows
+    }
+
+    ;(async () => {
+      let rows = await fetchStatus()
+      if (!active) return
+      if (!rows) return setLegalAccepted(false)
+
+      let pending = LEGAL_DOCS.some((d) => rows!.find((r) => r.document === d)?.needs_acceptance !== false)
+
+      // Valid acceptance but no sentinel cookie: cookies were cleared outside
+      // the app (or this is a new browser). Record the reset and ask again.
+      if (!pending && !hasLegalSentinel()) {
+        await supabase.rpc("reset_legal_acceptance", { p_reason: "sentinel_missing" })
+        rows = await fetchStatus()
         if (!active) return
-        if (error) return setLegalAccepted(false)
-        const done = new Set((data ?? []).map((r) => r.document as string))
-        setLegalAccepted(LEGAL_DOCS.every((d) => done.has(d)))
-      })
+        if (!rows) return setLegalAccepted(false)
+        pending = LEGAL_DOCS.some((d) => rows!.find((r) => r.document === d)?.needs_acceptance !== false)
+      }
+
+      if (!pending) setLegalSentinel()
+      setLegalAccepted(!pending)
+    })()
+
     return () => {
       active = false
     }
@@ -152,12 +175,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const acceptLegal = useCallback(async () => {
     const uid = sessionRef.current?.id
     if (!uid) return "Su sesión ya no es válida. Inicie sesión de nuevo."
-    const rows = LEGAL_DOCS.map((document) => ({ user_id: uid, document, version: LEGAL_VERSION }))
-    // Append-only record; a duplicate (already accepted) is simply ignored.
-    const { error } = await supabase
-      .from("legal_acceptances")
-      .upsert(rows, { onConflict: "user_id,document,version", ignoreDuplicates: true })
-    if (error) return "No pudimos registrar su aceptación. Intente de nuevo."
+    const rows = LEGAL_DOCS.map((document) => {
+      const version = legalVersions.current[document]
+      return version ? { user_id: uid, document, version } : null
+    })
+    if (rows.some((r) => !r)) return "No pudimos registrar su aceptación. Intente de nuevo."
+    // Append-only record: every acceptance (including re-acceptances after a
+    // cookie reset) is a new row. A double click within the same cycle is
+    // absorbed by the unique index.
+    const { error } = await supabase.from("legal_acceptances").insert(rows as { user_id: string; document: string; version: string }[])
+    // 23505 = unique violation: already recorded in this cycle (double click).
+    if (error && error.code !== "23505") return "No pudimos registrar su aceptación. Intente de nuevo."
+    setLegalSentinel()
     setLegalAccepted(true)
     return null
   }, [])

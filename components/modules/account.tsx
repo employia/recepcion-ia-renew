@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { ChevronRight, LogOut, Mail, Moon, Palette, Sun, Trash2, type LucideIcon } from "lucide-react"
 import { useApp } from "@/lib/store"
 import { COOKIE_POLICY_PATH, LEGAL_PATH } from "@/lib/legal"
+import { supabase } from "@/lib/supabase"
 import { useTheme, type ThemePreference } from "@/lib/theme"
 
 const SUPPORT_EMAIL = "employiahq@gmail.com"
@@ -40,6 +41,13 @@ export function AccountModule() {
   async function clearCookiesAndLocalData() {
     if (clearing) return
     setClearing(true)
+    try {
+      // Record the reset while the session is still valid; the next sign-in
+      // will then require accepting the legal documents again.
+      await supabase.rpc("reset_legal_acceptance", { p_reason: "cookies_cleared_by_user" })
+    } catch {
+      // If it fails, the missing sentinel cookie triggers the reset at next sign-in.
+    }
     try {
       await signOut()
     } catch {
