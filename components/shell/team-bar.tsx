@@ -1,7 +1,6 @@
 "use client"
 
 import { Moon, Sun } from "lucide-react"
-import type { ReactNode } from "react"
 import { useApp } from "@/lib/store"
 import { useTheme } from "@/lib/theme"
 import { EMPLOYEES } from "@/lib/employees"
@@ -16,12 +15,10 @@ export function TeamBar({
   insetLeft,
   insetRight,
   hidden,
-  children,
 }: {
   insetLeft: number
   insetRight: number
   hidden: boolean
-  children?: ReactNode
 }) {
   const { activeEmployee, openEmployee } = useApp()
   const { resolved, setPreference } = useTheme()
@@ -38,7 +35,6 @@ export function TeamBar({
       }`}
     >
       <div className="relative flex items-center">
-        {children}
         <ul
           aria-label="Equipo de la oficina"
           className="pointer-events-auto glass flex items-center gap-1 rounded-full border border-border/60 p-1.5 shadow-float max-md:gap-1.5"

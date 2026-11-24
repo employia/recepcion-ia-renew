@@ -5,7 +5,7 @@ import { Check, X } from "lucide-react"
 import { useApp } from "@/lib/store"
 import { EMPLOYEES } from "@/lib/employees"
 import { navItem } from "@/lib/nav"
-import { PROFILE_WIDTH, useViewportWidth } from "@/lib/layout"
+import { PROFILE_WIDTH, TOPBAR_HEIGHT, useViewportWidth } from "@/lib/layout"
 import type { Employee } from "@/lib/types"
 import { STATUS_LABEL, StatusDot } from "./employee-avatar"
 
@@ -85,11 +85,11 @@ export function EmployeePanel() {
     if (projected > DISMISS_DISTANCE) closeEmployee()
   }
 
-  // On desktop the panel floats at right-4/top-4; its transform origin is the
+  // On desktop the panel floats at right-4, just under the top bar; its transform origin is the
   // clicked avatar, expressed relative to the panel's own box.
   const panelLeft = viewport - 16 - PROFILE_WIDTH
   const transformOrigin = employeeOrigin
-    ? `${Math.round(employeeOrigin.x - panelLeft)}px ${Math.round(employeeOrigin.y - 16)}px`
+    ? `${Math.round(employeeOrigin.x - panelLeft)}px ${Math.round(employeeOrigin.y - (TOPBAR_HEIGHT + 8))}px`
     : "100% 50%"
 
   return (
@@ -110,7 +110,7 @@ export function EmployeePanel() {
         aria-modal={viewport < 1024}
         aria-label={shown ? `Ficha de ${shown.name}` : undefined}
         style={{ transformOrigin }}
-        className="profile-panel fixed inset-x-0 bottom-0 z-40 mx-auto flex max-h-[88dvh] w-full max-w-[520px] flex-col overflow-hidden rounded-t-3xl border border-b-0 border-border bg-card shadow-float lg:inset-x-auto lg:bottom-4 lg:right-4 lg:top-4 lg:mx-0 lg:max-h-none lg:w-[420px] lg:max-w-none lg:rounded-3xl lg:border-b"
+        className="profile-panel fixed inset-x-0 bottom-0 z-40 mx-auto flex max-h-[88dvh] w-full max-w-[520px] flex-col overflow-hidden rounded-t-3xl border border-b-0 border-border bg-card shadow-float lg:inset-x-auto lg:bottom-4 lg:right-4 lg:top-[calc(var(--topbar-h)+0.5rem)] lg:mx-0 lg:max-h-none lg:w-[420px] lg:max-w-none lg:rounded-3xl lg:border-b"
       >
         {shown && (
           <>

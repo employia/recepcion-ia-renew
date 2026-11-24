@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { Menu, RefreshCw, X } from "lucide-react"
+import { RefreshCw, X } from "lucide-react"
 import { useApp } from "@/lib/store"
 import { useShellUi } from "@/lib/shell-ui"
 import { EMPLOYEES } from "@/lib/employees"
@@ -43,7 +43,7 @@ function ModuleBody({ id }: { id: ModuleId }) {
  */
 export function DashboardPanel() {
   const { activeModule, activeEmployee, openEmployee, closeModule } = useApp()
-  const { navOpen, setNavOpen } = useShellUi()
+  const { navOpen } = useShellUi()
   const open = activeModule !== null && activeModule !== "office"
 
   // Keep the last dashboard rendered while the panel leaves.
@@ -79,20 +79,13 @@ export function DashboardPanel() {
       aria-label={item?.label}
       aria-hidden={!open}
       inert={!open}
-      className={`fixed bottom-0 left-0 right-0 top-0 z-30 flex flex-col overflow-hidden border-border bg-card transition-[transform,translate,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-[opacity,visibility] motion-reduce:duration-150 md:bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] md:left-[calc(80px+env(safe-area-inset-left,0px))] md:right-3 md:top-[calc(0.75rem+env(safe-area-inset-top,0px))] md:rounded-r-2xl md:border md:shadow-float lg:right-auto lg:w-[var(--panel-w)] ${
+      className={`fixed bottom-0 left-0 right-0 top-[var(--topbar-h)] z-30 flex flex-col overflow-hidden border-border bg-card transition-[transform,translate,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-[opacity,visibility] motion-reduce:duration-150 md:bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] md:left-[calc(80px+env(safe-area-inset-left,0px))] md:right-3 md:top-[calc(var(--topbar-h)+0.5rem)] md:rounded-r-2xl md:border md:shadow-float lg:right-auto lg:w-[var(--panel-w)] ${
         open ? "translate-x-0 opacity-100" : "invisible -translate-x-4 opacity-0 motion-reduce:translate-x-0"
       }`}
     >
       {item && shown && (
         <>
-          <header className="pt-safe relative flex shrink-0 items-center gap-2 border-b border-border px-3 pb-3 pt-3 md:px-5">
-            <button
-              onClick={() => setNavOpen(true)}
-              aria-label="Abrir el menú"
-              className="press flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground md:hidden"
-            >
-  <Menu className="h-5 w-5" />
-  </button>
+          <header className="relative flex shrink-0 items-center gap-2 border-b border-border px-3 pb-3 pt-3 md:px-5">
   <div className="min-w-0 flex-1">
               <h2
                 ref={titleRef}

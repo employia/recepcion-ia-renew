@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react"
 import { Canvas, useThree } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
 import { HoverProvider } from "@/lib/store"
+import { TOPBAR_HEIGHT } from "@/lib/layout"
 import { GlRecoveryWatcher } from "./gl-recovery-watcher"
 import { OfficeWebglFallback } from "./office-webgl-fallback"
 import { Scene } from "./scene"
@@ -72,7 +73,7 @@ const CLUSTER_W = 9.6 // width of the desk cluster alone, used on phones where t
 
 function fitCamera(width: number, height: number, insetLeft: number, insetRight: number) {
   const small = width < 768
-  const top = small ? 64 : 24 // phones keep room for the floating menu button
+  const top = TOPBAR_HEIGHT + (small ? 8 : 16) // the permanent top bar sits above the scene
   const bottom = 104 // team bar
   const margin = 16
   const availH = Math.max(height - top - bottom, 160)

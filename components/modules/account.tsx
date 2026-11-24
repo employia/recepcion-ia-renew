@@ -6,24 +6,7 @@ import { useApp } from "@/lib/store"
 import { COOKIE_POLICY_PATH, LEGAL_PATH } from "@/lib/legal"
 import { supabase } from "@/lib/supabase"
 import { useTheme, type ThemePreference } from "@/lib/theme"
-
-const SUPPORT_EMAIL = "employiahq@gmail.com"
-const SUPPORT_SUBJECT = "Soporte de Recepción Digital · Renew"
-
-/**
- * On a phone, mailto: opens the Gmail (or mail) app. On a computer it usually
- * does nothing when no mail program is set up, so there we open Gmail's
- * compose window on the web instead.
- */
-function openSupportEmail(e: React.MouseEvent<HTMLAnchorElement>) {
-  const isPhone = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
-  if (isPhone) return // let the mailto: link work
-  e.preventDefault()
-  const url =
-    "https://mail.google.com/mail/?view=cm&fs=1" +
-    `&to=${encodeURIComponent(SUPPORT_EMAIL)}&su=${encodeURIComponent(SUPPORT_SUBJECT)}`
-  window.open(url, "_blank", "noopener,noreferrer") // new tab: the office stays open
-}
+import { SUPPORT_EMAIL, SUPPORT_MAILTO, openSupportEmail } from "@/lib/support"
 
 export function AccountModule() {
   const { signOut } = useApp()
@@ -110,7 +93,7 @@ export function AccountModule() {
           <p className="text-sm font-semibold">EMPLOYIA</p>
           <p className="mt-0.5 text-xs text-muted-foreground">Soporte de la recepción digital</p>
           <a
-            href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(SUPPORT_SUBJECT)}`}
+            href={SUPPORT_MAILTO}
             onClick={openSupportEmail}
             className="mt-3 inline-flex max-w-full items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-sm font-medium press hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >

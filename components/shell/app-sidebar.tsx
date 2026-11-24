@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect } from "react"
-import { Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react"
 import { useApp } from "@/lib/store"
 import { useShellUi } from "@/lib/shell-ui"
 import { useEscalations } from "@/lib/hooks"
@@ -24,7 +23,7 @@ import { useRecordManagement } from "@/lib/record-management"
  */
 export function AppSidebar() {
   const { activeModule, openModule } = useApp()
-  const { navOpen, setNavOpen } = useShellUi()
+  const { navOpen, navPinned, setNavOpen, hoverNav } = useShellUi()
   // While a dashboard is open the collapsed rail is the first level of a
   // two-level floating card: it loses its right corners, border and shadow so
   // it joins the panel beside it.
@@ -100,38 +99,22 @@ export function AppSidebar() {
         aria-hidden
         onClick={() => setNavOpen(false)}
         className={`fixed inset-0 z-[45] bg-black/30 transition-opacity duration-300 motion-reduce:duration-150 md:bg-black/10 ${
-          navOpen ? "opacity-100" : "pointer-events-none opacity-0"
+          navPinned ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
       <nav
+        id="main-nav"
         aria-label="Navegación principal"
-        className={`fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] left-[calc(0.75rem+env(safe-area-inset-left,0px))] top-[calc(0.75rem+env(safe-area-inset-top,0px))] z-50 flex origin-top-left flex-col overflow-hidden rounded-2xl border border-border bg-card transition-[transform,translate,scale,opacity,width,border-radius,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-[opacity,visibility] motion-reduce:duration-150 ${
+        onPointerEnter={(e) => e.pointerType === "mouse" && hoverNav(true)}
+        onPointerLeave={(e) => e.pointerType === "mouse" && hoverNav(false)}
+        className={`fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] left-[calc(0.75rem+env(safe-area-inset-left,0px))] top-[calc(var(--topbar-h)+0.5rem)] z-50 flex origin-top-left flex-col overflow-hidden rounded-2xl border border-border bg-card transition-[transform,translate,scale,opacity,width,border-radius,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-[opacity,visibility] motion-reduce:duration-150 ${
           navOpen
             ? "w-[min(86vw,320px)] translate-x-0 scale-100 opacity-100 shadow-float md:w-[320px]"
             : "w-[min(86vw,320px)] shadow-soft max-md:invisible max-md:-translate-x-3 max-md:scale-95 max-md:opacity-0 max-md:motion-reduce:translate-x-0 max-md:motion-reduce:scale-100 md:w-[68px]"
         } ${joined && !navOpen ? "md:rounded-r-none md:border-r-0 md:shadow-none" : ""}`}
       >
-        <div className="flex h-16 shrink-0 items-center gap-1 px-2.5">
-          <button
-            onClick={() => setNavOpen(!navOpen)}
-            aria-expanded={navOpen}
-            aria-label={navOpen ? "Contraer el menú" : "Expandir el menú"}
-            className="press flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground"
-          >
-            <span className="md:hidden">
-              <Menu aria-hidden className="h-5 w-5" />
-            </span>
-            <span className="hidden md:inline">
-              {navOpen ? <PanelLeftClose aria-hidden className="h-5 w-5" /> : <PanelLeftOpen aria-hidden className="h-5 w-5" />}
-            </span>
-          </button>
-          {navOpen && (
-            <div className="min-w-0 pl-1">
-              <p className="truncate text-sm font-semibold leading-tight">Renew</p>
-              <p className="truncate text-xs leading-tight text-muted-foreground">Recepción Digital</p>
-            </div>
-          )}
-        </div>
+        {/* The isotype in the top bar controls this sidebar. */}
+        <div aria-hidden className="h-2 shrink-0" />
 
         <ul className="scroll-slim mx-2 flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overflow-x-hidden overscroll-contain">
           {NAV_ITEMS.map(renderItem)}
@@ -142,20 +125,5 @@ export function AppSidebar() {
         </ul>
       </nav>
     </>
-  )
-}
-
-/** Floating menu button for phones, shown over the office. */
-export function MobileMenuButton() {
-  const { setNavOpen } = useShellUi()
-  return (
-    <button
-      onClick={() => setNavOpen(true)}
-      aria-label="Abrir el menú"
-      className="press glass pt-safe-offset fixed left-3 top-3 z-20 flex h-12 w-12 items-center justify-center rounded-full border border-border/60 shadow-soft md:hidden"
-      style={{ marginTop: "env(safe-area-inset-top, 0px)" }}
-    >
-      <Menu className="h-6 w-6" />
-    </button>
   )
 }

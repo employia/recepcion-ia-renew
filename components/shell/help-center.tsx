@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import { ChevronDown, CircleHelp, SearchX, X } from "lucide-react"
+import { useApp } from "@/lib/store"
 import { FAQ_CATEGORIES, FAQ_ITEMS, type FaqItem } from "@/lib/faq"
 import { EmptyState, SearchBox } from "@/components/modules/shared"
 
@@ -27,16 +28,12 @@ function searchFaq(query: string): FaqItem[] {
 }
 
 /**
- * Help lives beside the office team dock, not in the global navigation. The
- * shell only mounts it while the office itself is active.
+ * FAQs live in the top bar and are always reachable. Opening them closes any
+ * module or employee window, and opening one of those closes the FAQs, so two
+ * floating windows are never open at once.
  */
-export function HelpCenter({
-  insetLeft = 0,
-  insetRight = 0,
-}: {
-  insetLeft?: number
-  insetRight?: number
-}) {
+export function HelpCenter() {
+  const { activeModule, activeEmployee, closeModule } = useApp()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -62,10 +59,16 @@ export function HelpCenter({
 
   function toggle() {
     if (open) return close()
+    if (activeModule !== null || activeEmployee !== null) closeModule()
     setQuery("")
     setExpandedId(null)
     setOpen(true)
   }
+
+  // A module or an employee window opened: the FAQs yield.
+  useEffect(() => {
+    if (activeModule !== null || activeEmployee !== null) setOpen(false)
+  }, [activeModule, activeEmployee])
 
   useEffect(() => {
     if (!open) return
@@ -83,31 +86,19 @@ export function HelpCenter({
 
   return (
     <>
-      <div
-        className="group pointer-events-auto fixed right-3 top-3 z-[32] mt-[env(safe-area-inset-top,0px)] transition-opacity duration-300 ease-[var(--ease-out)] motion-reduce:transition-none md:absolute md:right-full md:top-1/2 md:mr-2 md:mt-0 md:-translate-y-1/2"
-        style={{ ["--help-center" as string]: `calc((100vw + ${insetLeft}px - ${insetRight}px) / 2)` }}
+      <button
+        ref={fabRef}
+        onClick={toggle}
+        aria-expanded={open}
+        aria-controls={panelId}
+        aria-label="Preguntas frecuentes"
+        title="Consultar preguntas frecuentes"
+        className={`press flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+          open ? "bg-secondary text-brand-ink" : "text-muted-foreground hover:text-foreground"
+        }`}
       >
-        <button
-          ref={fabRef}
-          onClick={toggle}
-          aria-expanded={open}
-          aria-controls={panelId}
-          aria-label="Preguntas frecuentes"
-          className={`press glass flex h-12 w-12 items-center justify-center rounded-full border shadow-soft hover:scale-105 md:h-11 md:w-11 ${
-            open ? "border-brand/60 text-brand" : "border-border/60 text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          <CircleHelp className="h-6 w-6 md:h-5 md:w-5" />
-        </button>
-        <span
-          aria-hidden
-          className={`pointer-events-none absolute right-0 top-full mt-2 hidden whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-1.5 text-sm font-semibold opacity-0 shadow-float transition-opacity duration-150 md:block ${
-            open ? "" : "group-hover:opacity-100 group-has-[:focus-visible]:opacity-100"
-          }`}
-        >
-          Preguntas frecuentes
-        </span>
-      </div>
+        <CircleHelp className="h-5 w-5" aria-hidden />
+      </button>
 
       <div
         aria-hidden
@@ -123,11 +114,10 @@ export function HelpCenter({
         aria-modal="false"
         aria-labelledby={titleId}
         inert={!open}
-        style={{ ["--help-center" as string]: `calc((100vw + ${insetLeft}px - ${insetRight}px) / 2)` }}
-        className={`fixed inset-x-3 top-[calc(4.75rem+env(safe-area-inset-top,0px))] z-[42] flex max-h-[calc(100dvh-5.75rem-env(safe-area-inset-top,0px))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-float transition-[transform,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-opacity md:inset-x-auto md:bottom-24 md:top-auto md:max-h-[calc(100dvh-7rem-env(safe-area-inset-bottom,0px))] md:left-[var(--help-center)] md:w-[min(26rem,calc(100vw-100px))] md:-translate-x-1/2 ${
+        className={`fixed right-3 top-[calc(var(--topbar-h)+0.5rem)] z-[42] flex max-h-[calc(100dvh-var(--topbar-h)-1.25rem)] w-[min(26rem,calc(100vw-1.5rem))] origin-top-right flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-float transition-[transform,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-opacity ${
           open
-            ? "pointer-events-auto visible translate-y-0 opacity-100"
-            : "pointer-events-none invisible -translate-y-3 opacity-0 md:translate-y-3 motion-reduce:translate-y-0"
+            ? "pointer-events-auto visible translate-y-0 scale-100 opacity-100"
+            : "pointer-events-none invisible -translate-y-2 scale-[0.98] opacity-0 motion-reduce:translate-y-0 motion-reduce:scale-100"
         }`}
       >
         <div className="shrink-0 space-y-3 border-b border-border/60 p-4">

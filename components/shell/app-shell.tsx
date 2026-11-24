@@ -4,12 +4,12 @@ import dynamic from "next/dynamic"
 import { OfficeLoading } from "@/components/office/office-loading"
 import { useApp } from "@/lib/store"
 import { ShellUiProvider } from "@/lib/shell-ui"
-import { PROFILE_WIDTH, RAIL_MIN, RAIL_OFFSET, SPLIT_MIN, dashboardWidth, useViewportWidth } from "@/lib/layout"
-import { AppSidebar, MobileMenuButton } from "./app-sidebar"
+import { PROFILE_WIDTH, RAIL_MIN, RAIL_OFFSET, SPLIT_MIN, TOPBAR_HEIGHT, dashboardWidth, useViewportWidth } from "@/lib/layout"
+import { AppSidebar } from "./app-sidebar"
 import { DashboardPanel } from "./dashboard-panel"
 import { EmployeePanel } from "./employee-panel"
-import { HelpCenter } from "./help-center"
 import { TeamBar } from "./team-bar"
+import { TopBar } from "./top-bar"
 
 // The 3D office is client-only; avoid SSR of the WebGL canvas.
 const OfficeView = dynamic(
@@ -45,14 +45,15 @@ function Shell() {
   return (
     <main
       className="relative h-dvh w-full overflow-hidden bg-background"
-      style={{ ["--panel-w" as string]: `${panelWidth}px` }}
+      style={{
+        ["--panel-w" as string]: `${panelWidth}px`,
+        ["--topbar-h" as string]: `calc(${TOPBAR_HEIGHT}px + env(safe-area-inset-top, 0px))`,
+      }}
     >
       <OfficeView insetLeft={insetLeft} insetRight={insetRight} paused={officeCovered} />
 
-      <TeamBar insetLeft={insetLeft} insetRight={insetRight} hidden={officeCovered}>
-        {!dashboardOpen && !profileOpen ? <HelpCenter insetLeft={insetLeft} insetRight={insetRight} /> : null}
-      </TeamBar>
-      {!dashboardOpen && <MobileMenuButton />}
+      <TeamBar insetLeft={insetLeft} insetRight={insetRight} hidden={officeCovered} />
+      <TopBar />
 
       <DashboardPanel />
       <EmployeePanel />

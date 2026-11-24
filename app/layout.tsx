@@ -2,6 +2,7 @@ import { Analytics } from "@vercel/analytics/next"
 import type { Metadata, Viewport } from "next"
 import { Newsreader } from "next/font/google"
 import "@fontsource-variable/inter"
+import "@fontsource/oswald/700.css"
 import { ThemeProvider, THEME_COLORS } from "@/lib/theme"
 import "./globals.css"
 

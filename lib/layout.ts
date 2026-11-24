@@ -11,6 +11,8 @@ export const FLOAT_GAP = 12
  * the right of that panel with one more gap.
  */
 export const RAIL_OFFSET = FLOAT_GAP + RAIL_WIDTH + FLOAT_GAP
+/** Height of the permanent top bar (plus the safe-area inset, added in CSS as `--topbar-h`). */
+export const TOPBAR_HEIGHT = 56
 /** Width of the employee profile panel on desktop. */
 export const PROFILE_WIDTH = 420
 /** From this width a dashboard and the office share the screen; below it a dashboard covers the office. */
