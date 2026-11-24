@@ -72,7 +72,7 @@ export function LoginScreen() {
 
       <div className="relative flex w-full max-w-[400px] flex-col items-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/brand/renew-symbol.svg" alt="Renew" className="h-[60px] w-auto [@media(max-height:680px)]:h-12" />
+        <img src="/brand/renew-symbol.svg" alt="Renew" className="h-[72px] w-auto [@media(max-height:680px)]:h-14" />
 
         <div className="mt-5 text-center">
           <h1 className="text-balance font-serif text-2xl font-medium tracking-tight sm:text-3xl">
