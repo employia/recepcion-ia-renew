@@ -35,10 +35,11 @@ function ModuleBody({ id }: { id: ModuleId }) {
 }
 
 /**
- * Hosts whichever dashboard is open. On tablet and desktop it sits flush against
- * the docked icon rail (left edge at 72px) and spans the full height of the
- * screen. Beside the office on wide screens (desktop split view), covering it
- * on tablets, full screen on phones.
+ * Hosts whichever dashboard is open. On tablet and desktop it is the second
+ * level of the floating sidebar: it butts against the rail (left edge at
+ * 12px gap + 68px rail = 80px) and shares its top and bottom insets, so rail
+ * and panel read as one floating card. Beside the office on wide screens
+ * (desktop split view), covering it on tablets, full screen on phones.
  */
 export function DashboardPanel() {
   const { activeModule, activeEmployee, openEmployee, closeModule } = useApp()
@@ -78,7 +79,7 @@ export function DashboardPanel() {
       aria-label={item?.label}
       aria-hidden={!open}
       inert={!open}
-      className={`fixed bottom-0 left-0 right-0 top-0 z-30 flex flex-col overflow-hidden border-border bg-card transition-[transform,translate,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-[opacity,visibility] motion-reduce:duration-150 md:bottom-0 md:left-[calc(72px+env(safe-area-inset-left,0px))] md:right-0 md:top-0 md:border-r md:shadow-none lg:right-auto lg:w-[var(--panel-w)] ${
+      className={`fixed bottom-0 left-0 right-0 top-0 z-30 flex flex-col overflow-hidden border-border bg-card transition-[transform,translate,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-[opacity,visibility] motion-reduce:duration-150 md:bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] md:left-[calc(80px+env(safe-area-inset-left,0px))] md:right-3 md:top-[calc(0.75rem+env(safe-area-inset-top,0px))] md:rounded-r-2xl md:border md:shadow-float lg:right-auto lg:w-[var(--panel-w)] ${
         open ? "translate-x-0 opacity-100" : "invisible -translate-x-4 opacity-0 motion-reduce:translate-x-0"
       }`}
     >
