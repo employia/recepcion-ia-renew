@@ -6,6 +6,7 @@ import { useShellUi } from "@/lib/shell-ui"
 import { useEscalations } from "@/lib/hooks"
 import { NAV_ITEMS, SETTINGS_ITEM, type NavItem } from "@/lib/nav"
 import { useRecordManagement } from "@/lib/record-management"
+import { Tip } from "@/components/ui/tip"
 
 /**
  * Main navigation, floating variant: a detached rounded card inset 12px from
@@ -56,10 +57,9 @@ export function AppSidebar() {
         : 0
     return (
       <li key={item.id}>
-        <button
+        <Tip label={item.label} side="right" disabled={navOpen}><button
           onClick={() => go(item)}
           aria-current={active ? "page" : undefined}
-          title={navOpen ? undefined : item.label}
           className={`press relative flex min-h-12 w-full items-center gap-3 rounded-xl px-3 text-left hover:bg-secondary/80 ${
             active ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
           }`}
@@ -88,7 +88,7 @@ export function AppSidebar() {
               <span className="sr-only">{badge} esperando a una persona</span>
             </>
           )}
-        </button>
+        </button></Tip>
       </li>
     )
   }
@@ -105,9 +105,9 @@ export function AppSidebar() {
       <nav
         id="main-nav"
         aria-label="Navegación principal"
-        onPointerEnter={(e) => e.pointerType === "mouse" && hoverNav(true)}
+        onPointerEnter={(e) => e.pointerType === "mouse" && hoverNav(true, false)}
         onPointerLeave={(e) => e.pointerType === "mouse" && hoverNav(false)}
-        className={`fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] left-[calc(0.75rem+env(safe-area-inset-left,0px))] top-[calc(var(--topbar-h)+0.5rem)] z-50 flex origin-top-left flex-col overflow-hidden rounded-2xl border border-border bg-card transition-[transform,translate,scale,opacity,width,border-radius,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-[opacity,visibility] motion-reduce:duration-150 ${
+        className={`fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] left-[calc(0.75rem+env(safe-area-inset-left,0px))] top-[calc(var(--topbar-h)+0.5rem)] z-50 flex origin-top-left flex-col overflow-hidden rounded-2xl border border-border glass transition-[transform,translate,scale,opacity,width,border-radius,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-[opacity,visibility] motion-reduce:duration-150 ${
           navOpen
             ? "w-[min(86vw,320px)] translate-x-0 scale-100 opacity-100 shadow-float md:w-[320px]"
             : "w-[min(86vw,320px)] shadow-soft max-md:invisible max-md:-translate-x-3 max-md:scale-95 max-md:opacity-0 max-md:motion-reduce:translate-x-0 max-md:motion-reduce:scale-100 md:w-[68px]"

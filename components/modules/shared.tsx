@@ -1,6 +1,7 @@
 "use client"
 
 import { Search, X } from "lucide-react"
+import { Tip } from "@/components/ui/tip"
 import type { LucideIcon } from "lucide-react"
 import type { ReactNode } from "react"
 
@@ -24,13 +25,13 @@ export function SearchBox({
         className="w-full rounded-xl border border-input bg-background py-2.5 pl-9 pr-9 text-sm outline-none transition focus:border-ring focus:ring-4 focus:ring-ring/10"
       />
       {value && (
-        <button
+        <Tip label="Borrar búsqueda"><button
           onClick={() => onChange("")}
           aria-label="Borrar búsqueda"
           className="press absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground"
         >
           <X className="h-4 w-4" />
-        </button>
+        </button></Tip>
       )}
     </div>
   )

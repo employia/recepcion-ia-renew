@@ -22,7 +22,7 @@ export function OfficeWebglFallback({ insetLeft, insetRight }: { insetLeft: numb
         style={{ paddingLeft: insetLeft + 12, paddingRight: insetRight + 12 }}
         className="relative flex h-full items-center justify-center pb-28 pt-[calc(var(--topbar-h)+1rem)] transition-[padding] duration-300 ease-[var(--ease-out)] motion-reduce:transition-none"
       >
-        <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 text-center text-card-foreground shadow-float">
+        <div className="w-full max-w-sm rounded-2xl border border-border glass-strong p-6 text-center text-card-foreground shadow-float">
           <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-muted-foreground">
             <MonitorOff className="h-5 w-5" aria-hidden="true" />
           </div>

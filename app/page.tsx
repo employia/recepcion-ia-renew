@@ -5,6 +5,7 @@ import { LoginScreen } from "@/components/auth/login-screen"
 import { LegalGate } from "@/components/auth/legal-gate"
 import { AppShell } from "@/components/shell/app-shell"
 import { RecordManagementProvider } from "@/lib/record-management"
+import { TipProvider } from "@/components/ui/tip"
 
 function Root() {
   const { session, authLoading, legalAccepted } = useApp()
@@ -21,7 +22,9 @@ export default function Page() {
   return (
     <AppProvider>
       <RecordManagementProvider>
-        <Root />
+        <TipProvider>
+          <Root />
+        </TipProvider>
       </RecordManagementProvider>
     </AppProvider>
   )

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import { ChevronDown, CircleHelp, SearchX, X } from "lucide-react"
 import { useApp } from "@/lib/store"
+import { Tip } from "@/components/ui/tip"
 import { FAQ_CATEGORIES, FAQ_ITEMS, type FaqItem } from "@/lib/faq"
 import { EmptyState, SearchBox } from "@/components/modules/shared"
 
@@ -86,19 +87,18 @@ export function HelpCenter() {
 
   return (
     <>
-      <button
+      <Tip label={open ? "Cerrar preguntas frecuentes" : "Consultar preguntas frecuentes"}><button
         ref={fabRef}
         onClick={toggle}
         aria-expanded={open}
         aria-controls={panelId}
         aria-label="Preguntas frecuentes"
-        title="Consultar preguntas frecuentes"
         className={`press flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
           open ? "bg-secondary text-brand-ink" : "text-muted-foreground hover:text-foreground"
         }`}
       >
         <CircleHelp className="h-5 w-5" aria-hidden />
-      </button>
+      </button></Tip>
 
       <div
         aria-hidden
@@ -114,7 +114,7 @@ export function HelpCenter() {
         aria-modal="false"
         aria-labelledby={titleId}
         inert={!open}
-        className={`fixed right-3 top-[calc(var(--topbar-h)+0.5rem)] z-[42] flex max-h-[calc(100dvh-var(--topbar-h)-1.25rem)] w-[min(26rem,calc(100vw-1.5rem))] origin-top-right flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-float transition-[transform,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-opacity ${
+        className={`fixed right-3 top-[calc(var(--topbar-h)+0.5rem)] z-[42] flex max-h-[calc(100dvh-var(--topbar-h)-1.25rem)] w-[min(26rem,calc(100vw-1.5rem))] origin-top-right flex-col overflow-hidden rounded-2xl border border-border glass-strong shadow-float transition-[transform,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-opacity ${
           open
             ? "pointer-events-auto visible translate-y-0 scale-100 opacity-100"
             : "pointer-events-none invisible -translate-y-2 scale-[0.98] opacity-0 motion-reduce:translate-y-0 motion-reduce:scale-100"
@@ -133,13 +133,13 @@ export function HelpCenter() {
               </h2>
               <p className="mt-0.5 text-sm text-muted-foreground">Respuestas rápidas sobre la Recepción Digital</p>
             </div>
-            <button
+            <Tip label="Cerrar"><button
               onClick={close}
               aria-label="Cerrar las preguntas frecuentes"
               className="press -mr-1 -mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground"
             >
               <X className="h-5 w-5" />
-            </button>
+            </button></Tip>
           </div>
           <SearchBox value={query} onChange={setQuery} placeholder="Buscar una pregunta" />
         </div>

@@ -3,6 +3,7 @@
 import { useRef, useState } from "react"
 import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react"
 import { useApp } from "@/lib/store"
+import { Tip } from "@/components/ui/tip"
 import { EMPLOYEES } from "@/lib/employees"
 import { LEGAL_PATH } from "@/lib/legal"
 import { StatusDot, Thumb } from "@/components/shell/employee-avatar"
@@ -146,7 +147,7 @@ export function LoginScreen() {
                     className={`${inputClass(!!errors.password)} pr-11`}
                     placeholder="••••••••"
                   />
-                  <button
+                  <Tip label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}><button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
                     disabled={loading}
@@ -155,7 +156,7 @@ export function LoginScreen() {
                     className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-lg p-2 text-muted-foreground transition hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
+                  </button></Tip>
                 </div>
                 {errors.password ? (
                   <p id="password-error" role="alert" className="text-xs text-destructive">

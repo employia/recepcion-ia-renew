@@ -1,6 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
+import { useEffect } from "react"
 import { OfficeLoading } from "@/components/office/office-loading"
 import { useApp } from "@/lib/store"
 import { ShellUiProvider } from "@/lib/shell-ui"
@@ -28,6 +29,12 @@ export function AppShell() {
 function Shell() {
   const { activeModule, activeEmployee } = useApp()
   const viewport = useViewportWidth()
+
+  // Opt-in test of real blur over the 3D canvas: open the app with ?glass=blur.
+  useEffect(() => {
+    const on = new URLSearchParams(window.location.search).get("glass") === "blur"
+    document.documentElement.toggleAttribute("data-canvas-blur", on)
+  }, [])
 
   const split = viewport >= SPLIT_MIN
   const rail = viewport >= RAIL_MIN ? RAIL_OFFSET : 0

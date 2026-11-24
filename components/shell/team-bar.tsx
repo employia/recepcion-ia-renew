@@ -3,6 +3,7 @@
 import { Moon, Sun } from "lucide-react"
 import { useApp } from "@/lib/store"
 import { useTheme } from "@/lib/theme"
+import { Tip } from "@/components/ui/tip"
 import { EMPLOYEES } from "@/lib/employees"
 import { STATUS_LABEL, StatusDot, Thumb } from "./employee-avatar"
 
@@ -72,7 +73,7 @@ export function TeamBar({
           })}
           <li aria-hidden className="mx-1 h-7 w-px self-center bg-border" />
           <li className="group relative">
-            <button
+            <Tip label={themeLabel} side="top"><button
               onClick={() => setPreference(nextTheme)}
               aria-label={themeLabel}
               className="press flex h-11 w-11 items-center justify-center rounded-full hover:scale-105 md:h-12 md:w-12"
@@ -83,13 +84,7 @@ export function TeamBar({
                   className="h-5 w-5 animate-in fade-in zoom-in-50 spin-in-90 duration-300 motion-reduce:animate-none"
                 />
               </span>
-            </button>
-            <span
-              aria-hidden
-              className="pointer-events-none absolute bottom-full right-0 mb-3 hidden whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-2 text-sm font-semibold leading-tight opacity-0 shadow-float transition-opacity duration-150 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100 md:block"
-            >
-              {themeLabel}
-            </span>
+            </button></Tip>
           </li>
         </ul>
       </div>

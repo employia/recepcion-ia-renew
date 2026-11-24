@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import { RefreshCw, X } from "lucide-react"
+import { Tip } from "@/components/ui/tip"
 import { useApp } from "@/lib/store"
 import { useShellUi } from "@/lib/shell-ui"
 import { EMPLOYEES } from "@/lib/employees"
@@ -79,7 +80,7 @@ export function DashboardPanel() {
       aria-label={item?.label}
       aria-hidden={!open}
       inert={!open}
-      className={`fixed bottom-0 left-0 right-0 top-[var(--topbar-h)] z-30 flex flex-col overflow-hidden border-border bg-card transition-[transform,translate,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-[opacity,visibility] motion-reduce:duration-150 md:bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] md:left-[calc(80px+env(safe-area-inset-left,0px))] md:right-3 md:top-[calc(var(--topbar-h)+0.5rem)] md:rounded-r-2xl md:border md:shadow-float lg:right-auto lg:w-[var(--panel-w)] ${
+      className={`fixed bottom-0 left-0 right-0 top-[var(--topbar-h)] z-30 flex flex-col overflow-hidden border-border glass-strong transition-[transform,translate,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-[opacity,visibility] motion-reduce:duration-150 md:bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] md:left-[calc(80px+env(safe-area-inset-left,0px))] md:right-3 md:top-[calc(var(--topbar-h)+0.5rem)] md:rounded-r-2xl md:border md:shadow-float lg:right-auto lg:w-[var(--panel-w)] ${
         open ? "translate-x-0 opacity-100" : "invisible -translate-x-4 opacity-0 motion-reduce:translate-x-0"
       }`}
     >
@@ -97,17 +98,17 @@ export function DashboardPanel() {
               <p className="truncate text-xs text-muted-foreground">{item.subtitle}</p>
             </div>
             {canRefresh && (
-              <button
+              <Tip label="Actualizar"><button
                 onClick={() => void refresh()}
                 disabled={refreshing}
                 aria-label={refreshing ? "Actualizando" : "Actualizar"}
                 className="press flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground disabled:pointer-events-none max-md:sr-only"
               >
                 <RefreshCw className={`h-[18px] w-[18px] ${refreshing ? "animate-spin motion-reduce:animate-none" : ""}`} />
-              </button>
+              </button></Tip>
             )}
             {owner && (
-              <button
+              <Tip label={`Ver información de ${owner.name}`}><button
                 onClick={(e) => {
                   const r = e.currentTarget.getBoundingClientRect()
                   openEmployee(owner.id, { x: r.left + r.width / 2, y: r.top + r.height / 2 })
@@ -116,15 +117,15 @@ export function DashboardPanel() {
                 className="press flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
               >
                 <Thumb employee={owner} size={36} badge />
-              </button>
+              </button></Tip>
             )}
-            <button
+            <Tip label="Cerrar y volver a la oficina"><button
               onClick={closeModule}
               aria-label="Cerrar y volver a la oficina"
               className="press flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground"
             >
               <X className="h-5 w-5" />
-            </button>
+            </button></Tip>
             {refreshing && (
               <span aria-hidden className="absolute inset-x-0 -bottom-px h-0.5 overflow-hidden">
                 <span className="block h-full w-1/3 animate-[refresh-bar_1s_var(--ease-out)_infinite] bg-brand motion-reduce:w-full motion-reduce:animate-none motion-reduce:opacity-60" />

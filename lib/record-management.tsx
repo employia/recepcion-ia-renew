@@ -177,7 +177,7 @@ export function RecordManagementProvider({ children }: { children: ReactNode }) 
       {children}
       {notice && (
         <div className="pointer-events-none fixed inset-x-3 bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] z-[70] flex justify-center md:bottom-6">
-          <div className="pointer-events-auto flex w-full max-w-md items-center justify-between gap-4 rounded-2xl border border-border bg-card px-4 py-3 text-sm text-foreground shadow-float" role="status" aria-live="polite">
+          <div className="pointer-events-auto flex w-full max-w-md items-center justify-between gap-4 rounded-2xl border border-border glass-strong px-4 py-3 text-sm text-foreground shadow-float" role="status" aria-live="polite">
             <span>{notice.message}</span>
             {notice.undo && (
               <button

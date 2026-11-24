@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Check, X } from "lucide-react"
+import { Tip } from "@/components/ui/tip"
 import { useApp } from "@/lib/store"
 import { EMPLOYEES } from "@/lib/employees"
 import { navItem } from "@/lib/nav"
@@ -110,7 +111,7 @@ export function EmployeePanel() {
         aria-modal={viewport < 1024}
         aria-label={shown ? `Ficha de ${shown.name}` : undefined}
         style={{ transformOrigin }}
-        className="profile-panel fixed inset-x-0 bottom-0 z-40 mx-auto flex max-h-[88dvh] w-full max-w-[520px] flex-col overflow-hidden rounded-t-3xl border border-b-0 border-border bg-card shadow-float lg:inset-x-auto lg:bottom-4 lg:right-4 lg:top-[calc(var(--topbar-h)+0.5rem)] lg:mx-0 lg:max-h-none lg:w-[420px] lg:max-w-none lg:rounded-3xl lg:border-b"
+        className="profile-panel fixed inset-x-0 bottom-0 z-40 mx-auto flex max-h-[88dvh] w-full max-w-[520px] flex-col overflow-hidden rounded-t-3xl border border-b-0 border-border glass-strong shadow-float lg:inset-x-auto lg:bottom-4 lg:right-4 lg:top-[calc(var(--topbar-h)+0.5rem)] lg:mx-0 lg:max-h-none lg:w-[420px] lg:max-w-none lg:rounded-3xl lg:border-b"
       >
         {shown && (
           <>
@@ -129,14 +130,14 @@ export function EmployeePanel() {
                 <h2 className="truncate font-serif text-2xl font-medium tracking-tight">{shown.name}</h2>
                 <p className="truncate text-sm text-muted-foreground">{shown.role}</p>
               </div>
-              <button
+              <Tip label="Cerrar la ficha"><button
                 ref={closeRef}
                 onClick={closeEmployee}
                 aria-label="Cerrar la ficha"
                 className="press flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground"
               >
                 <X className="h-5 w-5" />
-              </button>
+              </button></Tip>
             </header>
 
             <div ref={bodyRef} className="scroll-slim flex-1 overflow-y-auto px-5 pb-5">

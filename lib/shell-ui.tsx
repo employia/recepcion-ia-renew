@@ -20,8 +20,12 @@ interface ShellUiState {
   setNavOpen: (open: boolean) => void
   /** Click on the isotype: pin it open, or close it if it was already pinned. */
   toggleNav: () => void
-  /** Pointer entered or left the isotype or the sidebar (mouse only). */
-  hoverNav: (inside: boolean) => void
+  /**
+   * Pointer entered or left the isotype or the sidebar (mouse only). Only the
+   * isotype may open the sidebar (`canOpen`); the sidebar itself just keeps it
+   * open while the pointer is over it.
+   */
+  hoverNav: (inside: boolean, canOpen?: boolean) => void
 }
 
 const ShellUiContext = createContext<ShellUiState | null>(null)
@@ -48,10 +52,10 @@ export function ShellUiProvider({ children }: { children: ReactNode }) {
     setMode((m) => (m === "pinned" ? "closed" : "pinned"))
   }, [clearTimer])
   const hoverNav = useCallback(
-    (inside: boolean) => {
+    (inside: boolean, canOpen = true) => {
       clearTimer()
       if (inside) {
-        setMode((m) => (m === "closed" ? "hover" : m))
+        if (canOpen) setMode((m) => (m === "closed" ? "hover" : m))
       } else {
         leaveTimer.current = setTimeout(() => setMode((m) => (m === "hover" ? "closed" : m)), HOVER_LEAVE_DELAY)
       }
