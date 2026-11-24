@@ -78,9 +78,19 @@ export function LoginScreen() {
           <h1 className="text-balance font-serif text-2xl font-medium tracking-tight sm:text-3xl">
             Bienvenido a su recepción digital
           </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Acceso exclusivo para el equipo de Renew.
-          </p>
+          <div className="mt-4 flex items-center justify-center gap-3">
+            <ul aria-label="Equipo de la oficina" className="flex -space-x-2">
+              {EMPLOYEES.map((e) => (
+                <li key={e.id} className="rounded-full ring-2 ring-background" title={`${e.name} · ${e.role}`}>
+                  <Thumb employee={e} size={32} />
+                </li>
+              ))}
+            </ul>
+            <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <StatusDot status="working" />
+              Su equipo está trabajando
+            </p>
+          </div>
         </div>
 
         <form
@@ -200,20 +210,6 @@ export function LoginScreen() {
           </p>
         </form>
 
-        {/* The team, already at work */}
-        <div className="mt-5 flex items-center gap-3 [@media(max-height:680px)]:hidden">
-          <ul aria-label="Equipo de la oficina" className="flex -space-x-2">
-            {EMPLOYEES.map((e) => (
-              <li key={e.id} className="rounded-full ring-2 ring-background" title={`${e.name} · ${e.role}`}>
-                <Thumb employee={e} size={32} />
-              </li>
-            ))}
-          </ul>
-          <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <StatusDot status="working" />
-            Su equipo está trabajando
-          </p>
-        </div>
 
       </div>
     </main>
