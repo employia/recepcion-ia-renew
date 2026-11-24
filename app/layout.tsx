@@ -1,10 +1,10 @@
 import { Analytics } from "@vercel/analytics/next"
 import type { Metadata, Viewport } from "next"
-import { Figtree, Newsreader } from "next/font/google"
+import { Newsreader } from "next/font/google"
+import "@fontsource-variable/inter"
 import { ThemeProvider, THEME_COLORS } from "@/lib/theme"
 import "./globals.css"
 
-const figtree = Figtree({ subsets: ["latin"], variable: "--font-figtree", display: "swap" })
 const newsreader = Newsreader({
   subsets: ["latin"],
   variable: "--font-newsreader",
@@ -46,7 +46,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning className={`bg-background ${figtree.variable} ${newsreader.variable}`}>
+    <html lang="es" suppressHydrationWarning className={`bg-background ${newsreader.variable}`}>
       <body className="antialiased font-sans">
         <ThemeProvider>{children}</ThemeProvider>
         {process.env.NODE_ENV === "production" && <Analytics />}

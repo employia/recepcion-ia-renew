@@ -5,9 +5,57 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: var(--font-figtree), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* SF Pro on Apple devices (system font, never bundled: its licence forbids
+     self-hosting on the web). Inter Variable, open source and self-hosted,
+     covers Windows, Android and Linux with near-identical metrics. */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Inter Variable', system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter Variable', system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-brand: 'Oswald', 'Arial Narrow', sans-serif;
   --font-serif: var(--font-newsreader), 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+
+  /* Type scale (Apple HIG text styles, pt -> rem) with SF Pro tracking per
+     size. Existing text-xs..text-3xl utilities pick up the tracking too. */
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.2;
+  --text-micro--letter-spacing: 0.006em;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.34;
+  --text-xs--letter-spacing: 0;
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.38;
+  --text-label--letter-spacing: -0.006em;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.43;
+  --text-sm--letter-spacing: -0.011em;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.5;
+  --text-body--letter-spacing: -0.016em;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5;
+  --text-base--letter-spacing: -0.02em;
+  --text-subtitle: 1.0625rem;
+  --text-subtitle--line-height: 1.41;
+  --text-subtitle--letter-spacing: -0.022em;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.25;
+  --text-xl--letter-spacing: -0.023em;
+  --text-title: 1.375rem;
+  --text-title--line-height: 1.27;
+  --text-title--letter-spacing: -0.014em;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 1.25;
+  --text-2xl--letter-spacing: 0.003em;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 1.2;
+  --text-3xl--letter-spacing: 0.011em;
+  --text-heading: 2.125rem;
+  --text-heading--line-height: 1.2;
+  --text-heading--letter-spacing: 0.012em;
+  --text-display: 3rem;
+  --text-display--line-height: 1.08;
+  --text-display--letter-spacing: 0.008em;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -171,7 +219,18 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: 'kern', 'calt';
+    -webkit-font-smoothing: antialiased;
     overscroll-behavior: none;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
   }
   /* 16px minimum stops iOS Safari from zooming the page on focus. */
   input,
