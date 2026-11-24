@@ -59,7 +59,7 @@ export function LoginScreen() {
     }`
 
   return (
-    <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-background px-6 py-10">
+    <main className="relative flex min-h-dvh w-full items-center justify-center overflow-x-hidden bg-background px-6 py-6">
       {/* Ambient warm light, very subtle */}
       <div
         aria-hidden
@@ -72,10 +72,10 @@ export function LoginScreen() {
 
       <div className="relative flex w-full max-w-[400px] flex-col items-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/brand/renew-symbol.svg" alt="Renew" className="h-[76px] w-auto" />
+        <img src="/brand/renew-symbol.svg" alt="Renew" className="h-[60px] w-auto [@media(max-height:680px)]:h-12" />
 
-        <div className="mt-6 text-center">
-          <h1 className="text-balance font-serif text-3xl font-medium tracking-tight">
+        <div className="mt-5 text-center">
+          <h1 className="text-balance font-serif text-2xl font-medium tracking-tight sm:text-3xl">
             Bienvenido a su recepción digital
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -86,7 +86,7 @@ export function LoginScreen() {
         <form
           onSubmit={handleSubmit}
           noValidate
-          className="mt-8 w-full space-y-4 rounded-2xl border border-border bg-card p-6 shadow-float"
+          className="mt-6 w-full space-y-3.5 rounded-2xl border border-border bg-card p-5 shadow-float [@media(max-height:680px)]:mt-4"
         >
           <div className="space-y-1.5">
             <label htmlFor="email" className="text-sm font-medium text-foreground">
@@ -187,10 +187,21 @@ export function LoginScreen() {
             )}
           </button>
 
+          <p className="text-center text-xs leading-relaxed text-muted-foreground">
+            Al continuar, acepta los{" "}
+            <a href={LEGAL_PATH.terms} className="underline underline-offset-4 transition hover:text-foreground">
+              Términos y Condiciones de Uso
+            </a>{" "}
+            y la{" "}
+            <a href={LEGAL_PATH.privacy} className="underline underline-offset-4 transition hover:text-foreground">
+              Política de Privacidad
+            </a>
+            .
+          </p>
         </form>
 
         {/* The team, already at work */}
-        <div className="mt-7 flex items-center gap-3">
+        <div className="mt-5 flex items-center gap-3 [@media(max-height:680px)]:hidden">
           <ul aria-label="Equipo de la oficina" className="flex -space-x-2">
             {EMPLOYEES.map((e) => (
               <li key={e.id} className="rounded-full ring-2 ring-background" title={`${e.name} · ${e.role}`}>
@@ -204,16 +215,6 @@ export function LoginScreen() {
           </p>
         </div>
 
-        <p className="mt-8 text-center text-xs text-muted-foreground">
-          Al continuar aceptas nuestros{" "}
-          <a
-            href={LEGAL_PATH.terms}
-            className="underline underline-offset-4 transition hover:text-foreground"
-          >
-            términos y condiciones de uso
-          </a>
-          .
-        </p>
       </div>
     </main>
   )
