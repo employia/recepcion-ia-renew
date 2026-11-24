@@ -4,7 +4,7 @@ import dynamic from "next/dynamic"
 import { OfficeLoading } from "@/components/office/office-loading"
 import { useApp } from "@/lib/store"
 import { ShellUiProvider } from "@/lib/shell-ui"
-import { PROFILE_WIDTH, RAIL_MIN, RAIL_OFFSET, SPLIT_MIN, dashboardWidth, useViewportWidth } from "@/lib/layout"
+import { PROFILE_WIDTH, RAIL_MIN, RAIL_WIDTH, SPLIT_MIN, dashboardWidth, useViewportWidth } from "@/lib/layout"
 import { AppSidebar, MobileMenuButton } from "./app-sidebar"
 import { DashboardPanel } from "./dashboard-panel"
 import { EmployeePanel } from "./employee-panel"
@@ -30,7 +30,7 @@ function Shell() {
   const viewport = useViewportWidth()
 
   const split = viewport >= SPLIT_MIN
-  const rail = viewport >= RAIL_MIN ? RAIL_OFFSET : 0
+  const rail = viewport >= RAIL_MIN ? RAIL_WIDTH : 0
   const panelWidth = dashboardWidth(viewport)
   const dashboardOpen = activeModule !== null
   const profileOpen = activeEmployee !== null
