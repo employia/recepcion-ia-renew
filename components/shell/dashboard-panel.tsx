@@ -36,7 +36,7 @@ function ModuleBody({ id }: { id: ModuleId }) {
 
 /**
  * Hosts whichever dashboard is open. On tablet and desktop it sits flush against
- * the docked sidebar (left edge at 280px) and spans the full height of the
+ * the docked icon rail (left edge at 72px) and spans the full height of the
  * screen. Beside the office on wide screens (desktop split view), covering it
  * on tablets, full screen on phones.
  */
@@ -78,7 +78,7 @@ export function DashboardPanel() {
       aria-label={item?.label}
       aria-hidden={!open}
       inert={!open}
-      className={`fixed bottom-0 left-0 right-0 top-0 z-30 flex flex-col overflow-hidden border-border bg-card transition-[transform,translate,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-[opacity,visibility] motion-reduce:duration-150 md:bottom-0 md:left-[calc(280px+env(safe-area-inset-left,0px))] md:right-0 md:top-0 md:border-r md:shadow-none lg:right-auto lg:w-[var(--panel-w)] ${
+      className={`fixed bottom-0 left-0 right-0 top-0 z-30 flex flex-col overflow-hidden border-border bg-card transition-[transform,translate,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-[opacity,visibility] motion-reduce:duration-150 md:bottom-0 md:left-[calc(72px+env(safe-area-inset-left,0px))] md:right-0 md:top-0 md:border-r md:shadow-none lg:right-auto lg:w-[var(--panel-w)] ${
         open ? "translate-x-0 opacity-100" : "invisible -translate-x-4 opacity-0 motion-reduce:translate-x-0"
       }`}
     >
