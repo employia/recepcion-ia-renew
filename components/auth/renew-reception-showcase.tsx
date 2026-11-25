@@ -200,23 +200,23 @@ export function RenewReceptionShowcase() {
 
           <div
             className="overflow-hidden"
-            style={{ ...box(34, 70, 171, 195), borderRadius: u(10), border: `${u(1.5)} solid #dde0e7`, background: "#fff" }}
+            style={{ ...box(14, 56, 211, 236), borderRadius: u(12), border: `${u(1.5)} solid #dde0e7`, background: "#fff" }}
           >
             <Image
               src="/images/renew-logo.webp"
               alt=""
               width={640}
               height={426}
-              style={{ ...box(55, 7, 54), height: "auto" }}
+              style={{ ...box(68, 6, 76), height: "auto" }}
             />
-            <div style={{ ...box(6, 38, 159, 150), fontSize: u(14), lineHeight: 1 }}>
+            <div style={{ ...box(8, 64, 195, 168), lineHeight: 1 }}>
               {APPOINTMENTS.map((a, i) => (
-                <div key={a.label} style={{ position: "relative", height: u(58), borderTop: i ? `${u(1.5)} solid #e4e6ec` : undefined }}>
-                  <div style={{ ...box(4, 5), fontWeight: 600, color: "#1b2340" }}>{a.label}</div>
+                <div key={a.label} style={{ position: "relative", height: u(56), borderTop: i ? `${u(1.5)} solid #e4e6ec` : undefined }}>
+                  <div style={{ ...box(6, 5), fontSize: u(19), fontWeight: 700, color: "#1b2340" }}>{a.label}</div>
                   {a.confirmed && (
                     <div
                       className="flex items-center justify-center text-white"
-                      style={{ ...box(139, 4, 15, 15), borderRadius: "50%", background: BLUE, fontSize: u(10) }}
+                      style={{ ...box(167, 5, 19, 19), borderRadius: "50%", background: BLUE, fontSize: u(12) }}
                     >
                       ✓
                     </div>
@@ -224,14 +224,14 @@ export function RenewReceptionShowcase() {
                   <div
                     className="flex items-center justify-between"
                     style={{
-                      ...box(0, 26, 159, 24),
-                      borderRadius: u(6),
-                      paddingInline: u(4),
-                      background: a.highlight ? "#ebedf1" : undefined,
-                      fontSize: u(13),
+                      ...box(0, 29, 195, 25),
+                      borderRadius: u(7),
+                      paddingInline: u(6),
+                      background: a.highlight ? "#e9ebf0" : undefined,
+                      fontSize: u(16.5),
                     }}
                   >
-                    <span style={{ color: "#5d6478" }}>{a.date}</span>
+                    <span style={{ color: "#555d73" }}>{a.date}</span>
                     <span className="tabular-nums" style={{ fontWeight: 600, color: "#1b2340" }}>{a.time}</span>
                   </div>
                 </div>
@@ -239,8 +239,8 @@ export function RenewReceptionShowcase() {
             </div>
           </div>
 
-          <div style={{ ...box(17, 283, 180, 16), borderRadius: u(8), background: "#e6e8ed" }} />
-          <div style={{ ...box(17, 311, 138, 14), borderRadius: u(7), background: "#e6e8ed" }} />
+          <div style={{ ...box(17, 305, 180, 14), borderRadius: u(7), background: "#e6e8ed" }} />
+          <div style={{ ...box(17, 326, 138, 12), borderRadius: u(6), background: "#e6e8ed" }} />
         </div>
 
         {/* Sello ISO */}
@@ -249,7 +249,7 @@ export function RenewReceptionShowcase() {
           alt="Empresa certificada ISO 9001-2015"
           width={420}
           height={420}
-          style={{ ...box(748, 648, 194, 194), zIndex: 5, filter: "drop-shadow(0 14px 18px rgba(20,40,90,0.30))" }}
+          style={{ ...box(783, 673, 194, 194), zIndex: 5, filter: "drop-shadow(0 14px 18px rgba(20,40,90,0.30))" }}
         />
 
         {/* Estrella azul */}
