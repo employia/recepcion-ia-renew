@@ -6,6 +6,7 @@ import { useApp } from "@/lib/store"
 import { EMPLOYEES } from "@/lib/employees"
 import { LEGAL_PATH } from "@/lib/legal"
 import { StatusDot, Thumb } from "@/components/shell/employee-avatar"
+import { RenewReceptionShowcase } from "@/components/auth/renew-reception-showcase"
 
 interface FieldErrors {
   email?: string
@@ -62,12 +63,9 @@ export function LoginScreen() {
     <main className="force-light relative min-h-dvh w-full overflow-x-hidden bg-background text-foreground lg:grid lg:grid-cols-[1.15fr_1fr] lg:bg-white">
       {/* Solo escritorio: pieza de marca a la izquierda. En móvil no se muestra. */}
       <div className="hidden items-center justify-center bg-white p-8 lg:flex xl:p-12">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/images/renew-login-hero.jpg"
-          alt="La Recepción Digital de Renew en una sola pantalla"
-          className="h-auto max-h-[92dvh] w-full max-w-[920px] object-contain"
-        />
+        <div className="w-full max-w-[880px]">
+          <RenewReceptionShowcase />
+        </div>
       </div>
 
       <div className="relative flex min-h-dvh w-full items-center justify-center px-6 py-6">
