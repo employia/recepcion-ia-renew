@@ -271,7 +271,7 @@ export function RenewReceptionShowcase() {
           style={{
             position: "absolute",
             left: u(60),
-            bottom: u(30),
+            bottom: u(98),
             fontSize: "min(3.3vw, 6.4cqw)",
             lineHeight: 1.02,
             letterSpacing: "-0.025em",
