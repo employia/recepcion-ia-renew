@@ -38,19 +38,6 @@ const APPOINTMENTS = [
   { label: "Médica", date: "02/10/26", time: "4:45 PM", confirmed: false, highlight: false },
 ] as const
 
-function Sparkle({ x, y, size }: { x: number; y: number; size: number }) {
-  return (
-    <svg
-      aria-hidden
-      viewBox="0 0 24 24"
-      style={box(x, y, size, size)}
-      fill={ORANGE}
-    >
-      <path d="M12 0C12 7 17 12 24 12C17 12 12 17 12 24C12 17 7 12 0 12C7 12 12 7 12 0Z" />
-    </svg>
-  )
-}
-
 function HeartBubble({ cx, cy, d }: { cx: number; cy: number; d: number }) {
   return (
     <div
@@ -85,33 +72,6 @@ export function RenewReceptionShowcase() {
           style={{ ...box(58, 40, 290), height: "auto" }}
         />
 
-        {/* WhatsApp */}
-        <svg aria-hidden viewBox="0 0 70 70" style={{ ...box(445, 139, 69, 70), filter: "drop-shadow(0 8px 14px rgba(37,196,63,0.30))" }}>
-          <defs>
-            <linearGradient id="wa-grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#5fe77b" />
-              <stop offset="1" stopColor="#22bd44" />
-            </linearGradient>
-          </defs>
-          <rect width="70" height="70" rx="17" fill="url(#wa-grad)" />
-          <path
-            d="M26.1 54.0A21 21 0 1 0 15.3 42.2L13 57Z"
-            fill="none"
-            stroke="#fff"
-            strokeWidth="4.5"
-            strokeLinejoin="round"
-          />
-          <path
-            transform="translate(23 23)"
-            fill="#fff"
-            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
-          />
-        </svg>
-
-        {/* Destellos y corazones */}
-        <Sparkle x={337} y={338} size={40} />
-        <Sparkle x={324} y={329} size={17} />
-        <HeartBubble cx={417} cy={416} d={86} />
         <HeartBubble cx={1080} cy={548} d={92} />
 
         {/* Foto de la recepción */}
@@ -158,10 +118,6 @@ export function RenewReceptionShowcase() {
           <div aria-hidden className="absolute" style={{ ...box(23, 22, 279, 5), borderRadius: u(3), background: "rgba(255,255,255,0.45)" }}>
             <div className="h-full" style={{ width: "45%", borderRadius: u(3), background: "#fff" }} />
           </div>
-          {/* paginación */}
-          <div aria-hidden className="absolute" style={{ ...box(65, 405, 142, 33), borderRadius: u(17), border: `${u(2.5)} solid rgba(255,255,255,0.9)` }} />
-          <div aria-hidden className="absolute" style={{ ...box(222, 405, 33, 33), borderRadius: "50%", border: `${u(2.5)} solid rgba(255,255,255,0.9)` }} />
-          <div aria-hidden className="absolute" style={{ ...box(268, 405, 33, 33), borderRadius: "50%", border: `${u(2.5)} solid rgba(255,255,255,0.9)` }} />
         </div>
 
         {/* Insignia 2017 */}
@@ -252,19 +208,6 @@ export function RenewReceptionShowcase() {
           style={{ ...box(788, 535, 194, 194), zIndex: 5, filter: "drop-shadow(0 14px 18px rgba(20,40,90,0.30))" }}
         />
 
-        {/* Estrella azul */}
-        <svg aria-hidden viewBox="0 0 60 60" style={{ ...box(1018, 690, 66, 66), zIndex: 3, overflow: "visible" }}>
-          <path
-            transform="rotate(-14 30 30)"
-            d="M30 4l7.4 16.1 17.6 2-13 12 3.6 17.4L30 42.3 14.4 51.5 18 34.1 5 22.1l17.6-2z"
-            fill={BLUE}
-            stroke={BLUE}
-            strokeWidth="5"
-            strokeLinejoin="round"
-          />
-          <path d="M54 12l12-12" stroke={BLUE} strokeWidth="4" strokeLinecap="round" transform="translate(0 0)" />
-        </svg>
-
         {/* Titular: su tamaño sigue al de la pantalla (no al del lienzo), así que
             agrandar el diseño no lo agranda a él. Anclado abajo a la izquierda. */}
         <div
@@ -278,6 +221,33 @@ export function RenewReceptionShowcase() {
             whiteSpace: "nowrap",
           }}
         >
+          <svg
+            aria-hidden
+            viewBox="0 0 70 70"
+            style={{
+              position: "absolute",
+              left: "3.1em",
+              bottom: "calc(100% + 0.3em)",
+              width: "1.3em",
+              height: "1.3em",
+              transform: "rotate(-8deg)",
+              filter: "drop-shadow(0 8px 14px rgba(37,196,63,0.30))",
+            }}
+          >
+            <defs>
+              <linearGradient id="wa-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stopColor="#5fe77b" />
+                <stop offset="1" stopColor="#22bd44" />
+              </linearGradient>
+            </defs>
+            <rect width="70" height="70" rx="17" fill="url(#wa-grad)" />
+            <path d="M26.1 54.0A21 21 0 1 0 15.3 42.2L13 57Z" fill="none" stroke="#fff" strokeWidth="4.5" strokeLinejoin="round" />
+            <path
+              transform="translate(23 23)"
+              fill="#fff"
+              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+            />
+          </svg>
           <h2 style={{ margin: 0, fontSize: "1em", fontWeight: 700, lineHeight: "inherit" }}>
             La Recepción
             <br />
