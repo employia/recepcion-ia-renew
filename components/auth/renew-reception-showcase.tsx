@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
-import { CalendarDays, Star, Store } from "lucide-react"
+import { Star } from "lucide-react"
 
 /**
  * Panel de marca del login (solo escritorio).
@@ -35,15 +35,13 @@ const box = (x: number, y: number, w?: number, h?: number) => ({
  * Con `?editar=1` en la URL se activa el modo de edición: las piezas se arrastran
  * con el mouse, se giran desde el panel y se copian las posiciones para fijarlas aquí.
  */
-type PieceId = "logo" | "recepcion" | "equipo" | "insignia" | "agenda" | "iso"
+type PieceId = "logo" | "equipo" | "agenda" | "iso"
 type Offset = { dx: number; dy: number; rot: number; s: number }
 
 const BASE: Record<PieceId, { label: string; x: number; y: number; w: number; h?: number; z: number; s: number }> = {
-  logo: { label: "Logo Renew", x: 48, y: 45, w: 290, z: 2, s: 1.08 },
-  recepcion: { label: "Foto recepción", x: 121, y: 204, w: 252, h: 280, z: 1, s: 0.84 },
-  equipo: { label: "Foto equipo", x: 727, y: 185, w: 325, h: 500, z: 4, s: 1.23 },
-  insignia: { label: "Insignia 2017", x: 1108, y: 139, w: 110, h: 44, z: 0, s: 1 },
-  agenda: { label: "Tarjeta agenda", x: 479, y: 160, w: 239, h: 345, z: 5, s: 0.81 },
+  logo: { label: "Logo Renew", x: 48, y: 45, w: 290, z: 0, s: 1.08 },
+  equipo: { label: "Foto equipo", x: 727, y: 185, w: 325, h: 500, z: 2, s: 1.23 },
+  agenda: { label: "Tarjeta agenda", x: 479, y: 160, w: 239, h: 345, z: 1, s: 0.81 },
   iso: { label: "Sello ISO", x: 984, y: 592, w: 194, h: 194, z: 3, s: 1 },
 }
 const PIECE_IDS = Object.keys(BASE) as PieceId[]
@@ -65,6 +63,7 @@ export function RenewReceptionShowcase() {
   const [off, setOff] = useState<Partial<Record<PieceId, Offset>>>({})
   const [sel, setSel] = useState<PieceId | null>(null)
   const [copied, setCopied] = useState(false)
+  const [frontOnClick, setFrontOnClick] = useState(false)
   const [z, setZ] = useState<Partial<Record<PieceId, number>>>({})
   const zTop = useRef(10)
   const zBottom = useRef(-1)
@@ -142,7 +141,7 @@ export function RenewReceptionShowcase() {
         scale: e.currentTarget.getBoundingClientRect().width / CANVAS_W,
       }
       setSel(id)
-      front(id)
+      if (frontOnClick) front(id)
     },
     onPointerMove: (e: React.PointerEvent<HTMLElement>) => {
       const d = drag.current
@@ -202,34 +201,6 @@ export function RenewReceptionShowcase() {
           style={{ ...at("logo"), height: "auto" }}
         />
 
-        {/* Foto de la recepción */}
-        <div
-          className="overflow-hidden"
-          data-piece="recepcion"
-          style={{ ...at("recepcion"), borderRadius: u(24), boxShadow: CARD_SHADOW }}
-        >
-          <Image
-            src="/images/renew-recepcion.webp"
-            alt="Recepción de Renew"
-            fill
-            sizes="25vw"
-            className="object-cover"
-            style={{ objectPosition: "50% 38%" }}
-          />
-          <div
-            aria-hidden
-            className="absolute flex items-center justify-center"
-            style={{
-              ...box(16, 17, 33, 33),
-              borderRadius: u(9),
-              background: "rgba(255,255,255,0.88)",
-              color: "#6b7186",
-            }}
-          >
-            <Store strokeWidth={2} style={{ width: u(19), height: u(19) }} />
-          </div>
-        </div>
-
         {/* Foto del equipo */}
         <div
           className="overflow-hidden"
@@ -244,28 +215,6 @@ export function RenewReceptionShowcase() {
             className="object-cover"
             style={{ objectPosition: "50% 50%" }}
           />
-        </div>
-
-        {/* Insignia 2017 */}
-        <div
-          aria-hidden
-          className="flex items-center"
-          data-piece="insignia"
-          style={{
-            ...at("insignia"),
-            borderRadius: u(12),
-            background: "#2b3566",
-            color: "#d5dcf3",
-            gap: u(9),
-            paddingLeft: u(14),
-            boxShadow: "0 8px 16px -6px rgba(20,30,70,0.4)",
-            fontSize: u(22),
-            fontWeight: 500,
-            lineHeight: 1,
-          }}
-        >
-          <CalendarDays strokeWidth={2} style={{ width: u(24), height: u(24), color: "#f58a3b" }} />
-          <span className="tabular-nums">2017</span>
         </div>
 
         {/* Tarjeta de agenda */}
@@ -386,9 +335,13 @@ export function RenewReceptionShowcase() {
       <div className="fixed bottom-4 right-4 z-[100] w-80 rounded-xl border border-slate-200 bg-white p-3 font-sans text-xs text-slate-800 shadow-2xl">
         <div className="mb-1 text-sm font-semibold">Modo edición</div>
         <p className="mb-2 text-slate-500">
-          Arrastre una pieza para moverla; al hacer clic pasa al frente. Flechas: 1 px (Mayús = 10). Q / E: girar 1° (Mayús = 5°). + / −: tamaño 2% (Mayús = 10%).
+          Arrastre una pieza para moverla; Flechas: 1 px (Mayús = 10). Q / E: girar 1° (Mayús = 5°). + / −: tamaño 2% (Mayús = 10%).
           El ícono de WhatsApp va dentro del titular y no se arrastra.
         </p>
+        <label className="mb-2 flex items-center gap-2 text-slate-600">
+          <input type="checkbox" checked={frontOnClick} onChange={(e) => setFrontOnClick(e.target.checked)} />
+          Pasar al frente al hacer clic (desactivado conserva el orden de capas)
+        </label>
         <div className="mb-2 rounded-md bg-slate-50 p-2">
           {sel ? (
             <>
