@@ -9,23 +9,30 @@ import type { CSSProperties, PointerEvent as ReactPointerEvent, ReactNode, RefOb
  *  - titular:  la frase "La Recepción Digital de Renew en una sola pantalla" + el ícono de WhatsApp
  *  - logo:     el logo de Renew (esquina superior izquierda)
  *  - conjunto: fotos del equipo, espacio Renew, sello ISO, tarjeta de agenda, insignia y corazón naranja
- *  - login:    caras del equipo + "tu equipo ya está trabajando" + formulario flotante + línea gris divisoria
+ *  - caras:      las caras de los empleados
+ *  - frase:      "tu equipo ya está trabajando"
+ *  - formulario: el formulario flotante de login
+ *  - linea:      la línea gris que divide el login del diseño
  * Se arrastran con el mouse, se agrandan/achican y se copian sus posiciones y tamaños.
  * Medidas en píxeles del lienzo de 1200 × 896 (el mismo del diseño de la izquierda).
  * - titular: se ancla abajo, su `y` es la distancia al borde inferior.
- * - login: su lugar lo decide el layout; se reporta el desplazamiento respecto a ese lugar original.
+ * - caras / frase / formulario / línea: su lugar lo decide el layout; se reporta el desplazamiento
+ *   (en píxeles de pantalla del lienzo) respecto a ese lugar original. La línea cambia de largo, no de grosor.
  */
 export const CANVAS_W = 1200
 export const CANVAS_H = 896
 
-export type PieceId = "titular" | "logo" | "conjunto" | "login"
+export type PieceId = "titular" | "logo" | "conjunto" | "caras" | "frase" | "formulario" | "linea"
 type Offset = { dx: number; dy: number; s: number }
 
 export const BASE: Record<PieceId, { label: string; x: number; y: number; w?: number; h?: number; z: number; s: number }> = {
   titular: { label: "Frase + WhatsApp", x: -18, y: 81, z: 3, s: 1.21 },
   logo: { label: "Logo Renew", x: 9, y: -40, w: 290, z: 2, s: 1.19 },
   conjunto: { label: "Conjunto de fotos", x: 506, y: 46, w: 629, h: 697, z: 1, s: 1.1 },
-  login: { label: "Login + línea + caras", x: 0, y: 0, z: 4, s: 1 },
+  caras: { label: "Caras del equipo", x: 0, y: 0, z: 4, s: 1 },
+  frase: { label: "Frase «tu equipo ya está trabajando»", x: 0, y: 0, z: 4, s: 1 },
+  formulario: { label: "Formulario de login", x: 0, y: 0, z: 5, s: 1 },
+  linea: { label: "Línea gris divisoria", x: 0, y: 0, z: 0, s: 1 },
 }
 const PIECE_IDS = Object.keys(BASE) as PieceId[]
 const clampScale = (n: number) => Math.min(3, Math.max(0.2, Math.round(n * 100) / 100))
@@ -35,6 +42,8 @@ const initial = (id: PieceId): Offset => ({ dx: 0, dy: 0, s: BASE[id].s })
 const u = (n: number) => `${(n / CANVAS_W) * 100}cqw`
 /** Píxeles del lienzo → largo basado en el ancho del diseño (fuera de él, p. ej. el login). */
 const art = (n: number) => `calc(var(--art-w) * ${n / CANVAS_W})`
+/** Igual, pero dentro del bloque de login, que se agranda solo con la ventana (--login-k): se compensa para que el arrastre siga al mouse. */
+const artK = (n: number) => `calc(var(--art-w) * ${n / CANVAS_W} / var(--login-k, 1))`
 
 function styleFor(id: PieceId, o: Offset, z: number | undefined, editing: boolean, selected: boolean): CSSProperties {
   const b = BASE[id]
@@ -46,10 +55,15 @@ function styleFor(id: PieceId, o: Offset, z: number | undefined, editing: boolea
     pos = { position: "absolute", left: u(b.x + o.dx), bottom: u(b.y - o.dy) }
     origin = "bottom left"
     if (o.s !== 1) transform = `scale(${o.s})`
-  } else if (id === "login") {
+  } else if (id === "linea") {
+    // La posición (absolute, borde izquierdo de la columna) la da el layout; aquí solo se desplaza y cambia de largo.
+    pos = {}
+    origin = "center"
+    if (o.dx || o.dy || o.s !== 1) transform = `translate(${art(o.dx)}, ${art(o.dy)}) scaleY(${o.s})`
+  } else if (id === "caras" || id === "frase" || id === "formulario") {
     pos = { position: "relative" }
     origin = "center"
-    if (o.dx || o.dy || o.s !== 1) transform = `translate(${art(o.dx)}, ${art(o.dy)}) scale(${o.s})`
+    if (o.dx || o.dy || o.s !== 1) transform = `translate(${artK(o.dx)}, ${artK(o.dy)}) scale(${o.s})`
   } else {
     pos = {
       position: "absolute",
@@ -104,6 +118,7 @@ export function LayoutEditorProvider({ children }: { children: ReactNode }) {
   const [off, setOff] = useState<Partial<Record<PieceId, Offset>>>({})
   const [sel, setSel] = useState<PieceId | null>(null)
   const [copied, setCopied] = useState(false)
+  const [hidden, setHidden] = useState(false)
   const [z, setZ] = useState<Partial<Record<PieceId, number>>>({})
   const zTop = useRef(10)
   const zBottom = useRef(-1)
@@ -121,10 +136,11 @@ export function LayoutEditorProvider({ children }: { children: ReactNode }) {
 
   // Flechas: mover 1 px (Mayús = 10). + / −: tamaño 2% (Mayús = 10%).
   useEffect(() => {
-    if (!editing || !sel) return
+    if (!editing) return
     const onKey = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement | null)?.tagName === "INPUT") return
       const k = e.key.toLowerCase()
+      if (k === "h") return setHidden((v) => !v)
       const step = e.shiftKey ? 10 : 1
       const d: Record<string, [number, number]> = {
         arrowleft: [-step, 0],
@@ -134,7 +150,7 @@ export function LayoutEditorProvider({ children }: { children: ReactNode }) {
       }
       const ds = k === "+" || k === "=" ? (e.shiftKey ? 0.1 : 0.02) : k === "-" || k === "_" ? (e.shiftKey ? -0.1 : -0.02) : 0
       const m = d[k] ?? (ds ? ([0, 0] as [number, number]) : undefined)
-      if (!m) return
+      if (!m || !sel) return
       e.preventDefault()
       patch(sel, (o) => ({ dx: o.dx + m[0], dy: o.dy + m[1], s: clampScale(o.s + ds) }))
     }
@@ -180,7 +196,9 @@ export function LayoutEditorProvider({ children }: { children: ReactNode }) {
     const b = BASE[id]
     const o = get(id)
     if (id === "titular") return `${id}: x=${b.x + o.dx}, distancia al borde inferior=${b.y - o.dy}, escala=${o.s}`
-    if (id === "login") return `${id}: desplazamiento x=${o.dx}, y=${o.dy} (desde su lugar original), escala=${o.s}`
+    if (id === "linea") return `${id}: desplazamiento x=${o.dx}, y=${o.dy} (desde su lugar original), largo (escala vertical)=${o.s}`
+    if (id === "caras" || id === "frase" || id === "formulario")
+      return `${id}: desplazamiento x=${o.dx}, y=${o.dy} (desde su lugar original), escala=${o.s}`
     const w = Math.round((b.w ?? 0) * o.s)
     const h = b.h !== undefined ? ` × alto=${Math.round(b.h * o.s)}` : ""
     return `${id}: x=${b.x + o.dx}, y=${b.y + o.dy}, escala=${o.s}, tamaño final: ancho=${w}${h}`
@@ -207,11 +225,20 @@ export function LayoutEditorProvider({ children }: { children: ReactNode }) {
   return (
     <EditorCtx.Provider value={{ editing, at, artRef, dragHandlers }}>
       {children}
-      {editing && (
-        <div className="fixed bottom-4 right-4 z-[100] w-80 rounded-xl border border-slate-200 bg-white p-3 font-sans text-xs text-slate-800 shadow-2xl">
-          <div className="mb-1 text-sm font-semibold">Modo edición</div>
+      {editing && hidden && (
+        <div className="fixed bottom-3 right-3 z-[100] flex gap-1 rounded-full border border-slate-200 bg-white/90 p-1 font-sans text-xs shadow-lg backdrop-blur">
+          <button className={`${btn} !rounded-full`} onClick={() => setHidden(false)}>Mostrar editor</button>
+          <button className={`${btn} !rounded-full`} onClick={copy}>{copied ? "¡Copiado!" : "Copiar"}</button>
+        </div>
+      )}
+      {editing && !hidden && (
+        <div className="fixed bottom-4 right-4 z-[100] max-h-[calc(100dvh-2rem)] w-80 overflow-y-auto rounded-xl border border-slate-200 bg-white p-3 font-sans text-xs text-slate-800 shadow-2xl">
+          <div className="mb-1 flex items-center justify-between">
+            <div className="text-sm font-semibold">Modo edición</div>
+            <button className={btn} onClick={() => setHidden(true)}>Ocultar (H)</button>
+          </div>
           <p className="mb-2 text-slate-500">
-            Arrastre una pieza para moverla; al hacer clic pasa al frente. Flechas: 1 px (Mayús = 10). + / −: tamaño 2% (Mayús = 10%).
+            Arrastre una pieza para moverla; al hacer clic pasa al frente. Flechas: 1 px (Mayús = 10). + / −: tamaño 2% (Mayús = 10%). H: ocultar o mostrar este panel.
           </p>
           <div className="mb-2 rounded-md bg-slate-50 p-2">
             {sel ? (

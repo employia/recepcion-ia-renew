@@ -24,7 +24,7 @@ export function LoginScreen() {
 
 function LoginScreenInner() {
   const { signIn } = useApp()
-  const { at, dragHandlers } = useLayoutEditor()
+  const { at, dragHandlers, editing } = useLayoutEditor()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [formError, setFormError] = useState("")
@@ -114,14 +114,17 @@ function LoginScreenInner() {
         </div>
       </div>
 
-      {/* Pieza "login": línea gris + caras + frase + formulario, un solo bloque en el modo edición */}
-      <div
-        data-piece="login"
-        className="relative flex min-h-dvh w-full items-center justify-center px-6 py-6 lg:px-10"
-        style={at("login")}
-      >
-        {/* Línea gris que separa el login del diseño (antes era el borde izquierdo de la columna) */}
-        <div aria-hidden className="absolute inset-y-0 left-0 hidden w-px bg-[#dadde1] lg:block" />
+      <div className="relative flex min-h-dvh w-full items-center justify-center px-6 py-6 lg:px-10">
+        {/* Pieza "linea": línea gris que separa el login del diseño (antes era el borde izquierdo de la columna) */}
+        <div
+          aria-hidden
+          data-piece="linea"
+          className="absolute inset-y-0 left-0 hidden w-px bg-[#dadde1] lg:block"
+          style={at("linea")}
+        >
+          {/* Zona ampliada para poder agarrar la línea con el mouse en el modo edición */}
+          {editing && <span className="absolute inset-y-0 -left-2 w-5" />}
+        </div>
       {/* Ambient warm light, very subtle */}
       <div
         aria-hidden
@@ -159,19 +162,19 @@ function LoginScreenInner() {
         {/* Escritorio: caras + estado + formulario, escalados juntos con la ventana. En móvil "contents" no genera caja. */}
         <div
           className="contents lg:flex lg:w-full lg:flex-col lg:items-center"
-          style={{ transform: `scale(${scale})`, transformOrigin: "center" }}
+          style={{ transform: `scale(${scale})`, transformOrigin: "center", zIndex: 4, "--login-k": scale } as React.CSSProperties}
         >
         {/* Escritorio: caras del equipo + estado como etiqueta */}
         <div className="hidden w-full flex-col items-center text-center lg:flex">
           <h1 className="sr-only">Recepción digital de Renew</h1>
-          <ul aria-label="Equipo de la oficina" className="flex -space-x-2.5">
+          <ul aria-label="Equipo de la oficina" data-piece="caras" style={at("caras")} className="flex -space-x-2.5">
             {EMPLOYEES.map((e) => (
               <li key={e.id} className="rounded-full ring-[3px] ring-background" title={`${e.name} · ${e.role}`}>
                 <Thumb employee={e} size={46} />
               </li>
             ))}
           </ul>
-          <p className="mt-4 whitespace-nowrap text-2xl text-foreground xl:text-[27px]">
+          <p data-piece="frase" style={at("frase")} className="mt-4 whitespace-nowrap text-2xl text-foreground xl:text-[27px]">
             tu equipo ya está{" "}
             <span
               className="rounded-lg px-2.5 py-0.5 font-medium text-white"
@@ -185,6 +188,8 @@ function LoginScreenInner() {
         <form
           onSubmit={handleSubmit}
           noValidate
+          data-piece="formulario"
+          style={at("formulario")}
           className="mt-6 w-full space-y-3.5 rounded-2xl lg:mt-8 lg:space-y-5 lg:p-8 border border-border bg-card p-5 shadow-float [@media(max-height:680px)]:mt-4"
         >
           <div className="space-y-1.5">
