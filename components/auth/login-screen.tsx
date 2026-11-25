@@ -80,7 +80,7 @@ export function LoginScreen() {
         </div>
       </div>
 
-      <div className="relative flex min-h-dvh w-full items-center justify-center px-6 py-6">
+      <div className="relative flex min-h-dvh w-full items-center justify-center px-6 py-6 lg:pr-10 xl:pr-24">
       {/* Ambient warm light, very subtle */}
       <div
         aria-hidden
