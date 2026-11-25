@@ -125,7 +125,7 @@ export function RenewReceptionShowcase() {
             fill
             sizes="25vw"
             className="object-cover"
-            style={{ objectPosition: "50% 28%" }}
+            style={{ objectPosition: "50% 50%" }}
           />
           <div
             aria-hidden
