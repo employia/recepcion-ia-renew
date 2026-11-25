@@ -159,9 +159,9 @@ export function RenewReceptionShowcase() {
             <div className="h-full" style={{ width: "45%", borderRadius: u(3), background: "#fff" }} />
           </div>
           {/* paginación */}
-          <div aria-hidden className="absolute" style={{ ...box(65, 455, 142, 33), borderRadius: u(17), border: `${u(2.5)} solid rgba(255,255,255,0.9)` }} />
-          <div aria-hidden className="absolute" style={{ ...box(222, 455, 33, 33), borderRadius: "50%", border: `${u(2.5)} solid rgba(255,255,255,0.9)` }} />
-          <div aria-hidden className="absolute" style={{ ...box(268, 455, 33, 33), borderRadius: "50%", border: `${u(2.5)} solid rgba(255,255,255,0.9)` }} />
+          <div aria-hidden className="absolute" style={{ ...box(65, 405, 142, 33), borderRadius: u(17), border: `${u(2.5)} solid rgba(255,255,255,0.9)` }} />
+          <div aria-hidden className="absolute" style={{ ...box(222, 405, 33, 33), borderRadius: "50%", border: `${u(2.5)} solid rgba(255,255,255,0.9)` }} />
+          <div aria-hidden className="absolute" style={{ ...box(268, 405, 33, 33), borderRadius: "50%", border: `${u(2.5)} solid rgba(255,255,255,0.9)` }} />
         </div>
 
         {/* Insignia 2017 */}
@@ -249,7 +249,7 @@ export function RenewReceptionShowcase() {
           alt="Empresa certificada ISO 9001-2015"
           width={420}
           height={420}
-          style={{ ...box(783, 673, 194, 194), zIndex: 5, filter: "drop-shadow(0 14px 18px rgba(20,40,90,0.30))" }}
+          style={{ ...box(788, 535, 194, 194), zIndex: 5, filter: "drop-shadow(0 14px 18px rgba(20,40,90,0.30))" }}
         />
 
         {/* Estrella azul */}
