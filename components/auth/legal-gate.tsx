@@ -26,7 +26,7 @@ export function LegalGate() {
   const link = "font-medium text-foreground underline underline-offset-4 hover:opacity-80"
 
   return (
-    <main className="relative flex min-h-dvh w-full items-center justify-center overflow-x-hidden bg-background px-6 py-6">
+    <main className="force-light relative flex min-h-dvh text-foreground w-full items-center justify-center overflow-x-hidden bg-background px-6 py-6">
       <div className="relative flex w-full max-w-[440px] flex-col items-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/brand/renew-symbol.svg" alt="Renew" className="h-[60px] w-auto [@media(max-height:680px)]:h-12" />
