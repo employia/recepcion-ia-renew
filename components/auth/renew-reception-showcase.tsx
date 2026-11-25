@@ -203,11 +203,11 @@ export function RenewReceptionShowcase() {
             style={{ ...box(14, 56, 211, 236), borderRadius: u(12), border: `${u(1.5)} solid #dde0e7`, background: "#fff" }}
           >
             <Image
-              src="/images/renew-logo.webp"
+              src="/brand/renew-symbol.svg"
               alt=""
-              width={640}
-              height={426}
-              style={{ ...box(68, 6, 76), height: "auto" }}
+              width={99}
+              height={193}
+              style={{ ...box(93, 8, 25), height: "auto" }}
             />
             <div style={{ ...box(8, 64, 195, 168), lineHeight: 1 }}>
               {APPOINTMENTS.map((a, i) => (
