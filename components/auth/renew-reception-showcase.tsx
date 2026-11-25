@@ -36,18 +36,19 @@ const box = (x: number, y: number, w?: number, h?: number) => ({
  * con el mouse, se giran desde el panel y se copian las posiciones para fijarlas aquí.
  */
 type PieceId = "logo" | "recepcion" | "equipo" | "insignia" | "agenda" | "iso"
-type Offset = { dx: number; dy: number; rot: number }
+type Offset = { dx: number; dy: number; rot: number; s: number }
 
-const BASE: Record<PieceId, { label: string; x: number; y: number; w: number; h?: number }> = {
-  logo: { label: "Logo Renew", x: 58, y: 40, w: 290 },
-  recepcion: { label: "Foto recepción", x: 497, y: 228, w: 252, h: 280 },
-  equipo: { label: "Foto equipo", x: 735, y: 98, w: 325, h: 500 },
-  insignia: { label: "Insignia 2017", x: 981, y: 163, w: 110, h: 44 },
-  agenda: { label: "Tarjeta agenda", x: 563, y: 450, w: 239, h: 345 },
-  iso: { label: "Sello ISO", x: 953, y: 493, w: 194, h: 194 },
+const BASE: Record<PieceId, { label: string; x: number; y: number; w: number; h?: number; z: number }> = {
+  logo: { label: "Logo Renew", x: 58, y: 40, w: 290, z: 0 },
+  recepcion: { label: "Foto recepción", x: 497, y: 228, w: 252, h: 280, z: 1 },
+  equipo: { label: "Foto equipo", x: 735, y: 98, w: 325, h: 500, z: 2 },
+  insignia: { label: "Insignia 2017", x: 981, y: 163, w: 110, h: 44, z: 6 },
+  agenda: { label: "Tarjeta agenda", x: 563, y: 450, w: 239, h: 345, z: 4 },
+  iso: { label: "Sello ISO", x: 953, y: 493, w: 194, h: 194, z: 5 },
 }
 const PIECE_IDS = Object.keys(BASE) as PieceId[]
-const ZERO: Offset = { dx: 0, dy: 0, rot: 0 }
+const ZERO: Offset = { dx: 0, dy: 0, rot: 0, s: 1 }
+const clampScale = (n: number) => Math.min(3, Math.max(0.2, Math.round(n * 100) / 100))
 
 const NAVY = "#1d2a5e"
 const BLUE = "#1d6fd8"
@@ -64,6 +65,9 @@ export function RenewReceptionShowcase() {
   const [off, setOff] = useState<Partial<Record<PieceId, Offset>>>({})
   const [sel, setSel] = useState<PieceId | null>(null)
   const [copied, setCopied] = useState(false)
+  const [z, setZ] = useState<Partial<Record<PieceId, number>>>({})
+  const zTop = useRef(10)
+  const zBottom = useRef(-1)
   const ref = useRef<HTMLElement>(null)
   const drag = useRef<{ id: PieceId; sx: number; sy: number; dx: number; dy: number; scale: number } | null>(null)
 
@@ -72,6 +76,8 @@ export function RenewReceptionShowcase() {
   }, [])
 
   const get = (id: PieceId): Offset => off[id] ?? ZERO
+  const front = (id: PieceId) => setZ((p) => ({ ...p, [id]: ++zTop.current }))
+  const back = (id: PieceId) => setZ((p) => ({ ...p, [id]: --zBottom.current }))
   const patch = (id: PieceId, f: (o: Offset) => Offset) => setOff((p) => ({ ...p, [id]: f(p[id] ?? ZERO) }))
 
   // Flechas: mover 1 px (Mayús = 10). Q / E: girar 1° (Mayús = 5°).
@@ -88,10 +94,11 @@ export function RenewReceptionShowcase() {
         q: [0, 0, -(e.shiftKey ? 5 : 1)],
         e: [0, 0, e.shiftKey ? 5 : 1],
       }
-      const m = d[k]
+      const ds = k === "+" || k === "=" ? (e.shiftKey ? 0.1 : 0.02) : k === "-" || k === "_" ? (e.shiftKey ? -0.1 : -0.02) : 0
+      const m = d[k] ?? (ds ? ([0, 0, 0] as [number, number, number]) : undefined)
       if (!m) return
       e.preventDefault()
-      patch(sel, (o) => ({ dx: o.dx + m[0], dy: o.dy + m[1], rot: o.rot + m[2] }))
+      patch(sel, (o) => ({ dx: o.dx + m[0], dy: o.dy + m[1], rot: o.rot + m[2], s: clampScale(o.s + ds) }))
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
@@ -107,7 +114,8 @@ export function RenewReceptionShowcase() {
       top: u(b.y + o.dy),
       width: u(b.w),
       ...(b.h !== undefined && { height: u(b.h) }),
-      ...(o.rot !== 0 && { transform: `rotate(${o.rot}deg)` }),
+      zIndex: z[id] ?? b.z,
+      ...((o.rot !== 0 || o.s !== 1) && { transform: `rotate(${o.rot}deg) scale(${o.s})` }),
       ...(editing && {
         cursor: "grab",
         touchAction: "none" as const,
@@ -134,6 +142,7 @@ export function RenewReceptionShowcase() {
         scale: e.currentTarget.getBoundingClientRect().width / CANVAS_W,
       }
       setSel(id)
+      front(id)
     },
     onPointerMove: (e: React.PointerEvent<HTMLElement>) => {
       const d = drag.current
@@ -155,8 +164,10 @@ export function RenewReceptionShowcase() {
   const summary = PIECE_IDS.map((id) => {
     const b = BASE[id]
     const o = get(id)
-    return `${id}: x=${b.x + o.dx}, y=${b.y + o.dy}, rotación=${o.rot}°`
-  }).join("\n")
+    return `${id}: x=${b.x + o.dx}, y=${b.y + o.dy}, rotación=${o.rot}°, escala=${o.s}`
+  }).join("\n") +
+    "\norden (de atrás a frente): " +
+    [...PIECE_IDS].sort((a, c) => (z[a] ?? BASE[a].z) - (z[c] ?? BASE[c].z)).join(" < ")
 
   const copy = async () => {
     try {
@@ -195,7 +206,7 @@ export function RenewReceptionShowcase() {
         <div
           className="overflow-hidden"
           data-piece="recepcion"
-          style={{ ...at("recepcion"), borderRadius: u(24), boxShadow: CARD_SHADOW, zIndex: 1 }}
+          style={{ ...at("recepcion"), borderRadius: u(24), boxShadow: CARD_SHADOW }}
         >
           <Image
             src="/images/renew-recepcion.webp"
@@ -223,7 +234,7 @@ export function RenewReceptionShowcase() {
         <div
           className="overflow-hidden"
           data-piece="equipo"
-          style={{ ...at("equipo"), borderRadius: u(26), boxShadow: CARD_SHADOW, zIndex: 2, background: "#777" }}
+          style={{ ...at("equipo"), borderRadius: u(26), boxShadow: CARD_SHADOW, background: "#777" }}
         >
           <Image
             src="/images/renew-equipo.webp"
@@ -247,7 +258,6 @@ export function RenewReceptionShowcase() {
             color: "#d5dcf3",
             gap: u(9),
             paddingLeft: u(14),
-            zIndex: 6,
             boxShadow: "0 8px 16px -6px rgba(20,30,70,0.4)",
             fontSize: u(22),
             fontWeight: 500,
@@ -262,7 +272,7 @@ export function RenewReceptionShowcase() {
         <div
           aria-hidden
           data-piece="agenda"
-          style={{ ...at("agenda"), borderRadius: u(30), background: "#fff", boxShadow: CARD_SHADOW, zIndex: 4 }}
+          style={{ ...at("agenda"), borderRadius: u(30), background: "#fff", boxShadow: CARD_SHADOW }}
         >
           <div
             className="flex items-center justify-center text-white"
@@ -324,7 +334,7 @@ export function RenewReceptionShowcase() {
           height={420}
           data-piece="iso"
           draggable={false}
-          style={{ ...at("iso"), zIndex: 5, filter: "drop-shadow(0 14px 18px rgba(20,40,90,0.30))" }}
+          style={{ ...at("iso"), filter: "drop-shadow(0 14px 18px rgba(20,40,90,0.30))" }}
         />
 
         {/* Titular: su tamaño sigue al de la pantalla (no al del lienzo), así que
@@ -376,7 +386,7 @@ export function RenewReceptionShowcase() {
       <div className="fixed bottom-4 right-4 z-[100] w-80 rounded-xl border border-slate-200 bg-white p-3 font-sans text-xs text-slate-800 shadow-2xl">
         <div className="mb-1 text-sm font-semibold">Modo edición</div>
         <p className="mb-2 text-slate-500">
-          Arrastre una pieza para moverla. Flechas: 1 px (Mayús = 10). Q / E: girar 1° (Mayús = 5°).
+          Arrastre una pieza para moverla; al hacer clic pasa al frente. Flechas: 1 px (Mayús = 10). Q / E: girar 1° (Mayús = 5°). + / −: tamaño 2% (Mayús = 10%).
           El ícono de WhatsApp va dentro del titular y no se arrastra.
         </p>
         <div className="mb-2 rounded-md bg-slate-50 p-2">
@@ -384,7 +394,7 @@ export function RenewReceptionShowcase() {
             <>
               <div className="font-medium">{BASE[sel].label}</div>
               <div className="tabular-nums text-slate-600">
-                x={BASE[sel].x + get(sel).dx} · y={BASE[sel].y + get(sel).dy} · giro={get(sel).rot}°
+                x={BASE[sel].x + get(sel).dx} · y={BASE[sel].y + get(sel).dy} · giro={get(sel).rot}° · tamaño={Math.round(get(sel).s * 100)}%
               </div>
               <div className="mt-2 flex flex-wrap gap-1">
                 <button className={btn} onClick={() => patch(sel, (o) => ({ ...o, rot: o.rot - 5 }))}>−5°</button>
@@ -392,6 +402,24 @@ export function RenewReceptionShowcase() {
                 <button className={btn} onClick={() => patch(sel, (o) => ({ ...o, rot: o.rot + 1 }))}>+1°</button>
                 <button className={btn} onClick={() => patch(sel, (o) => ({ ...o, rot: o.rot + 5 }))}>+5°</button>
                 <button className={btn} onClick={() => patch(sel, () => ZERO)}>Reiniciar pieza</button>
+              </div>
+              <div className="mt-2 flex items-center gap-1">
+                <button className={btn} onClick={() => patch(sel, (o) => ({ ...o, s: clampScale(o.s - 0.05) }))}>Achicar</button>
+                <input
+                  type="range"
+                  min={0.2}
+                  max={3}
+                  step={0.01}
+                  value={get(sel).s}
+                  onChange={(e) => patch(sel, (o) => ({ ...o, s: clampScale(Number(e.target.value)) }))}
+                  className="min-w-0 flex-1"
+                  aria-label="Tamaño de la pieza"
+                />
+                <button className={btn} onClick={() => patch(sel, (o) => ({ ...o, s: clampScale(o.s + 0.05) }))}>Agrandar</button>
+              </div>
+              <div className="mt-2 flex gap-1">
+                <button className={btn} onClick={() => front(sel)}>Traer al frente</button>
+                <button className={btn} onClick={() => back(sel)}>Enviar al fondo</button>
               </div>
             </>
           ) : (
@@ -403,7 +431,10 @@ export function RenewReceptionShowcase() {
           <button className={`${btn} flex-1 !bg-slate-900 !text-white hover:!bg-slate-700`} onClick={copy}>
             {copied ? "¡Copiado!" : "Copiar posiciones"}
           </button>
-          <button className={btn} onClick={() => setOff({})}>Reiniciar todo</button>
+          <button className={btn} onClick={() => {
+            setOff({})
+            setZ({})
+          }}>Reiniciar todo</button>
         </div>
       </div>
     )}
