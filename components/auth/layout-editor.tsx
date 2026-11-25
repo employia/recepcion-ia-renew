@@ -16,7 +16,7 @@ import type { CSSProperties, PointerEvent as ReactPointerEvent, ReactNode, RefOb
  * Se arrastran con el mouse, se agrandan/achican y se copian sus posiciones y tamaños.
  * Medidas en píxeles del lienzo de 1200 × 896 (el mismo del diseño de la izquierda).
  * - titular: se ancla abajo, su `y` es la distancia al borde inferior.
- * - caras / frase / formulario / línea: su lugar lo decide el layout; se reporta el desplazamiento
+ * - caras / frase / formulario / línea: su lugar lo decide el layout (en BASE, `x`/`y` es su desplazamiento ya fijado); se reporta el desplazamiento
  *   (en píxeles de pantalla del lienzo) respecto a ese lugar original. La línea cambia de largo, no de grosor.
  */
 export const CANVAS_W = 1200
@@ -26,17 +26,19 @@ export type PieceId = "titular" | "logo" | "conjunto" | "caras" | "frase" | "for
 type Offset = { dx: number; dy: number; s: number }
 
 export const BASE: Record<PieceId, { label: string; x: number; y: number; w?: number; h?: number; z: number; s: number }> = {
-  titular: { label: "Frase + WhatsApp", x: -18, y: 81, z: 3, s: 1.21 },
-  logo: { label: "Logo Renew", x: 9, y: -40, w: 290, z: 2, s: 1.19 },
-  conjunto: { label: "Conjunto de fotos", x: 506, y: 46, w: 629, h: 697, z: 1, s: 1.1 },
-  caras: { label: "Caras del equipo", x: 0, y: 0, z: 4, s: 1 },
-  frase: { label: "Frase «tu equipo ya está trabajando»", x: 0, y: 0, z: 4, s: 1 },
-  formulario: { label: "Formulario de login", x: 0, y: 0, z: 5, s: 1 },
-  linea: { label: "Línea gris divisoria", x: 0, y: 0, z: 0, s: 1 },
+  titular: { label: "Frase + WhatsApp", x: -5, y: -19, z: 6, s: 1.21 },
+  logo: { label: "Logo Renew", x: -4, y: -43, w: 290, z: 5, s: 1.19 },
+  conjunto: { label: "Conjunto de fotos", x: 484, y: 25, w: 629, h: 697, z: 1, s: 1.14 },
+  caras: { label: "Caras del equipo", x: 1, y: 7, z: 1, s: 1.12 },
+  frase: { label: "Frase «tu equipo ya está trabajando»", x: 16, y: 0, z: 2, s: 1.08 },
+  formulario: { label: "Formulario de login", x: 10, y: 43, z: 3, s: 1.06 },
+  linea: { label: "Línea gris divisoria", x: 42, y: 4, z: 0, s: 1 },
 }
 const PIECE_IDS = Object.keys(BASE) as PieceId[]
 const clampScale = (n: number) => Math.min(3, Math.max(0.2, Math.round(n * 100) / 100))
-const initial = (id: PieceId): Offset => ({ dx: 0, dy: 0, s: BASE[id].s })
+/** Las piezas del login (caras, frase, formulario, línea) guardan en `x`/`y` su desplazamiento fijado; las demás, su posición absoluta. */
+const isFlow = (id: PieceId) => id === "caras" || id === "frase" || id === "formulario" || id === "linea"
+const initial = (id: PieceId): Offset => ({ dx: isFlow(id) ? BASE[id].x : 0, dy: isFlow(id) ? BASE[id].y : 0, s: BASE[id].s })
 
 /** Píxeles del lienzo → unidades de contenedor (dentro del diseño de la izquierda). */
 const u = (n: number) => `${(n / CANVAS_W) * 100}cqw`
