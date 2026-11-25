@@ -38,13 +38,13 @@ const box = (x: number, y: number, w?: number, h?: number) => ({
 type PieceId = "logo" | "recepcion" | "equipo" | "insignia" | "agenda" | "iso"
 type Offset = { dx: number; dy: number; rot: number; s: number }
 
-const BASE: Record<PieceId, { label: string; x: number; y: number; w: number; h?: number; z: number }> = {
-  logo: { label: "Logo Renew", x: 58, y: 40, w: 290, z: 0 },
-  recepcion: { label: "Foto recepción", x: 497, y: 228, w: 252, h: 280, z: 1 },
-  equipo: { label: "Foto equipo", x: 735, y: 98, w: 325, h: 500, z: 2 },
-  insignia: { label: "Insignia 2017", x: 981, y: 163, w: 110, h: 44, z: 6 },
-  agenda: { label: "Tarjeta agenda", x: 563, y: 450, w: 239, h: 345, z: 4 },
-  iso: { label: "Sello ISO", x: 953, y: 493, w: 194, h: 194, z: 5 },
+const BASE: Record<PieceId, { label: string; x: number; y: number; w: number; h?: number; z: number; s: number }> = {
+  logo: { label: "Logo Renew", x: 48, y: 45, w: 290, z: 2, s: 1.08 },
+  recepcion: { label: "Foto recepción", x: 121, y: 204, w: 252, h: 280, z: 1, s: 0.84 },
+  equipo: { label: "Foto equipo", x: 727, y: 185, w: 325, h: 500, z: 4, s: 1.23 },
+  insignia: { label: "Insignia 2017", x: 1108, y: 139, w: 110, h: 44, z: 0, s: 1 },
+  agenda: { label: "Tarjeta agenda", x: 479, y: 160, w: 239, h: 345, z: 5, s: 0.81 },
+  iso: { label: "Sello ISO", x: 984, y: 592, w: 194, h: 194, z: 3, s: 1 },
 }
 const PIECE_IDS = Object.keys(BASE) as PieceId[]
 const ZERO: Offset = { dx: 0, dy: 0, rot: 0, s: 1 }
@@ -115,7 +115,7 @@ export function RenewReceptionShowcase() {
       width: u(b.w),
       ...(b.h !== undefined && { height: u(b.h) }),
       zIndex: z[id] ?? b.z,
-      ...((o.rot !== 0 || o.s !== 1) && { transform: `rotate(${o.rot}deg) scale(${o.s})` }),
+      ...((o.rot !== 0 || b.s * o.s !== 1) && { transform: `rotate(${o.rot}deg) scale(${Math.round(b.s * o.s * 100) / 100})` }),
       ...(editing && {
         cursor: "grab",
         touchAction: "none" as const,
@@ -164,7 +164,7 @@ export function RenewReceptionShowcase() {
   const summary = PIECE_IDS.map((id) => {
     const b = BASE[id]
     const o = get(id)
-    return `${id}: x=${b.x + o.dx}, y=${b.y + o.dy}, rotación=${o.rot}°, escala=${o.s}`
+    return `${id}: x=${b.x + o.dx}, y=${b.y + o.dy}, rotación=${o.rot}°, escala=${Math.round(b.s * o.s * 100) / 100}`
   }).join("\n") +
     "\norden (de atrás a frente): " +
     [...PIECE_IDS].sort((a, c) => (z[a] ?? BASE[a].z) - (z[c] ?? BASE[c].z)).join(" < ")
@@ -394,7 +394,7 @@ export function RenewReceptionShowcase() {
             <>
               <div className="font-medium">{BASE[sel].label}</div>
               <div className="tabular-nums text-slate-600">
-                x={BASE[sel].x + get(sel).dx} · y={BASE[sel].y + get(sel).dy} · giro={get(sel).rot}° · tamaño={Math.round(get(sel).s * 100)}%
+                x={BASE[sel].x + get(sel).dx} · y={BASE[sel].y + get(sel).dy} · giro={get(sel).rot}° · tamaño={Math.round(BASE[sel].s * get(sel).s * 100)}%
               </div>
               <div className="mt-2 flex flex-wrap gap-1">
                 <button className={btn} onClick={() => patch(sel, (o) => ({ ...o, rot: o.rot - 5 }))}>−5°</button>
@@ -410,8 +410,8 @@ export function RenewReceptionShowcase() {
                   min={0.2}
                   max={3}
                   step={0.01}
-                  value={get(sel).s}
-                  onChange={(e) => patch(sel, (o) => ({ ...o, s: clampScale(Number(e.target.value)) }))}
+                  value={Math.round(BASE[sel].s * get(sel).s * 100) / 100}
+                  onChange={(e) => patch(sel, (o) => ({ ...o, s: Number(e.target.value) / BASE[sel].s }))}
                   className="min-w-0 flex-1"
                   aria-label="Tamaño de la pieza"
                 />
