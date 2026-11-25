@@ -7,6 +7,7 @@ import { EMPLOYEES } from "@/lib/employees"
 import { LEGAL_PATH } from "@/lib/legal"
 import { StatusDot, Thumb } from "@/components/shell/employee-avatar"
 import { RenewReceptionShowcase } from "@/components/auth/renew-reception-showcase"
+import { LayoutEditorProvider, useLayoutEditor } from "@/components/auth/layout-editor"
 
 interface FieldErrors {
   email?: string
@@ -14,7 +15,16 @@ interface FieldErrors {
 }
 
 export function LoginScreen() {
+  return (
+    <LayoutEditorProvider>
+      <LoginScreenInner />
+    </LayoutEditorProvider>
+  )
+}
+
+function LoginScreenInner() {
   const { signIn } = useApp()
+  const { at, dragHandlers } = useLayoutEditor()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [formError, setFormError] = useState("")
@@ -83,6 +93,7 @@ export function LoginScreen() {
 
   return (
     <main
+      {...dragHandlers}
       className="force-light relative min-h-dvh w-full overflow-x-hidden bg-background text-foreground lg:grid lg:grid-cols-[calc(var(--art-w)+2.5rem)_1fr] lg:bg-white"
       style={
         {
@@ -103,7 +114,14 @@ export function LoginScreen() {
         </div>
       </div>
 
-      <div className="relative flex min-h-dvh w-full items-center justify-center px-6 py-6 lg:px-10 lg:border-l lg:border-[#dadde1]">
+      {/* Pieza "login": línea gris + caras + frase + formulario, un solo bloque en el modo edición */}
+      <div
+        data-piece="login"
+        className="relative flex min-h-dvh w-full items-center justify-center px-6 py-6 lg:px-10"
+        style={at("login")}
+      >
+        {/* Línea gris que separa el login del diseño (antes era el borde izquierdo de la columna) */}
+        <div aria-hidden className="absolute inset-y-0 left-0 hidden w-px bg-[#dadde1] lg:block" />
       {/* Ambient warm light, very subtle */}
       <div
         aria-hidden
