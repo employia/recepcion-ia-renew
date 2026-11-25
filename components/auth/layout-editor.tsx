@@ -6,7 +6,7 @@ import type { CSSProperties, PointerEvent as ReactPointerEvent, ReactNode, RefOb
 /**
  * MODO EDICIÓN del login (`?editar=1` en la URL).
  * Hay 4 piezas movibles, cada una es un solo bloque:
- *  - titular:  la frase "La Recepción Digital de Renew en una sola pantalla" + el ícono de WhatsApp
+ *  - titular:  la frase "La Recepción Digital de Renew respondiendo por ti" + el ícono de WhatsApp
  *  - logo:     el logo de Renew (esquina superior izquierda)
  *  - conjunto: fotos del equipo, espacio Renew, sello ISO, tarjeta de agenda, insignia y corazón naranja
  *  - caras:      las caras de los empleados

@@ -61,7 +61,7 @@ export function RenewReceptionShowcase() {
   return (
     <>
       <section
-        aria-label="La Recepción Digital de Renew en una sola pantalla"
+        aria-label="La Recepción Digital de Renew respondiendo por ti"
         className="w-full select-none"
         ref={artRef as React.RefObject<HTMLElement>}
         style={{ containerType: "inline-size", aspectRatio: `${CANVAS_W} / ${CANVAS_H}` }}
@@ -268,7 +268,7 @@ export function RenewReceptionShowcase() {
               <span style={{ color: "#ee6320" }}>de Renew</span>
             </h2>
             <p style={{ margin: "0.18em 0 0", fontSize: "0.71em", fontWeight: 500, letterSpacing: "-0.01em", lineHeight: 1.1 }}>
-              en una sola pantalla.
+              respondiendo por ti.
             </p>
           </div>
         </div>
