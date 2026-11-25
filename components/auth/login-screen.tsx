@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import { useRef, useState } from "react"
 import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react"
 import { useApp } from "@/lib/store"
@@ -62,30 +61,22 @@ export function LoginScreen() {
 
   return (
     <main
-      className="force-light relative min-h-dvh w-full overflow-x-hidden bg-background text-foreground lg:grid lg:grid-cols-[1.6fr_1fr] lg:bg-white"
+      className="force-light relative min-h-dvh w-full overflow-x-hidden bg-background text-foreground lg:grid lg:grid-cols-[1.4fr_1fr] lg:bg-white"
+      style={
+        {
+          // Ancho del diseño de la izquierda; limitado por la altura de la ventana para no hacer scroll.
+          "--art-w": "min(1080px, calc((100dvh - 3rem) * 1.339), calc(58.333vw - 2.5rem))",
+          "--art-h": "calc(var(--art-w) / 1.339)",
+          "--art-pt": "calc(var(--art-w) / 1.339 * 0.047)",
+          "--art-pb": "calc(var(--art-w) / 1.339 * 0.109)",
+        } as React.CSSProperties
+      }
     >
-      {/* Solo escritorio: foto de Renew de fondo, con el logo y la frase encima. En móvil no se muestra. */}
-      <div className="relative hidden overflow-hidden bg-white lg:block">
-        <Image
-          src="/images/renew-login-fondo.jpg"
-          alt="Recepción de Renew"
-          fill
-          priority
-          sizes="60vw"
-          className="object-cover"
-          style={{ objectPosition: "90% 50%" }}
-        />
-        {/* Velo claro suave arriba y abajo para que el logo y la frase se lean sobre la foto. */}
-        <div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0) 30%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.78))",
-          }}
-        />
-        <div className="absolute inset-0">
-          <RenewReceptionShowcase fill />
+      {/* Solo escritorio: pieza de marca a la izquierda. En móvil no se muestra. */}
+      <div className="hidden items-center justify-end bg-white py-6 pl-6 pr-0 lg:flex xl:pl-10">
+        {/* El ancho también se limita por la altura de la ventana para que nunca haga scroll. */}
+        <div style={{ width: "min(100%, var(--art-w))" }}>
+          <RenewReceptionShowcase />
         </div>
       </div>
 
@@ -100,7 +91,7 @@ export function LoginScreen() {
         }}
       />
 
-      <div className="relative flex w-full max-w-[400px] flex-col items-center lg:justify-center">
+      <div className="relative flex w-full max-w-[400px] flex-col items-center lg:h-[var(--art-h)] lg:justify-center lg:pt-[var(--art-pt)] lg:pb-[var(--art-pb)]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/brand/renew-symbol.svg" alt="Renew" className="h-[72px] w-auto lg:hidden [@media(max-height:680px)]:h-14" />
 
