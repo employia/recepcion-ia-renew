@@ -1,5 +1,4 @@
 import Image from "next/image"
-import { CalendarDays, Star, Store } from "lucide-react"
 
 /**
  * Panel de marca del login (solo escritorio).
@@ -28,14 +27,6 @@ const box = (x: number, y: number, w?: number, h?: number) => ({
 })
 
 const NAVY = "#1d2a5e"
-const BLUE = "#1d6fd8"
-const CARD_SHADOW = "0 24px 48px -16px rgba(20,30,70,0.30), 0 3px 8px rgba(20,30,70,0.10)"
-
-const APPOINTMENTS = [
-  { label: "Agenda", date: "08/10/26", time: "7:30 AM", confirmed: true, highlight: false },
-  { label: "Cita", date: "06/10/26", time: "11:30 AM", confirmed: false, highlight: true },
-  { label: "Médica", date: "02/10/26", time: "4:45 PM", confirmed: false, highlight: false },
-] as const
 
 export function RenewReceptionShowcase() {
   return (
@@ -52,136 +43,6 @@ export function RenewReceptionShowcase() {
           width={640}
           height={426}
           style={{ ...box(58, 40, 290), height: "auto" }}
-        />
-
-        {/* Foto de la recepción */}
-        <div
-          className="overflow-hidden"
-          style={{ ...box(497, 228, 252, 280), borderRadius: u(24), boxShadow: CARD_SHADOW, zIndex: 1 }}
-        >
-          <Image
-            src="/images/renew-recepcion.webp"
-            alt="Recepción de Renew"
-            fill
-            sizes="25vw"
-            className="object-cover"
-            style={{ objectPosition: "50% 38%" }}
-          />
-          <div
-            aria-hidden
-            className="absolute flex items-center justify-center"
-            style={{
-              ...box(16, 17, 33, 33),
-              borderRadius: u(9),
-              background: "rgba(255,255,255,0.88)",
-              color: "#6b7186",
-            }}
-          >
-            <Store strokeWidth={2} style={{ width: u(19), height: u(19) }} />
-          </div>
-        </div>
-
-        {/* Foto del equipo */}
-        <div
-          className="overflow-hidden"
-          style={{ ...box(735, 98, 325, 500), borderRadius: u(26), boxShadow: CARD_SHADOW, zIndex: 2, background: "#777" }}
-        >
-          <Image
-            src="/images/renew-equipo.webp"
-            alt="Equipo de recepción de Renew"
-            fill
-            sizes="30vw"
-            className="object-cover"
-            style={{ objectPosition: "50% 50%" }}
-          />
-        </div>
-
-        {/* Insignia 2017 */}
-        <div
-          aria-hidden
-          className="flex items-center"
-          style={{
-            ...box(981, 163, 110, 44),
-            borderRadius: u(12),
-            background: "#2b3566",
-            color: "#d5dcf3",
-            gap: u(9),
-            paddingLeft: u(14),
-            zIndex: 6,
-            boxShadow: "0 8px 16px -6px rgba(20,30,70,0.4)",
-            fontSize: u(22),
-            fontWeight: 500,
-            lineHeight: 1,
-          }}
-        >
-          <CalendarDays strokeWidth={2} style={{ width: u(24), height: u(24), color: "#f58a3b" }} />
-          <span className="tabular-nums">2017</span>
-        </div>
-
-        {/* Tarjeta de agenda */}
-        <div
-          aria-hidden
-          style={{ ...box(563, 450, 239, 345), borderRadius: u(30), background: "#fff", boxShadow: CARD_SHADOW, zIndex: 4 }}
-        >
-          <div
-            className="flex items-center justify-center text-white"
-            style={{ ...box(17, 16, 33, 31), borderRadius: u(9), background: BLUE }}
-          >
-            <Star fill="currentColor" strokeWidth={0} style={{ width: u(18), height: u(18) }} />
-          </div>
-
-          <div
-            className="overflow-hidden"
-            style={{ ...box(14, 56, 211, 236), borderRadius: u(12), border: `${u(1.5)} solid #dde0e7`, background: "#fff" }}
-          >
-            <Image
-              src="/brand/renew-symbol.svg"
-              alt=""
-              width={99}
-              height={193}
-              style={{ ...box(93, 8, 25), height: "auto" }}
-            />
-            <div style={{ ...box(8, 64, 195, 168), lineHeight: 1 }}>
-              {APPOINTMENTS.map((a, i) => (
-                <div key={a.label} style={{ position: "relative", height: u(56), borderTop: i ? `${u(1.5)} solid #e4e6ec` : undefined }}>
-                  <div style={{ ...box(6, 5), fontSize: u(19), fontWeight: 700, color: "#1b2340" }}>{a.label}</div>
-                  {a.confirmed && (
-                    <div
-                      className="flex items-center justify-center text-white"
-                      style={{ ...box(167, 5, 19, 19), borderRadius: "50%", background: BLUE, fontSize: u(12) }}
-                    >
-                      ✓
-                    </div>
-                  )}
-                  <div
-                    className="flex items-center justify-between"
-                    style={{
-                      ...box(0, 29, 195, 25),
-                      borderRadius: u(7),
-                      paddingInline: u(6),
-                      background: a.highlight ? "#e9ebf0" : undefined,
-                      fontSize: u(16.5),
-                    }}
-                  >
-                    <span style={{ color: "#555d73" }}>{a.date}</span>
-                    <span className="tabular-nums" style={{ fontWeight: 600, color: "#1b2340" }}>{a.time}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ ...box(17, 305, 180, 14), borderRadius: u(7), background: "#e6e8ed" }} />
-          <div style={{ ...box(17, 326, 138, 12), borderRadius: u(6), background: "#e6e8ed" }} />
-        </div>
-
-        {/* Sello ISO */}
-        <Image
-          src="/images/renew-iso.webp"
-          alt="Empresa certificada ISO 9001-2015"
-          width={420}
-          height={420}
-          style={{ ...box(788, 535, 194, 194), zIndex: 5, filter: "drop-shadow(0 14px 18px rgba(20,40,90,0.30))" }}
         />
 
         {/* Titular: su tamaño sigue al de la pantalla (no al del lienzo), así que
