@@ -54,27 +54,6 @@ export function RenewReceptionShowcase() {
           style={{ ...box(58, 40, 290), height: "auto" }}
         />
 
-        {/* WhatsApp */}
-        <svg
-          aria-hidden
-          viewBox="0 0 70 70"
-          style={{ ...box(468, 176, 64, 64), zIndex: 8, transform: "rotate(-12deg)", filter: "drop-shadow(0 10px 16px rgba(37,196,63,0.32))" }}
-        >
-          <defs>
-            <linearGradient id="wa-grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#5fe77b" />
-              <stop offset="1" stopColor="#22bd44" />
-            </linearGradient>
-          </defs>
-          <rect width="70" height="70" rx="17" fill="url(#wa-grad)" />
-          <path d="M26.1 54.0A21 21 0 1 0 15.3 42.2L13 57Z" fill="none" stroke="#fff" strokeWidth="4.5" strokeLinejoin="round" />
-          <path
-            transform="translate(23 23)"
-            fill="#fff"
-            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
-          />
-        </svg>
-
         {/* Foto de la recepción */}
         <div
           className="overflow-hidden"
@@ -222,6 +201,25 @@ export function RenewReceptionShowcase() {
             La Recepción
             <br />
             Digital
+            <svg
+              aria-hidden
+              viewBox="0 0 70 70"
+              style={{ display: "inline-block", width: "0.78em", height: "0.78em", marginLeft: "0.22em", verticalAlign: "-0.06em", filter: "drop-shadow(0 6px 10px rgba(37,196,63,0.32))" }}
+            >
+            <defs>
+            <linearGradient id="wa-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#5fe77b" />
+              <stop offset="1" stopColor="#22bd44" />
+            </linearGradient>
+          </defs>
+          <rect width="70" height="70" rx="17" fill="url(#wa-grad)" />
+          <path d="M26.1 54.0A21 21 0 1 0 15.3 42.2L13 57Z" fill="none" stroke="#fff" strokeWidth="4.5" strokeLinejoin="round" />
+          <path
+            transform="translate(23 23)"
+            fill="#fff"
+            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+          />
+        </svg>
             <br />
             <span style={{ color: "#ee6320" }}>de Renew</span>
           </h2>
