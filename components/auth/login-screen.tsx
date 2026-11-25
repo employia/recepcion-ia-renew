@@ -91,7 +91,7 @@ export function LoginScreen() {
         }}
       />
 
-      <div className="relative flex w-full max-w-[400px] flex-col items-center lg:h-[var(--art-h)] lg:max-h-[620px] lg:justify-between lg:pt-[var(--art-pt)] lg:pb-[var(--art-pb)]">
+      <div className="relative flex w-full max-w-[400px] flex-col items-center lg:h-[var(--art-h)] lg:justify-center lg:pt-[var(--art-pt)] lg:pb-[var(--art-pb)]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/brand/renew-symbol.svg" alt="Renew" className="h-[72px] w-auto lg:hidden [@media(max-height:680px)]:h-14" />
 
@@ -125,7 +125,7 @@ export function LoginScreen() {
               </li>
             ))}
           </ul>
-          <p className="mt-4 text-xl text-foreground xl:text-2xl">
+          <p className="mt-3 whitespace-nowrap text-2xl text-foreground xl:text-[27px]">
             tu equipo ya está{" "}
             <span
               className="rounded-lg px-2.5 py-0.5 font-medium text-white"
@@ -139,7 +139,7 @@ export function LoginScreen() {
         <form
           onSubmit={handleSubmit}
           noValidate
-          className="mt-6 w-full space-y-3.5 rounded-2xl lg:mt-8 lg:p-6 border border-border bg-card p-5 shadow-float [@media(max-height:680px)]:mt-4"
+          className="mt-6 w-full space-y-3.5 rounded-2xl lg:mt-7 lg:p-6 border border-border bg-card p-5 shadow-float [@media(max-height:680px)]:mt-4"
         >
           <div className="space-y-1.5">
             <label htmlFor="email" className="text-sm font-medium text-foreground">
