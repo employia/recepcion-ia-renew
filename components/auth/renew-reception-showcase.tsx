@@ -28,12 +28,16 @@ const box = (x: number, y: number, w?: number, h?: number) => ({
 
 const NAVY = "#1d2a5e"
 
-export function RenewReceptionShowcase() {
+export function RenewReceptionShowcase({ fill = false }: { fill?: boolean }) {
   return (
     <section
       aria-label="La Recepción Digital de Renew en una sola pantalla"
       className="w-full select-none"
-      style={{ containerType: "inline-size", aspectRatio: `${CANVAS_W} / ${CANVAS_H}` }}
+      style={
+        fill
+          ? { containerType: "inline-size", height: "100%" }
+          : { containerType: "inline-size", aspectRatio: `${CANVAS_W} / ${CANVAS_H}` }
+      }
     >
       <div className="relative h-full w-full font-sans" style={{ color: NAVY }}>
         {/* Logotipo (completo, con lema) */}
