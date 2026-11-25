@@ -2,7 +2,6 @@
 
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
-import { Star } from "lucide-react"
 
 /**
  * Panel de marca del login (solo escritorio).
@@ -35,28 +34,20 @@ const box = (x: number, y: number, w?: number, h?: number) => ({
  * Con `?editar=1` en la URL se activa el modo de edición: las piezas se arrastran
  * con el mouse, se giran desde el panel y se copian las posiciones para fijarlas aquí.
  */
-type PieceId = "logo" | "equipo" | "agenda" | "iso"
+type PieceId = "logo" | "equipo" | "iso"
 type Offset = { dx: number; dy: number; rot: number; s: number }
 
 const BASE: Record<PieceId, { label: string; x: number; y: number; w: number; h?: number; z: number; s: number }> = {
   logo: { label: "Logo Renew", x: 48, y: 45, w: 290, z: 0, s: 1.08 },
   equipo: { label: "Foto equipo", x: 727, y: 185, w: 325, h: 500, z: 2, s: 1.23 },
-  agenda: { label: "Tarjeta agenda", x: 479, y: 160, w: 239, h: 345, z: 1, s: 0.81 },
-  iso: { label: "Sello ISO", x: 984, y: 592, w: 194, h: 194, z: 3, s: 1 },
+  iso: { label: "Sello ISO", x: 501, y: 235, w: 194, h: 194, z: 3, s: 1 },
 }
 const PIECE_IDS = Object.keys(BASE) as PieceId[]
 const ZERO: Offset = { dx: 0, dy: 0, rot: 0, s: 1 }
 const clampScale = (n: number) => Math.min(3, Math.max(0.2, Math.round(n * 100) / 100))
 
 const NAVY = "#1d2a5e"
-const BLUE = "#1d6fd8"
 const CARD_SHADOW = "0 24px 48px -16px rgba(20,30,70,0.30), 0 3px 8px rgba(20,30,70,0.10)"
-
-const APPOINTMENTS = [
-  { label: "Agenda", date: "08/10/26", time: "7:30 AM", confirmed: true, highlight: false },
-  { label: "Cita", date: "06/10/26", time: "11:30 AM", confirmed: false, highlight: true },
-  { label: "Médica", date: "02/10/26", time: "4:45 PM", confirmed: false, highlight: false },
-] as const
 
 export function RenewReceptionShowcase() {
   const [editing, setEditing] = useState(false)
@@ -215,64 +206,6 @@ export function RenewReceptionShowcase() {
             className="object-cover"
             style={{ objectPosition: "50% 50%" }}
           />
-        </div>
-
-        {/* Tarjeta de agenda */}
-        <div
-          aria-hidden
-          data-piece="agenda"
-          style={{ ...at("agenda"), borderRadius: u(30), background: "#fff", boxShadow: CARD_SHADOW }}
-        >
-          <div
-            className="flex items-center justify-center text-white"
-            style={{ ...box(17, 16, 33, 31), borderRadius: u(9), background: BLUE }}
-          >
-            <Star fill="currentColor" strokeWidth={0} style={{ width: u(18), height: u(18) }} />
-          </div>
-
-          <div
-            className="overflow-hidden"
-            style={{ ...box(14, 56, 211, 236), borderRadius: u(12), border: `${u(1.5)} solid #dde0e7`, background: "#fff" }}
-          >
-            <Image
-              src="/brand/renew-symbol.svg"
-              alt=""
-              width={99}
-              height={193}
-              style={{ ...box(93, 8, 25), height: "auto" }}
-            />
-            <div style={{ ...box(8, 64, 195, 168), lineHeight: 1 }}>
-              {APPOINTMENTS.map((a, i) => (
-                <div key={a.label} style={{ position: "relative", height: u(56), borderTop: i ? `${u(1.5)} solid #e4e6ec` : undefined }}>
-                  <div style={{ ...box(6, 5), fontSize: u(19), fontWeight: 700, color: "#1b2340" }}>{a.label}</div>
-                  {a.confirmed && (
-                    <div
-                      className="flex items-center justify-center text-white"
-                      style={{ ...box(167, 5, 19, 19), borderRadius: "50%", background: BLUE, fontSize: u(12) }}
-                    >
-                      ✓
-                    </div>
-                  )}
-                  <div
-                    className="flex items-center justify-between"
-                    style={{
-                      ...box(0, 29, 195, 25),
-                      borderRadius: u(7),
-                      paddingInline: u(6),
-                      background: a.highlight ? "#e9ebf0" : undefined,
-                      fontSize: u(16.5),
-                    }}
-                  >
-                    <span style={{ color: "#555d73" }}>{a.date}</span>
-                    <span className="tabular-nums" style={{ fontWeight: 600, color: "#1b2340" }}>{a.time}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ ...box(17, 305, 180, 14), borderRadius: u(7), background: "#e6e8ed" }} />
-          <div style={{ ...box(17, 326, 138, 12), borderRadius: u(6), background: "#e6e8ed" }} />
         </div>
 
         {/* Sello ISO */}
