@@ -32,11 +32,12 @@ export function LoginScreen() {
       const vh = window.innerHeight
       if (vw < 1024) return setScale(1)
       // mismas medidas que --art-w (ver abajo)
-      const artW = Math.min((vh - 64) * 1.339, vw * 0.62, vw - 488)
+      const artW = Math.min((vh - 64) * 1.339, vw * 0.55 - 40)
       const artH = artW / 1.339
       const region = artH * (1 - 0.047 - 0.109) // franja vertical del diseño de la izquierda
       const colW = vw - (artW + 40)
-      const k = Math.min(region / 430, (colW - 48) / 400, 1.6)
+      // el formulario ocupa como máximo ~72% de su columna: siempre queda aire a los lados
+      const k = Math.min(region / 470, (colW * 0.72) / 400, 1.6)
       setScale(Math.max(1, Math.round(k * 100) / 100))
     }
     update()
@@ -86,8 +87,8 @@ export function LoginScreen() {
       style={
         {
           // Ancho del diseño de la izquierda: llena la altura de la ventana (con margen) sin pasarse de
-          // 62% del ancho y dejando siempre sitio al formulario. La columna izquierda se ajusta a él.
-          "--art-w": "min(calc((100dvh - 4rem) * 1.339), 62vw, calc(100vw - 30.5rem))",
+          // 55% del ancho (los dos lados quedan casi iguales). La columna izquierda se ajusta a él.
+          "--art-w": "min(calc((100dvh - 4rem) * 1.339), calc(55vw - 2.5rem))",
           "--art-h": "calc(var(--art-w) / 1.339)",
           "--art-pt": "calc(var(--art-w) / 1.339 * 0.047)",
           "--art-pb": "calc(var(--art-w) / 1.339 * 0.109)",
@@ -102,7 +103,7 @@ export function LoginScreen() {
         </div>
       </div>
 
-      <div className="relative flex min-h-dvh w-full items-center justify-center px-6 py-6 lg:border-l lg:border-[#dadde1]">
+      <div className="relative flex min-h-dvh w-full items-center justify-center px-6 py-6 lg:px-10 lg:border-l lg:border-[#dadde1]">
       {/* Ambient warm light, very subtle */}
       <div
         aria-hidden
@@ -152,7 +153,7 @@ export function LoginScreen() {
               </li>
             ))}
           </ul>
-          <p className="mt-3 whitespace-nowrap text-2xl text-foreground xl:text-[27px]">
+          <p className="mt-4 whitespace-nowrap text-2xl text-foreground xl:text-[27px]">
             tu equipo ya está{" "}
             <span
               className="rounded-lg px-2.5 py-0.5 font-medium text-white"
@@ -166,7 +167,7 @@ export function LoginScreen() {
         <form
           onSubmit={handleSubmit}
           noValidate
-          className="mt-6 w-full space-y-3.5 rounded-2xl lg:mt-7 lg:p-6 border border-border bg-card p-5 shadow-float [@media(max-height:680px)]:mt-4"
+          className="mt-6 w-full space-y-3.5 rounded-2xl lg:mt-8 lg:space-y-5 lg:p-8 border border-border bg-card p-5 shadow-float [@media(max-height:680px)]:mt-4"
         >
           <div className="space-y-1.5">
             <label htmlFor="email" className="text-sm font-medium text-foreground">
