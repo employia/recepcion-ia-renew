@@ -58,7 +58,7 @@ export function RenewReceptionShowcase() {
         <svg
           aria-hidden
           viewBox="0 0 70 70"
-          style={{ ...box(717, 196, 64, 64), zIndex: 8, transform: "rotate(-12deg)", filter: "drop-shadow(0 10px 16px rgba(37,196,63,0.32))" }}
+          style={{ ...box(468, 176, 64, 64), zIndex: 8, transform: "rotate(-12deg)", filter: "drop-shadow(0 10px 16px rgba(37,196,63,0.32))" }}
         >
           <defs>
             <linearGradient id="wa-grad" x1="0" y1="0" x2="0" y2="1">
