@@ -42,13 +42,12 @@ const box = (x: number, y: number, w?: number, h?: number) => ({
 type PieceId = "titular" | "logo" | "conjunto"
 type Offset = { dx: number; dy: number; s: number }
 
-const BASE: Record<PieceId, { label: string; x: number; y: number; w?: number; h?: number; z: number }> = {
-  titular: { label: "Frase + WhatsApp", x: 60, y: 98, z: 0 },
-  logo: { label: "Logo Renew", x: 58, y: 40, w: 290, z: 0 },
-  conjunto: { label: "Conjunto de fotos", x: 497, y: 98, w: 629, h: 697, z: 1 },
+const BASE: Record<PieceId, { label: string; x: number; y: number; w?: number; h?: number; z: number; s: number }> = {
+  titular: { label: "Frase + WhatsApp", x: -18, y: 81, z: 3, s: 1.21 },
+  logo: { label: "Logo Renew", x: 9, y: -40, w: 290, z: 2, s: 1.19 },
+  conjunto: { label: "Conjunto de fotos", x: 506, y: 46, w: 629, h: 697, z: 1, s: 1.1 },
 }
 const PIECE_IDS = Object.keys(BASE) as PieceId[]
-const ZERO: Offset = { dx: 0, dy: 0, s: 1 }
 const clampScale = (n: number) => Math.min(3, Math.max(0.2, Math.round(n * 100) / 100))
 
 const NAVY = "#1d2a5e"
@@ -93,10 +92,10 @@ export function RenewReceptionShowcase() {
     setEditing(new URLSearchParams(window.location.search).get("editar") === "1")
   }, [])
 
-  const get = (id: PieceId): Offset => off[id] ?? ZERO
+  const get = (id: PieceId): Offset => off[id] ?? { dx: 0, dy: 0, s: BASE[id].s }
   const front = (id: PieceId) => setZ((p) => ({ ...p, [id]: ++zTop.current }))
   const back = (id: PieceId) => setZ((p) => ({ ...p, [id]: --zBottom.current }))
-  const patch = (id: PieceId, f: (o: Offset) => Offset) => setOff((p) => ({ ...p, [id]: f(p[id] ?? ZERO) }))
+  const patch = (id: PieceId, f: (o: Offset) => Offset) => setOff((p) => ({ ...p, [id]: f(p[id] ?? { dx: 0, dy: 0, s: BASE[id].s }) }))
 
   // Flechas: mover 1 px (Mayús = 10). + / −: tamaño 2% (Mayús = 10%).
   useEffect(() => {
@@ -458,7 +457,7 @@ export function RenewReceptionShowcase() {
                 <div className="mt-2 flex gap-1">
                   <button className={btn} onClick={() => front(sel)}>Traer al frente</button>
                   <button className={btn} onClick={() => back(sel)}>Enviar al fondo</button>
-                  <button className={btn} onClick={() => patch(sel, () => ZERO)}>Reiniciar pieza</button>
+                  <button className={btn} onClick={() => patch(sel, () => ({ dx: 0, dy: 0, s: BASE[sel].s }))}>Reiniciar pieza</button>
                 </div>
               </>
             ) : (
