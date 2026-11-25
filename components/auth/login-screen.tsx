@@ -119,7 +119,7 @@ function LoginScreenInner() {
         <div
           aria-hidden
           data-piece="linea"
-          className="absolute inset-y-0 left-0 hidden w-px bg-[#dadde1] lg:block"
+          className="absolute inset-y-0 left-0 hidden w-[2px] bg-[#dadde1] lg:block"
           style={at("linea")}
         >
           {/* Zona ampliada para poder agarrar la línea con el mouse en el modo edición */}
