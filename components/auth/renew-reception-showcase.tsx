@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { CalendarDays, Heart, Star, Store } from "lucide-react"
+import { CalendarDays, Star, Store } from "lucide-react"
 
 /**
  * Panel de marca del login (solo escritorio).
@@ -28,7 +28,6 @@ const box = (x: number, y: number, w?: number, h?: number) => ({
 })
 
 const NAVY = "#1d2a5e"
-const ORANGE = "#ee6a24"
 const BLUE = "#1d6fd8"
 const CARD_SHADOW = "0 24px 48px -16px rgba(20,30,70,0.30), 0 3px 8px rgba(20,30,70,0.10)"
 
@@ -37,23 +36,6 @@ const APPOINTMENTS = [
   { label: "Cita", date: "06/10/26", time: "11:30 AM", confirmed: false, highlight: true },
   { label: "Médica", date: "02/10/26", time: "4:45 PM", confirmed: false, highlight: false },
 ] as const
-
-function HeartBubble({ cx, cy, d }: { cx: number; cy: number; d: number }) {
-  return (
-    <div
-      aria-hidden
-      className="flex items-center justify-center rounded-full text-white"
-      style={{
-        ...box(cx - d / 2, cy - d / 2, d, d),
-        background: ORANGE,
-        boxShadow: "0 8px 18px -6px rgba(238,106,36,0.55)",
-        zIndex: 8,
-      }}
-    >
-      <Heart fill="currentColor" strokeWidth={0} style={{ width: u(d * 0.52), height: u(d * 0.52) }} />
-    </div>
-  )
-}
 
 export function RenewReceptionShowcase() {
   return (
@@ -72,7 +54,26 @@ export function RenewReceptionShowcase() {
           style={{ ...box(58, 40, 290), height: "auto" }}
         />
 
-        <HeartBubble cx={1080} cy={548} d={92} />
+        {/* WhatsApp */}
+        <svg
+          aria-hidden
+          viewBox="0 0 70 70"
+          style={{ ...box(1040, 508, 80, 80), zIndex: 8, transform: "rotate(-8deg)", filter: "drop-shadow(0 10px 16px rgba(37,196,63,0.32))" }}
+        >
+          <defs>
+            <linearGradient id="wa-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#5fe77b" />
+              <stop offset="1" stopColor="#22bd44" />
+            </linearGradient>
+          </defs>
+          <rect width="70" height="70" rx="17" fill="url(#wa-grad)" />
+          <path d="M26.1 54.0A21 21 0 1 0 15.3 42.2L13 57Z" fill="none" stroke="#fff" strokeWidth="4.5" strokeLinejoin="round" />
+          <path
+            transform="translate(23 23)"
+            fill="#fff"
+            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+          />
+        </svg>
 
         {/* Foto de la recepción */}
         <div
@@ -221,33 +222,6 @@ export function RenewReceptionShowcase() {
             whiteSpace: "nowrap",
           }}
         >
-          <svg
-            aria-hidden
-            viewBox="0 0 70 70"
-            style={{
-              position: "absolute",
-              left: "3.1em",
-              bottom: "calc(100% + 0.3em)",
-              width: "1.3em",
-              height: "1.3em",
-              transform: "rotate(-8deg)",
-              filter: "drop-shadow(0 8px 14px rgba(37,196,63,0.30))",
-            }}
-          >
-            <defs>
-              <linearGradient id="wa-grad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#5fe77b" />
-                <stop offset="1" stopColor="#22bd44" />
-              </linearGradient>
-            </defs>
-            <rect width="70" height="70" rx="17" fill="url(#wa-grad)" />
-            <path d="M26.1 54.0A21 21 0 1 0 15.3 42.2L13 57Z" fill="none" stroke="#fff" strokeWidth="4.5" strokeLinejoin="round" />
-            <path
-              transform="translate(23 23)"
-              fill="#fff"
-              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
-            />
-          </svg>
           <h2 style={{ margin: 0, fontSize: "1em", fontWeight: 700, lineHeight: "inherit" }}>
             La Recepción
             <br />
