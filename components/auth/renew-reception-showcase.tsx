@@ -58,7 +58,7 @@ export function RenewReceptionShowcase() {
         <svg
           aria-hidden
           viewBox="0 0 70 70"
-          style={{ ...box(1040, 508, 80, 80), zIndex: 8, transform: "rotate(-8deg)", filter: "drop-shadow(0 10px 16px rgba(37,196,63,0.32))" }}
+          style={{ ...box(692, 177, 76, 76), zIndex: 8, transform: "rotate(-8deg)", filter: "drop-shadow(0 10px 16px rgba(37,196,63,0.32))" }}
         >
           <defs>
             <linearGradient id="wa-grad" x1="0" y1="0" x2="0" y2="1">
@@ -115,10 +115,6 @@ export function RenewReceptionShowcase() {
             className="object-cover"
             style={{ objectPosition: "50% 50%" }}
           />
-          {/* barra de progreso tipo historia */}
-          <div aria-hidden className="absolute" style={{ ...box(23, 22, 279, 5), borderRadius: u(3), background: "rgba(255,255,255,0.45)" }}>
-            <div className="h-full" style={{ width: "45%", borderRadius: u(3), background: "#fff" }} />
-          </div>
         </div>
 
         {/* Insignia 2017 */}
