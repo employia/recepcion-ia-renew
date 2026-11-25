@@ -60,11 +60,22 @@ export function LoginScreen() {
     }`
 
   return (
-    <main className="force-light relative min-h-dvh w-full overflow-x-hidden bg-background text-foreground lg:grid lg:grid-cols-[1.4fr_1fr] lg:bg-white">
+    <main
+      className="force-light relative min-h-dvh w-full overflow-x-hidden bg-background text-foreground lg:grid lg:grid-cols-[1.4fr_1fr] lg:bg-white"
+      style={
+        {
+          // Ancho del diseño de la izquierda; limitado por la altura de la ventana para no hacer scroll.
+          "--art-w": "min(1080px, calc((100dvh - 3rem) * 1.339), calc(58.333vw - 2.5rem))",
+          "--art-h": "calc(var(--art-w) / 1.339)",
+          "--art-pt": "calc(var(--art-w) / 1.339 * 0.047)",
+          "--art-pb": "calc(var(--art-w) / 1.339 * 0.109)",
+        } as React.CSSProperties
+      }
+    >
       {/* Solo escritorio: pieza de marca a la izquierda. En móvil no se muestra. */}
       <div className="hidden items-center justify-end bg-white py-6 pl-6 pr-0 lg:flex xl:pl-10">
         {/* El ancho también se limita por la altura de la ventana para que nunca haga scroll. */}
-        <div style={{ width: "min(100%, 1080px, calc((100dvh - 3rem) * 1.339))" }}>
+        <div style={{ width: "min(100%, var(--art-w))" }}>
           <RenewReceptionShowcase />
         </div>
       </div>
@@ -80,11 +91,12 @@ export function LoginScreen() {
         }}
       />
 
-      <div className="relative flex w-full max-w-[400px] flex-col items-center">
+      <div className="relative flex w-full max-w-[400px] flex-col items-center lg:h-[var(--art-h)] lg:justify-center lg:pt-[var(--art-pt)] lg:pb-[var(--art-pb)]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/brand/renew-symbol.svg" alt="Renew" className="h-[72px] w-auto [@media(max-height:680px)]:h-14" />
+        <img src="/brand/renew-symbol.svg" alt="Renew" className="h-[72px] w-auto lg:hidden [@media(max-height:680px)]:h-14" />
 
-        <div className="mt-5 text-center">
+        {/* Móvil: sin cambios */}
+        <div className="mt-5 text-center lg:hidden">
           <h1 className="text-balance font-serif text-2xl font-medium tracking-tight sm:text-3xl">
             Bienvenido a su recepción digital
           </h1>
@@ -103,10 +115,26 @@ export function LoginScreen() {
           </div>
         </div>
 
+        {/* Escritorio: caras del equipo + estado como etiqueta */}
+        <div className="hidden w-full flex-col items-center text-center lg:flex">
+          <h1 className="sr-only">Recepción digital de Renew</h1>
+          <ul aria-label="Equipo de la oficina" className="flex -space-x-3">
+            {EMPLOYEES.map((e) => (
+              <li key={e.id} className="rounded-full ring-4 ring-background" title={`${e.name} · ${e.role}`}>
+                <Thumb employee={e} size={84} />
+              </li>
+            ))}
+          </ul>
+          <p className="mt-5 text-xl text-foreground xl:text-2xl">
+            tu equipo ya está{" "}
+            <span className="rounded-lg bg-success px-2.5 py-0.5 font-medium text-success-foreground">trabajando</span>
+          </p>
+        </div>
+
         <form
           onSubmit={handleSubmit}
           noValidate
-          className="mt-6 w-full space-y-3.5 rounded-2xl border border-border bg-card p-5 shadow-float [@media(max-height:680px)]:mt-4"
+          className="mt-6 w-full space-y-3.5 rounded-2xl lg:mt-8 lg:p-6 border border-border bg-card p-5 shadow-float [@media(max-height:680px)]:mt-4"
         >
           <div className="space-y-1.5">
             <label htmlFor="email" className="text-sm font-medium text-foreground">

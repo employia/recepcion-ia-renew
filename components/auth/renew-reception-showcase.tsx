@@ -76,13 +76,13 @@ export function RenewReceptionShowcase() {
       style={{ containerType: "inline-size", aspectRatio: `${CANVAS_W} / ${CANVAS_H}` }}
     >
       <div className="relative h-full w-full font-sans" style={{ color: NAVY }}>
-        {/* Logotipo */}
+        {/* Logotipo (completo, con lema) */}
         <Image
-          src="/images/renew-logo.webp"
-          alt="Renew — Centro de Terapia Física & Rehabilitación"
+          src="/images/renew-logo-full.webp"
+          alt="Renew — Centro de Terapia Física & Rehabilitación. Fortaleciendo & Restaurando su Salud"
           width={640}
           height={426}
-          style={{ ...box(58, 42, 290), height: "auto" }}
+          style={{ ...box(58, 40, 290), height: "auto" }}
         />
 
         {/* WhatsApp */}
