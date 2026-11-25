@@ -91,7 +91,7 @@ export function LoginScreen() {
         }}
       />
 
-      <div className="relative flex w-full max-w-[400px] flex-col items-center lg:h-[var(--art-h)] lg:justify-center lg:pt-[var(--art-pt)] lg:pb-[var(--art-pb)]">
+      <div className="relative flex w-full max-w-[400px] flex-col items-center lg:h-[var(--art-h)] lg:max-h-[620px] lg:justify-between lg:pt-[var(--art-pt)] lg:pb-[var(--art-pb)]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/brand/renew-symbol.svg" alt="Renew" className="h-[72px] w-auto lg:hidden [@media(max-height:680px)]:h-14" />
 
@@ -118,16 +118,21 @@ export function LoginScreen() {
         {/* Escritorio: caras del equipo + estado como etiqueta */}
         <div className="hidden w-full flex-col items-center text-center lg:flex">
           <h1 className="sr-only">Recepción digital de Renew</h1>
-          <ul aria-label="Equipo de la oficina" className="flex -space-x-3">
+          <ul aria-label="Equipo de la oficina" className="flex -space-x-2.5">
             {EMPLOYEES.map((e) => (
-              <li key={e.id} className="rounded-full ring-4 ring-background" title={`${e.name} · ${e.role}`}>
-                <Thumb employee={e} size={84} />
+              <li key={e.id} className="rounded-full ring-[3px] ring-background" title={`${e.name} · ${e.role}`}>
+                <Thumb employee={e} size={46} />
               </li>
             ))}
           </ul>
-          <p className="mt-5 text-xl text-foreground xl:text-2xl">
+          <p className="mt-4 text-xl text-foreground xl:text-2xl">
             tu equipo ya está{" "}
-            <span className="rounded-lg bg-success px-2.5 py-0.5 font-medium text-success-foreground">trabajando</span>
+            <span
+              className="rounded-lg px-2.5 py-0.5 font-medium text-white"
+              style={{ background: "linear-gradient(180deg, #5fe77b, #22bd44)" }}
+            >
+              trabajando
+            </span>
           </p>
         </div>
 
