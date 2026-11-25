@@ -202,7 +202,7 @@ export function RenewReceptionShowcase() {
           alt="Empresa certificada ISO 9001-2015"
           width={420}
           height={420}
-          style={{ ...box(788, 535, 194, 194), zIndex: 5, filter: "drop-shadow(0 14px 18px rgba(20,40,90,0.30))" }}
+          style={{ ...box(648, 493, 194, 194), zIndex: 5, filter: "drop-shadow(0 14px 18px rgba(20,40,90,0.30))" }}
         />
 
         {/* Titular: su tamaño sigue al de la pantalla (no al del lienzo), así que
