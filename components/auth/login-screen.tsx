@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react"
 import { useApp } from "@/lib/store"
 import { EMPLOYEES } from "@/lib/employees"
@@ -22,6 +22,27 @@ export function LoginScreen() {
   const [capsLock, setCapsLock] = useState(false)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [loading, setLoading] = useState(false)
+  // Escala del bloque de login en escritorio (1 = tamaño base). Crece con la ventana (p. ej. pantalla
+  // completa) para que no sobre espacio; nunca pasa de lo que cabe en su columna.
+  const [scale, setScale] = useState(1)
+
+  useEffect(() => {
+    const update = () => {
+      const vw = window.innerWidth
+      const vh = window.innerHeight
+      if (vw < 1024) return setScale(1)
+      // mismas medidas que --art-w (ver abajo)
+      const artW = Math.min((vh - 64) * 1.339, vw * 0.62, vw - 488)
+      const artH = artW / 1.339
+      const region = artH * (1 - 0.047 - 0.109) // franja vertical del diseño de la izquierda
+      const colW = vw - (artW + 40)
+      const k = Math.min(region / 430, (colW - 48) / 400, 1.6)
+      setScale(Math.max(1, Math.round(k * 100) / 100))
+    }
+    update()
+    window.addEventListener("resize", update)
+    return () => window.removeEventListener("resize", update)
+  }, [])
   const emailRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
 
@@ -61,11 +82,12 @@ export function LoginScreen() {
 
   return (
     <main
-      className="force-light relative min-h-dvh w-full overflow-x-hidden bg-background text-foreground lg:grid lg:grid-cols-[1.4fr_1fr] lg:bg-white"
+      className="force-light relative min-h-dvh w-full overflow-x-hidden bg-background text-foreground lg:grid lg:grid-cols-[calc(var(--art-w)+2.5rem)_1fr] lg:bg-white"
       style={
         {
-          // Ancho del diseño de la izquierda; limitado por la altura de la ventana para no hacer scroll.
-          "--art-w": "min(1080px, calc((100dvh - 3rem) * 1.339), calc(58.333vw - 2.5rem))",
+          // Ancho del diseño de la izquierda: llena la altura de la ventana (con margen) sin pasarse de
+          // 62% del ancho y dejando siempre sitio al formulario. La columna izquierda se ajusta a él.
+          "--art-w": "min(calc((100dvh - 4rem) * 1.339), 62vw, calc(100vw - 30.5rem))",
           "--art-h": "calc(var(--art-w) / 1.339)",
           "--art-pt": "calc(var(--art-w) / 1.339 * 0.047)",
           "--art-pb": "calc(var(--art-w) / 1.339 * 0.109)",
@@ -115,6 +137,11 @@ export function LoginScreen() {
           </div>
         </div>
 
+        {/* Escritorio: caras + estado + formulario, escalados juntos con la ventana. En móvil "contents" no genera caja. */}
+        <div
+          className="contents lg:flex lg:w-full lg:flex-col lg:items-center"
+          style={{ transform: `scale(${scale})`, transformOrigin: "center" }}
+        >
         {/* Escritorio: caras del equipo + estado como etiqueta */}
         <div className="hidden w-full flex-col items-center text-center lg:flex">
           <h1 className="sr-only">Recepción digital de Renew</h1>
@@ -252,6 +279,7 @@ export function LoginScreen() {
             .
           </p>
         </form>
+        </div>
 
       </div>
       </div>
