@@ -265,37 +265,30 @@ export function RenewReceptionShowcase() {
           <path d="M54 12l12-12" stroke={BLUE} strokeWidth="4" strokeLinecap="round" transform="translate(0 0)" />
         </svg>
 
-        {/* Titular */}
-        <h2
+        {/* Titular: su tamaño sigue al de la pantalla (no al del lienzo), así que
+            agrandar el diseño no lo agranda a él. Anclado abajo a la izquierda. */}
+        <div
           style={{
-            ...box(60, 563),
-            margin: 0,
-            fontSize: u(82),
-            lineHeight: u(78),
-            fontWeight: 700,
+            position: "absolute",
+            left: u(60),
+            bottom: u(30),
+            fontSize: "min(3.3vw, 6.4cqw)",
+            lineHeight: 1.02,
             letterSpacing: "-0.025em",
             whiteSpace: "nowrap",
           }}
         >
-          La Recepción
-          <br />
-          Digital
-          <br />
-          <span style={{ color: "#ee6320" }}>de Renew</span>
-        </h2>
-        <p
-          style={{
-            ...box(60, 803),
-            margin: 0,
-            fontSize: u(58),
-            lineHeight: u(60),
-            fontWeight: 500,
-            letterSpacing: "-0.01em",
-            whiteSpace: "nowrap",
-          }}
-        >
-          en una sola pantalla.
-        </p>
+          <h2 style={{ margin: 0, fontSize: "1em", fontWeight: 700, lineHeight: "inherit" }}>
+            La Recepción
+            <br />
+            Digital
+            <br />
+            <span style={{ color: "#ee6320" }}>de Renew</span>
+          </h2>
+          <p style={{ margin: "0.18em 0 0", fontSize: "0.71em", fontWeight: 500, letterSpacing: "-0.01em", lineHeight: 1.1 }}>
+            en una sola pantalla.
+          </p>
+        </div>
       </div>
     </section>
   )
