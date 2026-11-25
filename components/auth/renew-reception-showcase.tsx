@@ -117,7 +117,7 @@ export function RenewReceptionShowcase() {
         {/* Foto de la recepción */}
         <div
           className="overflow-hidden"
-          style={{ ...box(497, 228, 300, 280), borderRadius: u(24), boxShadow: CARD_SHADOW, zIndex: 1 }}
+          style={{ ...box(497, 228, 252, 280), borderRadius: u(24), boxShadow: CARD_SHADOW, zIndex: 1 }}
         >
           <Image
             src="/images/renew-recepcion.webp"
@@ -125,7 +125,7 @@ export function RenewReceptionShowcase() {
             fill
             sizes="25vw"
             className="object-cover"
-            style={{ objectPosition: "50% 50%" }}
+            style={{ objectPosition: "50% 38%" }}
           />
           <div
             aria-hidden
