@@ -6,6 +6,7 @@ import { useApp } from "@/lib/store"
 import { EMPLOYEES } from "@/lib/employees"
 import { LEGAL_PATH } from "@/lib/legal"
 import { StatusDot, Thumb } from "@/components/shell/employee-avatar"
+import { RenewReceptionShowcase } from "@/components/auth/renew-reception-showcase"
 
 interface FieldErrors {
   email?: string
@@ -59,7 +60,13 @@ export function LoginScreen() {
     }`
 
   return (
-    <main className="relative flex min-h-dvh w-full items-center justify-center overflow-x-hidden bg-background px-6 py-6">
+    <main className="relative min-h-dvh w-full overflow-x-hidden bg-background lg:grid lg:grid-cols-[1.1fr_1fr]">
+      {/* Solo escritorio: pieza de marca a la izquierda. En móvil no se muestra. */}
+      <div className="hidden lg:block">
+        <RenewReceptionShowcase />
+      </div>
+
+      <div className="relative flex min-h-dvh w-full items-center justify-center px-6 py-6">
       {/* Ambient warm light, very subtle */}
       <div
         aria-hidden
@@ -210,7 +217,7 @@ export function LoginScreen() {
           </p>
         </form>
 
-
+      </div>
       </div>
     </main>
   )
