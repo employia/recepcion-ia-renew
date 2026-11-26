@@ -154,9 +154,13 @@ export function AppSidebar() {
             </span>
           </button>
           {expanded && (
-            <div className="min-w-0 pl-1">
-              <p className="truncate text-sm font-semibold leading-tight">Renew</p>
-              <p className="truncate text-xs leading-tight text-muted-foreground">Recepción Digital</p>
+            <div className="flex min-w-0 items-center gap-3 pl-2">
+              <img src="/brand/renew-symbol.svg" alt="" aria-hidden className="h-9 w-auto shrink-0" />
+              <img
+                src="/brand/renew-logotipo.webp"
+                alt="Renew"
+                className="h-[22px] w-auto shrink-0 dark:brightness-0 dark:invert"
+              />
             </div>
           )}
         </div>
