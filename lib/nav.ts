@@ -20,7 +20,7 @@ export const NAV_ITEMS: NavItem[] = [
     description: "Lo que Valentina atiende",
     icon: MessagesSquare,
     owner: "valentina",
-    subtitle: "Atendidas por Valentina · Datos de demostración",
+    subtitle: "Chats de Valentina",
   },
   {
     id: "escalations",
@@ -28,7 +28,7 @@ export const NAV_ITEMS: NavItem[] = [
     description: "Casos que necesitan a una persona",
     icon: UserRoundCheck,
     owner: "steven",
-    subtitle: "Gestionados por Steven · Datos de demostración",
+    subtitle: "Casos escalados a Renew",
   },
   {
     id: "metrics",
@@ -36,10 +36,10 @@ export const NAV_ITEMS: NavItem[] = [
     description: "El rendimiento que analiza Carlos",
     icon: BarChart3,
     owner: "carlos",
-    subtitle: "Analizadas por Carlos",
+    subtitle: "Cifras de la recepción",
   },
-  { id: "archived", label: "Archivados", description: "Elementos guardados", icon: Archive, subtitle: "Conversaciones y escalamientos archivados" },
-  { id: "trash", label: "Papelera", description: "Elementos eliminados", icon: Trash2, subtitle: "Elementos pendientes de eliminación definitiva" },
+  { id: "archived", label: "Archivados", description: "Elementos guardados", icon: Archive, subtitle: "Chats y casos guardados" },
+  { id: "trash", label: "Papelera", description: "Elementos eliminados", icon: Trash2, subtitle: "Pendientes de eliminar" },
 ]
 
 export const SETTINGS_ITEM: NavItem = {
@@ -47,7 +47,7 @@ export const SETTINGS_ITEM: NavItem = {
   label: "Configuración",
   description: "Cuenta, equipo y apariencia",
   icon: Settings,
-  subtitle: "Cuenta, equipo y apariencia",
+  subtitle: "Cuenta y apariencia",
 }
 
 export function navItem(id: ModuleId): NavItem {

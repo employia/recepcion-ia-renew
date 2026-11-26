@@ -120,7 +120,7 @@ export function ConversationsModule() {
                 <button onClick={() => void archive("conversation", c)} className="press inline-flex min-h-9 items-center gap-2 rounded-lg px-3 text-xs font-semibold hover:bg-secondary">
                   <Archive aria-hidden className="size-3.5" /> Archivar
                 </button>
-                <button onClick={() => void moveToTrash("conversation", c)} className="press inline-flex min-h-9 items-center gap-2 rounded-lg px-3 text-xs font-semibold text-destructive hover:bg-destructive/10">
+                <button onClick={() => void moveToTrash("conversation", c)} className="press inline-flex min-h-9 items-center gap-2 rounded-lg px-3 text-xs font-semibold bg-signout text-white hover:opacity-90">
                   <Trash2 aria-hidden className="size-3.5" /> Eliminar
                 </button>
               </div>
