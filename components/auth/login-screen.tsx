@@ -32,8 +32,7 @@ function LoginScreenInner() {
   const [capsLock, setCapsLock] = useState(false)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [loading, setLoading] = useState(false)
-  // Escala del bloque de login en escritorio (1 = tamaño base). Crece con la ventana (p. ej. pantalla
-  // completa) para que no sobre espacio; nunca pasa de lo que cabe en su columna.
+  // Escala el bloque de login en escritorio para que también quepa en ventanas de poca altura.
   const [scale, setScale] = useState(1)
 
   useEffect(() => {
@@ -48,7 +47,7 @@ function LoginScreenInner() {
       const colW = vw - (artW + 40)
       // el formulario ocupa como máximo ~72% de su columna: siempre queda aire a los lados
       const k = Math.min(region / 470, (colW * 0.72) / 400, 1.6)
-      setScale(Math.max(1, Math.round(k * 100) / 100))
+      setScale(Math.max(0.65, Math.min(1.6, Math.round(k * 100) / 100)))
     }
     update()
     window.addEventListener("resize", update)
@@ -100,7 +99,7 @@ function LoginScreenInner() {
   return (
     <main
       {...dragHandlers}
-      className="force-light relative min-h-dvh w-full overflow-x-hidden bg-background text-foreground lg:grid lg:grid-cols-[calc(var(--art-w)+2.5rem)_1fr] lg:bg-white"
+      className="force-light relative min-h-dvh w-full overflow-x-hidden bg-background text-foreground lg:h-dvh lg:min-h-0 lg:overflow-y-hidden lg:grid lg:grid-cols-[calc(var(--art-w)+2.5rem)_1fr] lg:bg-white"
       style={
         {
           // Ancho del diseño de la izquierda: llena la altura de la ventana (con margen) sin pasarse de
@@ -120,7 +119,7 @@ function LoginScreenInner() {
         </div>
       </div>
 
-      <div className="relative flex min-h-dvh w-full items-center justify-center px-6 py-6 lg:px-10">
+      <div className="relative flex min-h-dvh w-full items-center justify-center px-6 py-6 lg:h-full lg:min-h-0 lg:px-10">
         {/* Pieza "linea": línea gris que separa el login del diseño (antes era el borde izquierdo de la columna) */}
         <div
           aria-hidden
