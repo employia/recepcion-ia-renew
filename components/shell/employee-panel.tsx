@@ -153,7 +153,7 @@ export function EmployeePanel() {
                   <ul className="divide-y divide-border">
                     {shown.duties.map((duty) => (
                       <li key={duty} className="flex items-start gap-3 py-2.5 text-sm">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0" style={{ color: shown.accent }} />
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
                         <span>{duty}</span>
                       </li>
                     ))}
