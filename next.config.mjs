@@ -5,11 +5,11 @@ const supabaseHost = "https://scwhujwxpdijekzxmyco.supabase.co"
 // Promote to "Content-Security-Policy" once no violations are observed.
 const cspReportOnly = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com" + (process.env.NODE_ENV === "production" ? "" : " 'unsafe-eval'"),
+  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://va.vercel-scripts.com" + (process.env.NODE_ENV === "production" ? "" : " 'unsafe-eval'"),
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
-  `connect-src 'self' ${supabaseHost} wss://scwhujwxpdijekzxmyco.supabase.co https://vitals.vercel-insights.com`,
+  `connect-src 'self' blob: ${supabaseHost} wss://scwhujwxpdijekzxmyco.supabase.co https://vitals.vercel-insights.com`,
   "worker-src 'self' blob:",
   "frame-ancestors 'none'",
   "base-uri 'self'",

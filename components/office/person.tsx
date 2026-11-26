@@ -20,12 +20,15 @@ interface EmployeeModelProps {
  * the floor (min.y = 0) and centered horizontally, so every model — regardless
  * of its original export scale or pivot — lands consistently in the office.
  */
+// Draco decoder self-hosted in /public/draco (default is a Google CDN), so the CSP can stay on 'self'.
+const DRACO_PATH = "/draco/"
+
 export function EmployeeModel({
   model,
   targetHeight = 1.9,
   rotationY = 0,
 }: EmployeeModelProps) {
-  const { scene } = useGLTF(model)
+  const { scene } = useGLTF(model, DRACO_PATH)
 
   const { object, scale, offset } = useMemo(() => {
     // Plain Object3D.clone(true) does NOT rebind SkinnedMesh.skeleton.bones to
@@ -80,7 +83,7 @@ export function EmployeeModel({
   )
 }
 
-useGLTF.preload("/models/valentina-empleada.glb")
-useGLTF.preload("/models/carlos-empleado.glb")
-useGLTF.preload("/models/elena-empleada.glb")
-useGLTF.preload("/models/steven-empleado.glb")
+useGLTF.preload("/models/valentina-empleada.glb", DRACO_PATH)
+useGLTF.preload("/models/carlos-empleado.glb", DRACO_PATH)
+useGLTF.preload("/models/elena-empleada.glb", DRACO_PATH)
+useGLTF.preload("/models/steven-empleado.glb", DRACO_PATH)
