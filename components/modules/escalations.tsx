@@ -86,7 +86,7 @@ export function EscalationsModule() {
         block: "nearest",
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
       })
-    }, 320)
+    }, 380)
     return () => clearTimeout(t)
   }, [openId])
 
@@ -168,7 +168,7 @@ function EscalationRow({
   return (
     <div
       id={`escalation-${e.id}`}
-      className={`scroll-mt-32 scroll-mb-4 rounded-xl border transition-colors duration-200 ${
+      className={`scroll-mt-32 scroll-mb-4 rounded-xl border transition-colors duration-350 ${
         open
           ? "border-brand/40 bg-brand/5"
           : "border-border/70 bg-card hover:border-border hover:bg-surface-raised"
@@ -196,7 +196,7 @@ function EscalationRow({
         </div>
         <ChevronDown
           aria-hidden
-          className={`mt-1 h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 motion-reduce:transition-none ${
+          className={`mt-1 h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-350 motion-reduce:transition-none ${
             open ? "rotate-180" : ""
           }`}
         />
@@ -206,7 +206,7 @@ function EscalationRow({
         id={`escalation-${e.id}-details`}
         role="region"
         aria-label={`Detalle del escalamiento de ${e.patientName}`}
-        className={`grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none ${
+        className={`grid transition-[grid-template-rows] duration-350 ease-out motion-reduce:transition-none ${
           open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
         }`}
       >

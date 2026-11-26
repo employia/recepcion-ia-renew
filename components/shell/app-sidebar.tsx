@@ -125,7 +125,7 @@ export function AppSidebar() {
       <div
         aria-hidden
         onClick={() => setNavOpen(false)}
-        className={`fixed inset-0 z-[45] bg-black/30 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[45] bg-black/30 transition-opacity duration-350 ${
           navOpen ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
@@ -133,7 +133,7 @@ export function AppSidebar() {
         aria-label="Navegación principal"
         onPointerEnter={onPointerEnter}
         onPointerLeave={onPointerLeave}
-        className={`pt-safe pb-safe pl-safe fixed left-0 top-0 z-50 flex h-dvh flex-col border-r border-border bg-card transition-[transform,width,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-none ${
+        className={`pt-safe pb-safe pl-safe fixed left-0 top-0 z-50 flex h-dvh flex-col border-r border-border bg-card transition-[transform,width,visibility] duration-350 ease-[var(--ease-out)] motion-reduce:transition-none ${
           expanded
             ? "w-[min(86vw,320px)] translate-x-0 shadow-float md:w-[320px]"
             : "w-[min(86vw,320px)] max-md:invisible max-md:-translate-x-full md:w-16"

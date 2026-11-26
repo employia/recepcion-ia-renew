@@ -109,8 +109,8 @@ function fitCamera(width: number, height: number, insetLeft: number, insetRight:
 
 // When a dashboard or the employee profile opens or closes, the free area of the
 // office changes and the camera glides to its new framing instead of jumping.
-// Same duration and curve as the panels that cause it: 300 ms, --ease-out.
-const CAMERA_MOVE_MS = 300
+// Same duration and curve as the panels that cause it: 350 ms, --ease-out.
+const CAMERA_MOVE_MS = 350
 
 /** CSS-style cubic-bezier easing: maps linear progress x (0..1) to eased progress. */
 function cubicBezier(x1: number, y1: number, x2: number, y2: number) {

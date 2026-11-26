@@ -76,7 +76,7 @@ export function DashboardPanel() {
       aria-label={item?.label}
       aria-hidden={!open}
       inert={!open}
-      className={`fixed bottom-0 left-0 right-0 top-0 z-30 flex flex-col border-border bg-card transition-[transform,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-opacity md:left-16 lg:right-auto lg:w-[var(--panel-w)] lg:border-r ${
+      className={`fixed bottom-0 left-0 right-0 top-0 z-30 flex flex-col border-border bg-card transition-[transform,opacity,visibility] duration-350 ease-[var(--ease-out)] motion-reduce:transition-opacity md:left-16 lg:right-auto lg:w-[var(--panel-w)] lg:border-r ${
         open ? "translate-x-0 opacity-100" : "invisible -translate-x-4 opacity-0 motion-reduce:translate-x-0"
       }`}
     >
@@ -153,7 +153,7 @@ export function DashboardPanel() {
             )}
             <div ref={bodyRef} className="scroll-slim pb-safe h-full overflow-y-auto overscroll-y-contain px-5 py-4">
               <div className="ptr-content">
-                <div key={shown} className="animate-in fade-in duration-300 motion-reduce:animate-none">
+                <div key={shown} className="animate-in fade-in duration-350 motion-reduce:animate-none">
                   <ModuleBody id={shown} />
                 </div>
               </div>

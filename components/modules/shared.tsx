@@ -173,7 +173,7 @@ export function EmptyState({
   return (
     <div
       role="status"
-      className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-border px-6 py-12 text-center text-sm text-muted-foreground animate-in fade-in duration-300 motion-reduce:animate-none"
+      className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-border px-6 py-12 text-center text-sm text-muted-foreground animate-in duration-350 fade-in duration-350 motion-reduce:animate-none"
     >
       {Icon && (
         <span

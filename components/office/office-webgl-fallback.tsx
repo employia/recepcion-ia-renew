@@ -20,7 +20,7 @@ export function OfficeWebglFallback({ insetLeft, insetRight }: { insetLeft: numb
       <div aria-hidden className="office-surface absolute inset-0" />
       <div
         style={{ paddingLeft: insetLeft + 12, paddingRight: insetRight + 12 }}
-        className="relative flex h-full items-center justify-center pb-28 pt-6 transition-[padding] duration-300 ease-[var(--ease-out)] motion-reduce:transition-none"
+        className="relative flex h-full items-center justify-center pb-28 pt-6 transition-[padding] duration-350 ease-[var(--ease-out)] motion-reduce:transition-none"
       >
         <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 text-center text-card-foreground shadow-float">
           <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-muted-foreground">

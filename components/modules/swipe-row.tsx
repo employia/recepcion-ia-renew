@@ -16,7 +16,7 @@ export interface SwipeAction {
 
 const ACTION_W = 76 // px per action
 const LOCK_PX = 10 // movement before the axis is decided
-const SNAP_MS = 280
+const SNAP_MS = 350
 
 /**
  * Touch-only horizontal swipe that reveals contextual actions behind a row.
@@ -53,7 +53,7 @@ export function SwipeRow({ actions, children }: { actions: SwipeAction[]; childr
     if (!layer || !acts) return
     layer.style.transition = animate ? `transform ${SNAP_MS}ms var(--ease-out)` : "none"
     layer.style.transform = `translateX(${offset}px)`
-    acts.style.transition = animate ? "opacity 200ms" : "none"
+    acts.style.transition = animate ? "opacity 350ms" : "none"
     acts.style.opacity = String(Math.min(Math.abs(offset) / ACTION_W, 1))
   }, [])
 

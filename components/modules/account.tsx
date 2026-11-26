@@ -219,7 +219,7 @@ export function AccountModule() {
               type="button"
               disabled={signingOut}
               onClick={() => void confirmAndSignOut()}
-              className="rounded-xl bg-renew-orange px-3 py-2 text-sm font-semibold text-white press hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
+              className="rounded-xl bg-signout px-3 py-2 text-sm font-semibold text-white press hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
             >
               {signingOut ? "Cerrando sesión…" : "Cerrar sesión"}
             </button>
@@ -253,7 +253,7 @@ export function AccountModule() {
               type="button"
               disabled={clearing}
               onClick={() => void clearCookiesAndLocalData()}
-              className="rounded-xl bg-renew-orange px-3 py-2 text-sm font-semibold text-white press hover:opacity-90 disabled:opacity-60"
+              className="rounded-xl bg-signout px-3 py-2 text-sm font-semibold text-white press hover:opacity-90 disabled:opacity-60"
             >
               {clearing ? "Eliminando…" : "Eliminar y cerrar sesión"}
             </button>

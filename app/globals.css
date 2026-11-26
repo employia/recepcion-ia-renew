@@ -47,9 +47,8 @@
   --color-warning-ink: var(--warning-ink);
   --color-surface-raised: var(--surface-raised);
   /* Fixed colors, identical in both themes. */
-  --color-presence: #45ef05; /* employee "Trabajando" dot */
-  --color-signout: #e60023; /* sign-out button in Configuración */
-  --color-renew-orange: #f06020; /* confirm buttons of the sign-out and clear-cookies dialogs */
+  --color-presence: #4bd200; /* "Trabajando" dot in the floating team bar */
+  --color-signout: #e60023; /* sign-out button in Configuración and the confirm buttons of its dialogs */
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -58,6 +57,8 @@
   --radius-2xl: calc(var(--radius) + 8px);
 
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  /* One duration for every transition and animation (Tailwind utilities without an explicit duration too). */
+  --default-transition-duration: 350ms;
 }
 
 /* Apple Light: neutral white surfaces, near-black text, teal accent. */
@@ -106,9 +107,9 @@
 
   --scene-bg: #f2efe9;
   --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
-  --motion-quick: 150ms;
-  --motion-standard: 250ms;
-  --motion-slow: 400ms;
+  --motion-quick: 350ms;
+  --motion-standard: 350ms;
+  --motion-slow: 350ms;
 }
 
 /* Claude Dark: warm charcoal surfaces, warm light text, terracotta accent. */
@@ -122,13 +123,13 @@
   --popover-foreground: #f4f1ea;
   --surface-raised: #2f2d2a;
   --primary: #F06020;
-  --primary-foreground: #1f1e1c;
+  --primary-foreground: #ffffff;
   --secondary: #353330;
   --secondary-foreground: #e8e4db;
   --muted: #353330;
   --muted-foreground: #b3aea3; /* 6.6:1 on the card surface */
   --accent: #F06020;
-  --accent-foreground: #1f1e1c;
+  --accent-foreground: #ffffff;
   --destructive: #ee8a74;
   --destructive-foreground: #1f1e1c;
   --border: #3f3d39;
@@ -136,7 +137,7 @@
   --ring: #F06020;
 
   --brand: #F06020;
-  --brand-foreground: #1f1e1c;
+  --brand-foreground: #ffffff;
   --brand-ink: #F89468; /* 6.6:1 on the card surface */
 
   --success: #4fb3a3;
@@ -240,11 +241,11 @@
   /* Press feedback: starts on pointer down, 100 ms. */
   .press {
     transition:
-      transform 100ms var(--ease-out),
-      background-color 200ms,
-      border-color 200ms,
-      color 200ms,
-      opacity 200ms;
+      transform 350ms var(--ease-out),
+      background-color 350ms,
+      border-color 350ms,
+      color 350ms,
+      opacity 350ms;
   }
   .press:active {
     transform: scale(0.97);
@@ -252,7 +253,7 @@
 
   /* One-shot warning pulse for a new escalation. Never loops. */
   .pulse-once {
-    animation: pulse-once 1.2s var(--ease-out) 1;
+    animation: pulse-once 350ms var(--ease-out) 1;
   }
 
   .pt-safe {
@@ -274,7 +275,7 @@
 .profile-panel {
   transition:
     transform 350ms var(--ease-out),
-    opacity 250ms var(--ease-out),
+    opacity 350ms var(--ease-out),
     visibility 350ms;
 }
 .profile-panel[data-state='closed'] {
@@ -291,8 +292,8 @@
 @media (prefers-reduced-motion: reduce) {
   .profile-panel {
     transition:
-      opacity 150ms linear,
-      visibility 150ms;
+      opacity 350ms linear,
+      visibility 350ms;
   }
   .profile-panel[data-state='closed'] {
     transform: none;
@@ -330,7 +331,7 @@
    eases back afterwards. --ptr-p (0..1) drives the indicator. */
 .ptr-content {
   transform: translateY(var(--ptr, 0px));
-  transition: transform 300ms var(--ease-out);
+  transition: transform 350ms var(--ease-out);
 }
 [data-pulling='true'] .ptr-content,
 [data-pulling='true'] .ptr-indicator {
@@ -340,8 +341,8 @@
   transform: translateY(calc(var(--ptr, 0px) - 44px));
   opacity: var(--ptr-p, 0);
   transition:
-    transform 300ms var(--ease-out),
-    opacity 200ms;
+    transform 350ms var(--ease-out),
+    opacity 350ms;
 }
 
 @keyframes pulse-once {
@@ -359,12 +360,12 @@
 .theme-transition *::before,
 .theme-transition *::after {
   transition:
-    background-color 400ms cubic-bezier(0.2, 0, 0, 1),
-    border-color 400ms cubic-bezier(0.2, 0, 0, 1),
-    color 400ms cubic-bezier(0.2, 0, 0, 1),
-    fill 400ms cubic-bezier(0.2, 0, 0, 1),
-    stroke 400ms cubic-bezier(0.2, 0, 0, 1),
-    box-shadow 400ms cubic-bezier(0.2, 0, 0, 1) !important;
+    background-color 350ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 350ms cubic-bezier(0.2, 0, 0, 1),
+    color 350ms cubic-bezier(0.2, 0, 0, 1),
+    fill 350ms cubic-bezier(0.2, 0, 0, 1),
+    stroke 350ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 350ms cubic-bezier(0.2, 0, 0, 1) !important;
 }
 
 /* Thin, discreet scrollbars for panels */
@@ -498,23 +499,23 @@ input::-ms-clear {
 }
 
 /* Floating undo / status cards: same fade + small rise as the confirmation dialogs,
-   300 ms in both directions. The card stays mounted while it exits (see
+   350 ms in both directions. The card stays mounted while it exits (see
    record-management.tsx) and ignores pointer input once it starts leaving. */
 .undo-toast {
   opacity: 0;
   transform: translateY(8px) scale(0.98);
   pointer-events: none;
   transition:
-    opacity 300ms ease-in,
-    transform 300ms ease-in;
+    opacity 350ms ease-in,
+    transform 350ms ease-in;
 }
 .undo-toast[data-state='open'] {
   opacity: 1;
   transform: none;
   pointer-events: auto;
   transition:
-    opacity 300ms var(--ease-out),
-    transform 300ms var(--ease-out);
+    opacity 350ms var(--ease-out),
+    transform 350ms var(--ease-out);
 }
 @starting-style {
   .undo-toast[data-state='open'] {

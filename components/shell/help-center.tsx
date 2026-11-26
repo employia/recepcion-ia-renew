@@ -113,7 +113,7 @@ export function HelpCenter({
       <div
         aria-hidden
         onClick={close}
-        className={`fixed inset-0 z-[41] bg-black/30 transition-opacity duration-300 motion-reduce:transition-none md:hidden ${
+        className={`fixed inset-0 z-[41] bg-black/30 transition-opacity duration-350 motion-reduce:transition-none md:hidden ${
           open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
@@ -125,7 +125,7 @@ export function HelpCenter({
         aria-labelledby={titleId}
         inert={!open}
         style={{ ["--help-center" as string]: `calc((100vw + ${insetLeft}px - ${insetRight}px) / 2)` }}
-        className={`fixed inset-x-3 top-[calc(4.75rem+env(safe-area-inset-top,0px))] z-[42] flex max-h-[calc(100dvh-5.75rem-env(safe-area-inset-top,0px))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-float transition-[transform,opacity,visibility] duration-300 ease-[var(--ease-out)] motion-reduce:transition-opacity md:inset-x-auto md:bottom-24 md:top-auto md:max-h-[calc(100dvh-7rem-env(safe-area-inset-bottom,0px))] md:left-[var(--help-center)] md:w-[min(26rem,calc(100vw-100px))] md:-translate-x-1/2 ${
+        className={`fixed inset-x-3 top-[calc(4.75rem+env(safe-area-inset-top,0px))] z-[42] flex max-h-[calc(100dvh-5.75rem-env(safe-area-inset-top,0px))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-float transition-[transform,opacity,visibility] duration-350 ease-[var(--ease-out)] motion-reduce:transition-opacity md:inset-x-auto md:bottom-24 md:top-auto md:max-h-[calc(100dvh-7rem-env(safe-area-inset-bottom,0px))] md:left-[var(--help-center)] md:w-[min(26rem,calc(100vw-100px))] md:-translate-x-1/2 ${
           open
             ? "pointer-events-auto visible translate-y-0 opacity-100"
             : "pointer-events-none invisible -translate-y-3 opacity-0 md:translate-y-3 motion-reduce:translate-y-0"
@@ -243,8 +243,8 @@ export function HelpFab({
         className="press flex h-12 w-12 items-center justify-center rounded-full hover:scale-105"
       >
         <span
-          className={`flex h-11 w-11 items-center justify-center rounded-full border bg-secondary transition-colors duration-200 ${
-            open ? "border-brand/60 text-brand" : "border-border text-muted-foreground group-hover:bg-accent group-hover:text-foreground"
+          className={`flex h-11 w-11 items-center justify-center rounded-full border bg-secondary transition-colors duration-350 ${
+            open ? "border-brand/60 text-brand" : "border-border text-muted-foreground group-hover:bg-accent group-hover:text-accent-foreground"
           }`}
         >
           <CircleHelp className="h-5 w-5" />
@@ -252,7 +252,7 @@ export function HelpFab({
       </button>
       <span
         aria-hidden
-        className={`pointer-events-none absolute whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-2 text-sm font-semibold leading-tight opacity-0 shadow-float transition-opacity duration-150 ${
+        className={`pointer-events-none absolute whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-2 text-sm font-semibold leading-tight opacity-0 shadow-float transition-opacity duration-350 ${
           tooltipAbove ? "bottom-full left-0 mb-3" : "right-full top-1/2 mr-3 -translate-y-1/2"
         } ${open ? "" : "group-hover:opacity-100 group-has-[:focus-visible]:opacity-100"}`}
       >
@@ -277,7 +277,7 @@ function FaqRow({
   const regionId = `${baseId}-${item.id}-a`
   return (
     <li
-      className={`rounded-xl border transition-colors duration-200 ${
+      className={`rounded-xl border transition-colors duration-350 ${
         expanded ? "border-brand/40 bg-brand/5" : "border-border/70 bg-background/40"
       }`}
     >
@@ -291,14 +291,14 @@ function FaqRow({
         >
           <span className="min-w-0 flex-1 text-pretty">{item.question}</span>
           <ChevronDown
-            className={`mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 ease-[var(--ease-out)] motion-reduce:transition-none ${
+            className={`mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-350 ease-[var(--ease-out)] motion-reduce:transition-none ${
               expanded ? "rotate-180" : ""
             }`}
           />
         </button>
       </h4>
       <div
-        className={`grid transition-[grid-template-rows] duration-250 ease-[var(--ease-out)] motion-reduce:transition-none ${
+        className={`grid transition-[grid-template-rows] duration-350 ease-[var(--ease-out)] motion-reduce:transition-none ${
           expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
         }`}
       >

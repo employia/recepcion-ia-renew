@@ -97,7 +97,7 @@ export function EmployeePanel() {
       <div
         aria-hidden
         onClick={closeEmployee}
-        className={`fixed inset-0 z-[35] bg-black/30 transition-opacity duration-300 lg:hidden ${
+        className={`fixed inset-0 z-[35] bg-black/30 transition-opacity duration-350 lg:hidden ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
@@ -140,7 +140,7 @@ export function EmployeePanel() {
             </header>
 
             <div ref={bodyRef} className="scroll-slim flex-1 overflow-y-auto px-5 pb-5">
-              <div key={shown.id} className="space-y-6 animate-in fade-in duration-300 motion-reduce:animate-none">
+              <div key={shown.id} className="space-y-6 animate-in fade-in duration-350 motion-reduce:animate-none">
                 <Portrait employee={shown} />
 
                 <section className="space-y-2">

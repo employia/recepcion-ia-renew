@@ -102,7 +102,7 @@ export function RecordManagementProvider({ children }: { children: ReactNode }) 
       return
     }
     setToastOpen(false)
-    const timeout = window.setTimeout(() => setShown(null), 300)
+    const timeout = window.setTimeout(() => setShown(null), 350)
     return () => window.clearTimeout(timeout)
   }, [notice])
 
