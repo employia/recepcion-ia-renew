@@ -492,3 +492,40 @@ input::-ms-clear {
     }
   }
 }
+
+/* Floating undo / status cards: same fade + small rise as the confirmation dialogs,
+   300 ms in both directions. The card stays mounted while it exits (see
+   record-management.tsx) and ignores pointer input once it starts leaving. */
+.undo-toast {
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  pointer-events: none;
+  transition:
+    opacity 300ms ease-in,
+    transform 300ms ease-in;
+}
+.undo-toast[data-state='open'] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition:
+    opacity 300ms var(--ease-out),
+    transform 300ms var(--ease-out);
+}
+@starting-style {
+  .undo-toast[data-state='open'] {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .undo-toast,
+  .undo-toast[data-state='open'] {
+    transform: none;
+  }
+  @starting-style {
+    .undo-toast[data-state='open'] {
+      transform: none;
+    }
+  }
+}

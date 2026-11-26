@@ -85,10 +85,24 @@ export function RecordManagementProvider({ children }: { children: ReactNode }) 
   const { data, isLoading } = useSWR(cacheKey, () => loadRecords(userId as string))
   const records = useMemo(() => data ?? [], [data])
   const [notice, setNotice] = useState<{ message: string; undo?: () => Promise<void> } | null>(null)
+  // The card stays mounted for the length of its exit animation (see .undo-toast).
+  const [shown, setShown] = useState<typeof notice>(null)
+  const [toastOpen, setToastOpen] = useState(false)
 
   useEffect(() => {
     if (!notice) return
     const timeout = window.setTimeout(() => setNotice(null), 5000)
+    return () => window.clearTimeout(timeout)
+  }, [notice])
+
+  useEffect(() => {
+    if (notice) {
+      setShown(notice)
+      setToastOpen(true)
+      return
+    }
+    setToastOpen(false)
+    const timeout = window.setTimeout(() => setShown(null), 300)
     return () => window.clearTimeout(timeout)
   }, [notice])
 
@@ -175,16 +189,22 @@ export function RecordManagementProvider({ children }: { children: ReactNode }) 
   return (
     <RecordManagementContext.Provider value={value}>
       {children}
-      {notice && (
+      {shown && (
         <div className="pointer-events-none fixed inset-x-3 bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] z-[70] flex justify-center md:bottom-6">
-          <div className="pointer-events-auto flex w-full max-w-md items-center justify-between gap-4 rounded-2xl border border-border bg-card px-4 py-3 text-sm text-foreground shadow-float" role="status" aria-live="polite">
-            <span>{notice.message}</span>
-            {notice.undo && (
+          <div
+            data-state={toastOpen ? "open" : "closed"}
+            aria-hidden={toastOpen ? undefined : true}
+            className="undo-toast pointer-events-auto flex w-full max-w-md items-center justify-between gap-4 rounded-2xl border border-border bg-card px-4 py-3 text-sm text-foreground shadow-float"
+            role="status"
+            aria-live="polite"
+          >
+            <span>{shown.message}</span>
+            {shown.undo && (
               <button
                 className="shrink-0 rounded-lg px-3 py-2 font-semibold text-brand-ink hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={async () => {
                   try {
-                    await notice.undo?.()
+                    await shown.undo?.()
                   } catch {
                     setNotice({ message: "No se pudo deshacer el cambio." })
                   }
