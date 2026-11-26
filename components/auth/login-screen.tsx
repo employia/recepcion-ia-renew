@@ -5,7 +5,7 @@ import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react"
 import { useApp } from "@/lib/store"
 import { EMPLOYEES } from "@/lib/employees"
 import { LEGAL_PATH } from "@/lib/legal"
-import { StatusDot, Thumb } from "@/components/shell/employee-avatar"
+import { Thumb } from "@/components/shell/employee-avatar"
 import { RenewReceptionShowcase } from "@/components/auth/renew-reception-showcase"
 import { LayoutEditorProvider, useLayoutEditor } from "@/components/auth/layout-editor"
 
@@ -144,7 +144,7 @@ function LoginScreenInner() {
           <h1 className="text-balance font-serif text-2xl font-medium tracking-tight sm:text-3xl">
             Bienvenido a su recepción digital
           </h1>
-          <div className="mt-4 flex items-center justify-center gap-3">
+          <div className="mt-4 flex flex-col items-center">
             <ul aria-label="Equipo de la oficina" className="flex -space-x-2">
               {EMPLOYEES.map((e) => (
                 <li key={e.id} className="rounded-full ring-2 ring-background" title={`${e.name} · ${e.role}`}>
@@ -152,9 +152,15 @@ function LoginScreenInner() {
                 </li>
               ))}
             </ul>
-            <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <StatusDot status="working" />
-              Su equipo está trabajando
+            {/* Misma frase y resaltado verde que en escritorio */}
+            <p className="mt-3 whitespace-nowrap text-[clamp(18px,6vw,24px)] text-foreground">
+              tu equipo ya está{" "}
+              <span
+                className="rounded-lg px-2.5 py-0.5 font-medium text-white"
+                style={{ background: "linear-gradient(180deg, #5fe77b, #22bd44)" }}
+              >
+                trabajando
+              </span>
             </p>
           </div>
         </div>
