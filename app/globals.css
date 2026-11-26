@@ -434,3 +434,61 @@ input::-ms-reveal,
 input::-ms-clear {
   display: none;
 }
+
+
+/* Confirmation dialogs (native <dialog>): the panel fades in with a small rise and
+   the backdrop fades with it. Enter decelerates, exit is quicker. Only opacity and
+   transform animate; reduced motion keeps a plain fade. Browsers without
+   @starting-style / allow-discrete simply show and hide the dialog instantly. */
+.confirm-dialog {
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  transition:
+    opacity var(--motion-quick) ease-in,
+    transform var(--motion-quick) ease-in,
+    overlay var(--motion-quick) allow-discrete,
+    display var(--motion-quick) allow-discrete;
+}
+.confirm-dialog[open] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--motion-standard) var(--ease-out),
+    transform var(--motion-standard) var(--ease-out),
+    overlay var(--motion-standard) allow-discrete,
+    display var(--motion-standard) allow-discrete;
+}
+.confirm-dialog::backdrop {
+  opacity: 0;
+  transition:
+    opacity var(--motion-quick) ease-in,
+    overlay var(--motion-quick) allow-discrete,
+    display var(--motion-quick) allow-discrete;
+}
+.confirm-dialog[open]::backdrop {
+  opacity: 1;
+  transition:
+    opacity var(--motion-standard) var(--ease-out),
+    overlay var(--motion-standard) allow-discrete,
+    display var(--motion-standard) allow-discrete;
+}
+@starting-style {
+  .confirm-dialog[open] {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  .confirm-dialog[open]::backdrop {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .confirm-dialog,
+  .confirm-dialog[open] {
+    transform: none;
+  }
+  @starting-style {
+    .confirm-dialog[open] {
+      transform: none;
+    }
+  }
+}

@@ -30,6 +30,9 @@ export function AccountModule() {
   const [confirmClear, setConfirmClear] = useState(false)
   const [clearing, setClearing] = useState(false)
   const dialogRef = useRef<HTMLDialogElement>(null)
+  const [confirmSignOut, setConfirmSignOut] = useState(false)
+  const [signingOut, setSigningOut] = useState(false)
+  const signOutDialogRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -37,6 +40,24 @@ export function AccountModule() {
     if (confirmClear && !dialog.open) dialog.showModal()
     if (!confirmClear && dialog.open) dialog.close()
   }, [confirmClear])
+
+  useEffect(() => {
+    const dialog = signOutDialogRef.current
+    if (!dialog) return
+    if (confirmSignOut && !dialog.open) dialog.showModal()
+    if (!confirmSignOut && dialog.open) dialog.close()
+  }, [confirmSignOut])
+
+  async function confirmAndSignOut() {
+    if (signingOut) return
+    setSigningOut(true)
+    try {
+      await signOut()
+    } finally {
+      setSigningOut(false)
+      setConfirmSignOut(false)
+    }
+  }
 
   async function clearCookiesAndLocalData() {
     if (clearing) return
@@ -160,12 +181,51 @@ export function AccountModule() {
       </section>
 
       <button
-        onClick={signOut}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-medium press hover:bg-secondary"
+        type="button"
+        aria-haspopup="dialog"
+        onClick={() => setConfirmSignOut(true)}
+        className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-medium press hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <LogOut className="h-4 w-4" />
         Cerrar sesión
       </button>
+
+      <dialog
+        ref={signOutDialogRef}
+        aria-labelledby="sign-out-title"
+        aria-describedby="sign-out-description"
+        onCancel={(event) => {
+          if (signingOut) event.preventDefault()
+          else setConfirmSignOut(false)
+        }}
+        onClose={() => setConfirmSignOut(false)}
+        className="confirm-dialog m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl border border-border bg-card p-0 text-card-foreground shadow-float backdrop:bg-foreground/30"
+      >
+        <div className="p-5">
+          <h3 id="sign-out-title" className="text-base font-semibold">Cerrar sesión</h3>
+          <p id="sign-out-description" className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            Saldrá de la cuenta administrativa y volverá a la pantalla de inicio de sesión. La información de Renew y las preferencias de este navegador se conservan.
+          </p>
+          <div className="mt-5 flex justify-end gap-2">
+            <button
+              type="button"
+              disabled={signingOut}
+              onClick={() => setConfirmSignOut(false)}
+              className="rounded-xl border border-border px-3 py-2 text-sm font-medium press hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              disabled={signingOut}
+              onClick={() => void confirmAndSignOut()}
+              className="rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground press hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
+            >
+              {signingOut ? "Cerrando sesión…" : "Cerrar sesión"}
+            </button>
+          </div>
+        </div>
+      </dialog>
 
       <dialog
         ref={dialogRef}
@@ -173,7 +233,7 @@ export function AccountModule() {
         aria-describedby="clear-data-description"
         onCancel={() => setConfirmClear(false)}
         onClose={() => setConfirmClear(false)}
-        className="m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl border border-border bg-card p-0 text-card-foreground shadow-float backdrop:bg-foreground/30"
+        className="confirm-dialog m-auto w-[calc(100%-2rem)] max-w-md rounded-2xl border border-border bg-card p-0 text-card-foreground shadow-float backdrop:bg-foreground/30"
       >
         <div className="p-5">
           <h3 id="clear-data-title" className="text-base font-semibold">Eliminar cookies y datos locales</h3>
