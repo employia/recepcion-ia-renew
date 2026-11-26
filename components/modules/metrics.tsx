@@ -19,8 +19,8 @@ import { EmptyState, Skeleton } from "./shared"
 // properties (var(--x)) do NOT resolve, so each theme has explicit colors that
 // mirror the chart tokens in globals.css.
 const PALETTE = {
-  light: { accent: "#2e8b7d", chart2: "#7bb9ae", axis: "#66666c", grid: "#e3e3e8", cursor: "#efeff2" },
-  dark: { accent: "#d97757", chart2: "#e8a78f", axis: "#b3aea3", grid: "#3f3d39", cursor: "#353330" },
+  light: { accent: "#203070", chart2: "#8f98c4", axis: "#66666c", grid: "#e3e3e8", cursor: "#efeff2" },
+  dark: { accent: "#F06020", chart2: "#F7A47C", axis: "#b3aea3", grid: "#3f3d39", cursor: "#353330" },
 }
 type Palette = (typeof PALETTE)["light"]
 

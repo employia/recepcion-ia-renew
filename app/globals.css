@@ -67,23 +67,23 @@
   --popover: #ffffff;
   --popover-foreground: #1d1d1f;
   --surface-raised: #fafafc;
-  --primary: #236f64;
+  --primary: #203070;
   --primary-foreground: #ffffff;
   --secondary: #efeff2;
   --secondary-foreground: #3a3a3c;
   --muted: #efeff2;
   --muted-foreground: #66666c; /* 5.4:1 on white, 4.9:1 on the page background */
-  --accent: #2e8b7d;
+  --accent: #203070;
   --accent-foreground: #ffffff;
   --destructive: #c4372b;
   --destructive-foreground: #ffffff;
   --border: #e3e3e8;
   --input: #d2d2d8;
-  --ring: #2e8b7d;
+  --ring: #203070;
 
-  --brand: #2e8b7d;
+  --brand: #203070;
   --brand-foreground: #ffffff;
-  --brand-ink: #236f64; /* 5.9:1 on white */
+  --brand-ink: #203070; /* 12.3:1 on white */
 
   --success: #2e8b7d;
   --success-foreground: #ffffff;
@@ -92,8 +92,8 @@
   --warning-foreground: #ffffff;
   --warning-ink: #8f5006; /* 6.6:1 on white */
 
-  --chart-1: #2e8b7d;
-  --chart-2: #7bb9ae;
+  --chart-1: #203070;
+  --chart-2: #8f98c4;
   --chart-3: #c9a24a;
   --chart-4: #b86a0a;
   --chart-5: #8e8e93;
@@ -117,23 +117,23 @@
   --popover: #31302d;
   --popover-foreground: #f4f1ea;
   --surface-raised: #2f2d2a;
-  --primary: #d97757;
+  --primary: #F06020;
   --primary-foreground: #1f1e1c;
   --secondary: #353330;
   --secondary-foreground: #e8e4db;
   --muted: #353330;
   --muted-foreground: #b3aea3; /* 6.6:1 on the card surface */
-  --accent: #d97757;
+  --accent: #F06020;
   --accent-foreground: #1f1e1c;
   --destructive: #ee8a74;
   --destructive-foreground: #1f1e1c;
   --border: #3f3d39;
   --input: #4d4a44;
-  --ring: #e08a6b;
+  --ring: #F06020;
 
-  --brand: #d97757;
+  --brand: #F06020;
   --brand-foreground: #1f1e1c;
-  --brand-ink: #eb9a7a; /* 6.6:1 on the card surface */
+  --brand-ink: #F89468; /* 6.6:1 on the card surface */
 
   --success: #4fb3a3;
   --success-foreground: #0f1f1c;
@@ -142,8 +142,8 @@
   --warning-foreground: #1f1e1c;
   --warning-ink: #efc067;
 
-  --chart-1: #d97757;
-  --chart-2: #e8a78f;
+  --chart-1: #F06020;
+  --chart-2: #F7A47C;
   --chart-3: #4fb3a3;
   --chart-4: #e0a63c;
   --chart-5: #8e8a80;
