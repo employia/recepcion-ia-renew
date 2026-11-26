@@ -1,7 +1,7 @@
 "use client"
 
 import { Suspense, useCallback, useEffect, useRef, useState } from "react"
-import { Canvas, useThree } from "@react-three/fiber"
+import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
 import { HoverProvider } from "@/lib/store"
 import { GlRecoveryWatcher } from "./gl-recovery-watcher"
@@ -103,22 +103,123 @@ function fitCamera(width: number, height: number, insetLeft: number, insetRight:
   return { zoom, targetY, minZoom, targetX, targetZ }
 }
 
-/** Applies the fitted zoom + target to the camera whenever the window size changes. */
-function CameraRig({ zoom, targetX, targetY, targetZ }: { zoom: number; targetX: number; targetY: number; targetZ: number }) {
+// When a dashboard or the employee profile opens or closes, the free area of the
+// office changes and the camera glides to its new framing instead of jumping.
+// Same duration and curve as the panels that cause it: 300 ms, --ease-out.
+const CAMERA_MOVE_MS = 300
+
+/** CSS-style cubic-bezier easing: maps linear progress x (0..1) to eased progress. */
+function cubicBezier(x1: number, y1: number, x2: number, y2: number) {
+  const cx = 3 * x1
+  const bx = 3 * (x2 - x1) - cx
+  const ax = 1 - cx - bx
+  const cy = 3 * y1
+  const by = 3 * (y2 - y1) - cy
+  const ay = 1 - cy - by
+  const sampleX = (t: number) => ((ax * t + bx) * t + cx) * t
+  const sampleY = (t: number) => ((ay * t + by) * t + cy) * t
+  const slopeX = (t: number) => (3 * ax * t + 2 * bx) * t + cx
+  return (x: number) => {
+    if (x <= 0) return 0
+    if (x >= 1) return 1
+    let t = x
+    for (let i = 0; i < 8; i++) {
+      const err = sampleX(t) - x
+      if (Math.abs(err) < 1e-5) return sampleY(t)
+      const slope = slopeX(t)
+      if (Math.abs(slope) < 1e-6) break
+      t -= err / slope
+    }
+    let lo = 0
+    let hi = 1
+    t = x
+    while (lo < hi) {
+      const v = sampleX(t)
+      if (Math.abs(v - x) < 1e-5) break
+      if (x > v) lo = t
+      else hi = t
+      t = (hi - lo) / 2 + lo
+      if (hi - lo < 1e-6) break
+    }
+    return sampleY(t)
+  }
+}
+const easeOut = cubicBezier(0.32, 0.72, 0, 1) // --ease-out in globals.css
+
+interface CameraFit {
+  zoom: number
+  targetX: number
+  targetY: number
+  targetZ: number
+}
+
+/**
+ * Applies the fitted zoom + target to the camera. A change of the side insets
+ * (panel opening/closing) animates inside R3F's own frame loop via useFrame —
+ * no extra requestAnimationFrame and no React state per frame. Window resizes,
+ * the first framing and reduced-motion users snap immediately. A new change
+ * mid-glide starts from wherever the camera currently is, so it is interruptible.
+ */
+function CameraRig({ zoom, targetX, targetY, targetZ, animate }: CameraFit & { animate: boolean }) {
   const camera = useThree((s) => s.camera)
   const controls = useThree((s) => s.controls) as unknown as
     | { target: { set: (x: number, y: number, z: number) => void }; update: () => void }
     | null
+  const move = useRef<{ start: number; from: CameraFit; to: CameraFit } | null>(null)
+  const ready = useRef(false) // true once a framing has been applied with controls present
+  // Read through a ref so a later render that only flips `animate` doesn't re-run the effect and cut the glide short.
+  const animateRef = useRef(animate)
+  animateRef.current = animate
 
   useEffect(() => {
-    camera.position.set(CAM_OFFSET[0] + targetX, CAM_OFFSET[1] + targetY, CAM_OFFSET[2] + targetZ)
-    camera.zoom = zoom
-    camera.updateProjectionMatrix()
-    if (controls) {
-      controls.target.set(targetX, targetY, targetZ)
-      controls.update()
+    const apply = (f: CameraFit) => {
+      camera.position.set(CAM_OFFSET[0] + f.targetX, CAM_OFFSET[1] + f.targetY, CAM_OFFSET[2] + f.targetZ)
+      camera.zoom = f.zoom
+      camera.updateProjectionMatrix()
+      if (controls) {
+        controls.target.set(f.targetX, f.targetY, f.targetZ)
+        controls.update()
+      }
+    }
+    const to = { zoom, targetX, targetY, targetZ }
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    if (!animateRef.current || reduced || !ready.current) {
+      move.current = null
+      apply(to)
+      if (controls) ready.current = true
+      return
+    }
+    // The camera position is always CAM_OFFSET + target, so the current target can be read back from it.
+    move.current = {
+      start: performance.now(),
+      from: {
+        zoom: camera.zoom,
+        targetX: camera.position.x - CAM_OFFSET[0],
+        targetY: camera.position.y - CAM_OFFSET[1],
+        targetZ: camera.position.z - CAM_OFFSET[2],
+      },
+      to,
     }
   }, [camera, controls, zoom, targetX, targetY, targetZ])
+
+  useFrame(() => {
+    const m = move.current
+    if (!m) return
+    const t = Math.min((performance.now() - m.start) / CAMERA_MOVE_MS, 1)
+    const k = easeOut(t)
+    const lerp = (a: number, b: number) => a + (b - a) * k
+    const tx = lerp(m.from.targetX, m.to.targetX)
+    const ty = lerp(m.from.targetY, m.to.targetY)
+    const tz = lerp(m.from.targetZ, m.to.targetZ)
+    camera.position.set(CAM_OFFSET[0] + tx, CAM_OFFSET[1] + ty, CAM_OFFSET[2] + tz)
+    camera.zoom = lerp(m.from.zoom, m.to.zoom)
+    camera.updateProjectionMatrix()
+    if (controls) {
+      controls.target.set(tx, ty, tz)
+      controls.update()
+    }
+    if (t >= 1) move.current = null
+  })
 
   return null
 }
@@ -149,13 +250,23 @@ export function OfficeView({
   const [glStatus, setGlStatus] = useState<"ok" | "failed">(() => (canCreateWebgl() ? "ok" : "failed"))
   const [fit, setFit] = useState(() =>
     typeof window === "undefined"
-      ? { zoom: 78, targetX: 0, targetY: 0.6, targetZ: 0, minZoom: 54 }
-      : fitCamera(window.innerWidth, window.innerHeight, insetLeft, insetRight),
+      ? { zoom: 78, targetX: 0, targetY: 0.6, targetZ: 0, minZoom: 54, animate: false }
+      : { ...fitCamera(window.innerWidth, window.innerHeight, insetLeft, insetRight), animate: false },
   )
+  // OrbitControls keeps the initial target; CameraRig owns it afterwards so the
+  // target prop can't jump to the end value while the camera is still gliding.
+  const [initialTarget] = useState<[number, number, number]>(() => [fit.targetX, fit.targetY, fit.targetZ])
+  const lastInsets = useRef(`${insetLeft}:${insetRight}`)
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
-    const update = () => setFit(fitCamera(el.clientWidth, el.clientHeight, insetLeft, insetRight))
+    const update = () => {
+      // Only a change of the side insets (a panel opening/closing) glides; window resizes snap.
+      const key = `${insetLeft}:${insetRight}`
+      const insetsChanged = key !== lastInsets.current
+      lastInsets.current = key
+      setFit({ ...fitCamera(el.clientWidth, el.clientHeight, insetLeft, insetRight), animate: insetsChanged })
+    }
     update()
     const ro = new ResizeObserver(update)
     ro.observe(el)
@@ -270,7 +381,7 @@ export function OfficeView({
           gl={{ antialias: !lowPower, preserveDrawingBuffer: false }}
         >
           <GlRecoveryWatcher onContextLost={handleContextLost} />
-          <CameraRig zoom={fit.zoom} targetX={fit.targetX} targetY={fit.targetY} targetZ={fit.targetZ} />
+          <CameraRig zoom={fit.zoom} targetX={fit.targetX} targetY={fit.targetY} targetZ={fit.targetZ} animate={fit.animate && !paused} />
           <color attach="background" args={["#f2efe9"]} />
           <Suspense fallback={null}>
             <Scene lowPower={lowPower} />
@@ -283,7 +394,7 @@ export function OfficeView({
             enableZoom
             minZoom={fit.minZoom}
             maxZoom={fit.zoom * 2}
-            target={[fit.targetX, fit.targetY, fit.targetZ]}
+            target={initialTarget}
           />
         </Canvas>
       </HoverProvider>
