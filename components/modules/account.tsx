@@ -184,7 +184,7 @@ export function AccountModule() {
         type="button"
         aria-haspopup="dialog"
         onClick={() => setConfirmSignOut(true)}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-medium press hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-transparent bg-signout px-3 py-2.5 text-sm font-semibold text-white press hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <LogOut className="h-4 w-4" />
         Cerrar sesión
@@ -219,7 +219,7 @@ export function AccountModule() {
               type="button"
               disabled={signingOut}
               onClick={() => void confirmAndSignOut()}
-              className="rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground press hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
+              className="rounded-xl bg-renew-orange px-3 py-2 text-sm font-semibold text-white press hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
             >
               {signingOut ? "Cerrando sesión…" : "Cerrar sesión"}
             </button>
@@ -253,7 +253,7 @@ export function AccountModule() {
               type="button"
               disabled={clearing}
               onClick={() => void clearCookiesAndLocalData()}
-              className="rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground press hover:opacity-90 disabled:opacity-60"
+              className="rounded-xl bg-renew-orange px-3 py-2 text-sm font-semibold text-white press hover:opacity-90 disabled:opacity-60"
             >
               {clearing ? "Eliminando…" : "Eliminar y cerrar sesión"}
             </button>

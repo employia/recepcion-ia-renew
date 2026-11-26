@@ -46,6 +46,10 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-warning-ink: var(--warning-ink);
   --color-surface-raised: var(--surface-raised);
+  /* Fixed colors, identical in both themes. */
+  --color-presence: #45ef05; /* employee "Trabajando" dot */
+  --color-signout: #e60023; /* sign-out button in Configuración */
+  --color-renew-orange: #f06020; /* confirm buttons of the sign-out and clear-cookies dialogs */
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

@@ -6,9 +6,9 @@ export const STATUS_LABEL: Record<EmployeeStatus, string> = {
   attention: "Requiere atención",
 }
 
-// Green = working, neutral = paused, amber = a person must step in. Independent of the theme accent.
+// Bright green = working, neutral = paused, amber = a person must step in. Independent of the theme accent.
 const STATUS_BG: Record<EmployeeStatus, string> = {
-  working: "bg-success",
+  working: "bg-presence",
   resting: "bg-muted-foreground/60",
   attention: "bg-warning",
 }
