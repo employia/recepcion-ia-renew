@@ -5,7 +5,7 @@ import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react"
 import { useApp } from "@/lib/store"
 import { EMPLOYEES } from "@/lib/employees"
 import { LEGAL_PATH } from "@/lib/legal"
-import { StatusDot, Thumb } from "@/components/shell/employee-avatar"
+import { Thumb } from "@/components/shell/employee-avatar"
 import { RenewReceptionShowcase } from "@/components/auth/renew-reception-showcase"
 import { LayoutEditorProvider, useLayoutEditor } from "@/components/auth/layout-editor"
 
@@ -141,7 +141,7 @@ function LoginScreenInner() {
 
         {/* Móvil: sin cambios */}
         <div className="mt-5 text-center lg:hidden">
-          <h1 className="text-balance font-serif text-2xl font-medium tracking-tight sm:text-3xl">
+          <h1 className="text-balance font-sans text-2xl font-normal sm:text-3xl">
             Bienvenido a su recepción digital
           </h1>
           <div className="mt-4 flex items-center justify-center gap-3">
@@ -153,8 +153,12 @@ function LoginScreenInner() {
               ))}
             </ul>
             <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <StatusDot status="working" />
-              Su equipo está trabajando
+              <span
+                aria-hidden
+                className="inline-block h-1.5 w-1.5 shrink-0 rounded-full"
+                style={{ background: "linear-gradient(180deg, #5fe77b, #22bd44)" }}
+              />
+              Tu equipo está trabajando
             </p>
           </div>
         </div>
