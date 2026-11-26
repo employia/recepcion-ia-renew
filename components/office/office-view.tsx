@@ -86,8 +86,12 @@ function fitCamera(width: number, height: number, insetLeft: number, insetRight:
   // the entire room.
   const portrait = height > width * 1.15
   const closeUp = small || portrait
-  const zoom = closeUp ? clamp(Math.min(availH / ROOM_H, availW / CLUSTER_W)) : zoomAll
-  const minZoom = closeUp ? zoomAll * 0.95 : zoom * 0.7
+  const deskZoom = closeUp ? clamp(Math.min(availH / ROOM_H, availW / CLUSTER_W)) : zoomAll
+  const minZoom = closeUp ? zoomAll * 0.95 : deskZoom * 0.7
+  // On phones the default framing is the minimum zoom (whole room visible);
+  // the person can still pinch in up to twice the old desk close-up.
+  const zoom = closeUp ? minZoom : deskZoom
+  const maxZoom = deskZoom * 2
 
   // Screen-y (px) where the room's midpoint should land.
   const centerY = top + availH / 2
@@ -100,7 +104,7 @@ function fitCamera(width: number, height: number, insetLeft: number, insetRight:
   const shiftWorld = -shiftPx / zoom
   const targetX = shiftWorld * Math.SQRT1_2
   const targetZ = -shiftWorld * Math.SQRT1_2
-  return { zoom, targetY, minZoom, targetX, targetZ }
+  return { zoom, targetY, minZoom, maxZoom, targetX, targetZ }
 }
 
 // When a dashboard or the employee profile opens or closes, the free area of the
@@ -250,7 +254,7 @@ export function OfficeView({
   const [glStatus, setGlStatus] = useState<"ok" | "failed">(() => (canCreateWebgl() ? "ok" : "failed"))
   const [fit, setFit] = useState(() =>
     typeof window === "undefined"
-      ? { zoom: 78, targetX: 0, targetY: 0.6, targetZ: 0, minZoom: 54, animate: false }
+      ? { zoom: 78, targetX: 0, targetY: 0.6, targetZ: 0, minZoom: 54, maxZoom: 156, animate: false }
       : { ...fitCamera(window.innerWidth, window.innerHeight, insetLeft, insetRight), animate: false },
   )
   // OrbitControls keeps the initial target; CameraRig owns it afterwards so the
@@ -393,7 +397,7 @@ export function OfficeView({
             enablePan={false}
             enableZoom
             minZoom={fit.minZoom}
-            maxZoom={fit.zoom * 2}
+            maxZoom={fit.maxZoom}
             target={initialTarget}
           />
         </Canvas>
