@@ -116,7 +116,7 @@ export function ScrollToEnd({ scrollRef, page = false }: { scrollRef?: RefObject
       onClick={scrollToEnd}
       inert={!visible}
       aria-label="Ir al final"
-      className={`press ${page ? "fixed bottom-6 right-6 z-30" : "absolute bottom-4 right-5 z-10"} hidden h-11 w-11 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-float transition-[opacity,transform,visibility,color,background-color] duration-350 ease-[var(--ease-out)] hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-opacity md:flex ${
+      className={`press ${page ? "fixed bottom-6 left-1/2 z-30 -ml-[22px]" : "absolute bottom-4 left-1/2 z-10 -ml-[22px]"} hidden h-11 w-11 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-float transition-[opacity,transform,visibility,color,background-color] duration-350 ease-[var(--ease-out)] hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-opacity md:flex ${
         visible ? "visible translate-y-0 opacity-100" : "pointer-events-none invisible translate-y-2 opacity-0 motion-reduce:translate-y-0"
       }`}
     >
