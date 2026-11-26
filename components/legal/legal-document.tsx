@@ -18,8 +18,8 @@ export function LegalDocument({ title, intro, sections }: { title: string; intro
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/brand/renew-symbol.svg" alt="Renew" className="h-12 w-auto shrink-0" />
           <div className="min-w-0">
-            <h1 className="text-balance text-2xl font-medium tracking-tight">{title}</h1>
-            <p className="mt-1 text-xs text-muted-foreground">Última actualización: {LEGAL_UPDATED}</p>
+            <h1 className="text-balance font-serif text-2xl font-medium leading-tight tracking-tight sm:text-3xl">{title}</h1>
+            <p className="mt-1 text-sm text-muted-foreground">Última actualización: {LEGAL_UPDATED}</p>
           </div>
         </header>
 

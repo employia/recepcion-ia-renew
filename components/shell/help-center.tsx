@@ -138,7 +138,7 @@ export function HelpCenter({
                 id={titleId}
                 ref={titleRef}
                 tabIndex={-1}
-                className="font-serif text-xl leading-tight outline-none"
+                className="font-serif text-2xl font-medium leading-tight tracking-tight outline-none"
               >
                 Preguntas frecuentes
               </h2>

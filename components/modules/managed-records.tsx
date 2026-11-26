@@ -69,7 +69,7 @@ export function ManagedRecordsModule({ status }: { status: RecordStatus }) {
               <button
                 onClick={() => void deleteForever(record)}
                 aria-label={`Eliminar definitivamente: ${recordTitle(record)}`}
-                className="press inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-destructive/30 px-3 text-xs font-semibold text-destructive hover:bg-destructive/10"
+                className="press inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-transparent bg-signout px-3 text-xs font-semibold text-white hover:opacity-90"
               >
                 <Trash2 aria-hidden className="size-3.5" /> <span className="sm:hidden">Eliminar</span><span className="hidden sm:inline">Eliminar</span>
               </button>

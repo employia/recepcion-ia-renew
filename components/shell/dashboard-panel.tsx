@@ -83,34 +83,14 @@ export function DashboardPanel() {
     >
       {item && shown && (
         <>
-          <header className="pt-safe relative flex shrink-0 items-center gap-2 border-b border-border px-3 pb-3 pt-3 md:px-5">
+          <header className="pt-safe relative flex shrink-0 items-center gap-3 border-b border-border px-3 pb-3 pt-3 md:px-5">
             <button
               onClick={() => setNavOpen(true)}
               aria-label="Abrir el menú"
-              className="press flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground md:hidden"
+              className="press -mr-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground md:hidden"
             >
-  <Menu className="h-5 w-5" />
-  </button>
-  <div className="min-w-0 flex-1">
-              <h2
-                ref={titleRef}
-                tabIndex={-1}
-                className="truncate font-serif text-xl font-medium tracking-tight outline-none"
-              >
-                {item.label}
-              </h2>
-              <p className="truncate text-xs text-muted-foreground">{item.subtitle}</p>
-            </div>
-            {canRefresh && (
-              <button
-                onClick={() => void refresh()}
-                disabled={refreshing}
-                aria-label={refreshing ? "Actualizando" : "Actualizar"}
-                className="press flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground disabled:pointer-events-none max-md:sr-only"
-              >
-                <RefreshCw className={`h-[18px] w-[18px] ${refreshing ? "animate-spin motion-reduce:animate-none" : ""}`} />
-              </button>
-            )}
+              <Menu className="h-5 w-5" />
+            </button>
             {owner && (
               <button
                 onClick={(e) => {
@@ -118,18 +98,40 @@ export function DashboardPanel() {
                   openEmployee(owner.id, { x: r.left + r.width / 2, y: r.top + r.height / 2 })
                 }}
                 aria-label={`Ver la ficha de ${owner.name}`}
-                className="press flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+                className="press -mr-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
               >
-                <Thumb employee={owner} size={36} badge />
+                <Thumb employee={owner} size={40} badge presence />
               </button>
             )}
-            <button
-              onClick={closeModule}
-              aria-label="Cerrar y volver a la oficina"
-              className="press flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground"
-            >
-              <X className="h-5 w-5" />
-            </button>
+            <div className="min-w-0 flex-1">
+              <h2
+                ref={titleRef}
+                tabIndex={-1}
+                className="truncate font-serif text-2xl font-medium leading-tight tracking-tight outline-none"
+              >
+                {item.label}
+              </h2>
+              <p className="truncate text-sm text-muted-foreground">{item.subtitle}</p>
+            </div>
+            <div className="flex shrink-0 items-center gap-1">
+              {canRefresh && (
+                <button
+                  onClick={() => void refresh()}
+                  disabled={refreshing}
+                  aria-label={refreshing ? "Actualizando" : "Actualizar"}
+                  className="press flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground disabled:pointer-events-none max-md:sr-only"
+                >
+                  <RefreshCw className={`h-[18px] w-[18px] ${refreshing ? "animate-spin motion-reduce:animate-none" : ""}`} />
+                </button>
+              )}
+              <button
+                onClick={closeModule}
+                aria-label="Cerrar y volver a la oficina"
+                className="press flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
             {refreshing && (
               <span aria-hidden className="absolute inset-x-0 -bottom-px h-0.5 overflow-hidden">
                 <span className="block h-full w-1/3 animate-[refresh-bar_1s_var(--ease-out)_infinite] bg-brand motion-reduce:w-full motion-reduce:animate-none motion-reduce:opacity-60" />

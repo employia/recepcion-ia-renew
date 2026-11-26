@@ -32,7 +32,7 @@ export function LegalGate() {
         <img src="/brand/renew-symbol.svg" alt="Renew" className="h-[60px] w-auto [@media(max-height:680px)]:h-12" />
 
         <div className="mt-5 text-center">
-          <h1 className="text-balance text-2xl font-medium tracking-tight">Antes de continuar</h1>
+          <h1 className="text-balance font-serif text-2xl font-medium leading-tight tracking-tight">Antes de continuar</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Para acceder a Renew IA, acepte los Términos y Condiciones de Uso y la Política de Privacidad.
           </p>
