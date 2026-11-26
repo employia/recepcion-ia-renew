@@ -10,6 +10,7 @@ import { useModuleRefresh } from "@/lib/refresh"
 import { usePullToRefresh } from "@/lib/pull-to-refresh"
 import type { ModuleId } from "@/lib/types"
 import { Thumb } from "./employee-avatar"
+import { ScrollToEnd } from "./scroll-to-end"
 import { ConversationsModule } from "@/components/modules/conversations"
 import { EscalationsModule } from "@/components/modules/escalations"
 import { MetricsModule } from "@/components/modules/metrics"
@@ -158,6 +159,7 @@ export function DashboardPanel() {
                 </div>
               </div>
             </div>
+            <ScrollToEnd scrollRef={bodyRef} />
           </div>
         </>
       )}

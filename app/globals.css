@@ -48,6 +48,7 @@
   --color-surface-raised: var(--surface-raised);
   /* Fixed colors, identical in both themes. */
   --color-presence: #4bd200; /* "Trabajando" dot in the floating team bar */
+  --color-renew-navy: #203070; /* "Archivar" swipe action, same in both themes */
   --color-signout: #e60023; /* sign-out button in Configuración and the confirm buttons of its dialogs */
 
   --radius-sm: calc(var(--radius) - 4px);

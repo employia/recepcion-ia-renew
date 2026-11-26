@@ -193,7 +193,7 @@ function Portrait({ employee }: { employee: Employee }) {
       }}
     >
       <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 text-xs font-medium">
-        <StatusDot status={employee.status} />
+        <StatusDot status={employee.status} presence />
         {STATUS_LABEL[employee.status]}
       </span>
       {failed ? (
