@@ -16,11 +16,14 @@ export function TeamBar({
   insetLeft,
   insetRight,
   hidden,
+  leading,
   children,
 }: {
   insetLeft: number
   insetRight: number
   hidden: boolean
+  /** Desktop-only item(s) at the start of the capsule, followed by a divider. */
+  leading?: ReactNode
   children?: ReactNode
 }) {
   const { activeEmployee, openEmployee } = useApp()
@@ -43,6 +46,12 @@ export function TeamBar({
           aria-label="Equipo de la oficina"
           className="pointer-events-auto glass flex items-center gap-1 rounded-full border border-border/60 p-1.5 shadow-float max-md:gap-1.5"
         >
+          {leading ? (
+            <>
+              {leading}
+              <li aria-hidden className="mx-1 hidden h-7 w-px self-center bg-border md:block" />
+            </>
+          ) : null}
           {EMPLOYEES.map((e) => {
             const active = activeEmployee === e.id
             return (

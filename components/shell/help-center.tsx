@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
+import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react"
 import { ChevronDown, CircleHelp, SearchX, X } from "lucide-react"
 import { FAQ_CATEGORIES, FAQ_ITEMS, type FaqItem } from "@/lib/faq"
 import { EmptyState, SearchBox } from "@/components/modules/shared"
@@ -26,21 +26,38 @@ function searchFaq(query: string): FaqItem[] {
   return SEARCH_INDEX.filter(({ haystack }) => terms.every((t) => haystack.includes(` ${t}`))).map((r) => r.item)
 }
 
+interface HelpState {
+  open: boolean
+  panelId: string
+  toggle: () => void
+  registerFab: (el: HTMLButtonElement | null) => void
+}
+
+const HelpContext = createContext<HelpState | null>(null)
+
+function useHelp() {
+  const ctx = useContext(HelpContext)
+  if (!ctx) throw new Error("HelpFab must be rendered inside HelpCenter")
+  return ctx
+}
+
 /**
- * Help lives beside the office team dock, not in the global navigation. The
- * shell only mounts it while the office itself is active.
+ * Help state and panel. The trigger is `HelpFab`, rendered wherever the shell
+ * needs it: inside the team dock on desktop, floating at the top on mobile.
  */
 export function HelpCenter({
   insetLeft = 0,
   insetRight = 0,
+  children,
 }: {
   insetLeft?: number
   insetRight?: number
+  children?: ReactNode
 }) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [expandedId, setExpandedId] = useState<string | null>(null)
-  const fabRef = useRef<HTMLButtonElement>(null)
+  const fabs = useRef(new Set<HTMLButtonElement>())
   const titleRef = useRef<HTMLHeadingElement>(null)
   const panelId = useId()
   const titleId = useId()
@@ -55,17 +72,23 @@ export function HelpCenter({
     [results],
   )
 
-  const close = useCallback(() => {
-    setOpen(false)
-    fabRef.current?.focus({ preventScroll: true })
+  const registerFab = useCallback((el: HTMLButtonElement | null) => {
+    if (el) fabs.current.add(el)
   }, [])
 
-  function toggle() {
+  const close = useCallback(() => {
+    setOpen(false)
+    // Two triggers exist (dock on desktop, floating on mobile); focus the visible one.
+    const visible = [...fabs.current].find((b) => b.isConnected && b.getClientRects().length > 0)
+    visible?.focus({ preventScroll: true })
+  }, [])
+
+  const toggle = useCallback(() => {
     if (open) return close()
     setQuery("")
     setExpandedId(null)
     setOpen(true)
-  }
+  }, [open, close])
 
   useEffect(() => {
     if (!open) return
@@ -81,33 +104,11 @@ export function HelpCenter({
     return () => document.removeEventListener("keydown", onKey, true)
   }, [open, close])
 
+  const state = useMemo(() => ({ open, panelId, toggle, registerFab }), [open, panelId, toggle, registerFab])
+
   return (
-    <>
-      <div
-        className="group pointer-events-auto fixed right-3 top-3 z-[32] mt-[env(safe-area-inset-top,0px)] transition-opacity duration-300 ease-[var(--ease-out)] motion-reduce:transition-none md:absolute md:right-full md:top-1/2 md:mr-2 md:mt-0 md:-translate-y-1/2"
-        style={{ ["--help-center" as string]: `calc((100vw + ${insetLeft}px - ${insetRight}px) / 2)` }}
-      >
-        <button
-          ref={fabRef}
-          onClick={toggle}
-          aria-expanded={open}
-          aria-controls={panelId}
-          aria-label="Preguntas frecuentes"
-          className={`press glass flex h-12 w-12 items-center justify-center rounded-full border shadow-soft hover:scale-105 md:h-11 md:w-11 ${
-            open ? "border-brand/60 text-brand" : "border-border/60 text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          <CircleHelp className="h-6 w-6 md:h-5 md:w-5" />
-        </button>
-        <span
-          aria-hidden
-          className={`pointer-events-none absolute right-0 top-full mt-2 hidden whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-1.5 text-sm font-semibold opacity-0 shadow-float transition-opacity duration-150 md:block ${
-            open ? "" : "group-hover:opacity-100 group-has-[:focus-visible]:opacity-100"
-          }`}
-        >
-          Preguntas frecuentes
-        </span>
-      </div>
+    <HelpContext.Provider value={state}>
+      {children}
 
       <div
         aria-hidden
@@ -192,7 +193,72 @@ export function HelpCenter({
           )}
         </div>
       </section>
-    </>
+    </HelpContext.Provider>
+  )
+}
+
+/**
+ * Trigger of the help panel.
+ * - `dock`: desktop only, first item of the team capsule. Its tooltip opens to
+ *   the left, or above when `tooltipAbove` (a module is open and the dock sits
+ *   next to the module panel).
+ * - `floating`: mobile only, fixed at the top right (unchanged).
+ */
+export function HelpFab({
+  variant,
+  tooltipAbove = false,
+}: {
+  variant: "dock" | "floating"
+  tooltipAbove?: boolean
+}) {
+  const { open, panelId, toggle, registerFab } = useHelp()
+
+  if (variant === "floating") {
+    return (
+      <div className="pointer-events-auto fixed right-3 top-3 z-[32] mt-[env(safe-area-inset-top,0px)] md:hidden">
+        <button
+          ref={registerFab}
+          onClick={toggle}
+          aria-expanded={open}
+          aria-controls={panelId}
+          aria-label="Preguntas frecuentes"
+          className={`press glass flex h-12 w-12 items-center justify-center rounded-full border shadow-soft hover:scale-105 ${
+            open ? "border-brand/60 text-brand" : "border-border/60 text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          <CircleHelp className="h-6 w-6" />
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <li className="group relative hidden md:block">
+      <button
+        ref={registerFab}
+        onClick={toggle}
+        aria-expanded={open}
+        aria-controls={panelId}
+        aria-label="Preguntas frecuentes"
+        className="press flex h-12 w-12 items-center justify-center rounded-full hover:scale-105"
+      >
+        <span
+          className={`flex h-11 w-11 items-center justify-center rounded-full border bg-secondary transition-colors duration-200 ${
+            open ? "border-brand/60 text-brand" : "border-border text-muted-foreground group-hover:bg-accent group-hover:text-foreground"
+          }`}
+        >
+          <CircleHelp className="h-5 w-5" />
+        </span>
+      </button>
+      <span
+        aria-hidden
+        className={`pointer-events-none absolute whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-2 text-sm font-semibold leading-tight opacity-0 shadow-float transition-opacity duration-150 ${
+          tooltipAbove ? "bottom-full left-0 mb-3" : "right-full top-1/2 mr-3 -translate-y-1/2"
+        } ${open ? "" : "group-hover:opacity-100 group-has-[:focus-visible]:opacity-100"}`}
+      >
+        Preguntas frecuentes
+      </span>
+    </li>
   )
 }
 

@@ -8,7 +8,7 @@ import { PROFILE_WIDTH, RAIL_MIN, RAIL_WIDTH, SPLIT_MIN, dashboardWidth, useView
 import { AppSidebar, MobileMenuButton } from "./app-sidebar"
 import { DashboardPanel } from "./dashboard-panel"
 import { EmployeePanel } from "./employee-panel"
-import { HelpCenter } from "./help-center"
+import { HelpCenter, HelpFab } from "./help-center"
 import { TeamBar } from "./team-bar"
 
 // The 3D office is client-only; avoid SSR of the WebGL canvas.
@@ -49,9 +49,16 @@ function Shell() {
     >
       <OfficeView insetLeft={insetLeft} insetRight={insetRight} paused={officeCovered} />
 
-      <TeamBar insetLeft={insetLeft} insetRight={insetRight} hidden={officeCovered}>
-        {!dashboardOpen && !profileOpen ? <HelpCenter insetLeft={insetLeft} insetRight={insetRight} /> : null}
-      </TeamBar>
+      <HelpCenter insetLeft={insetLeft} insetRight={insetRight}>
+        <TeamBar
+          insetLeft={insetLeft}
+          insetRight={insetRight}
+          hidden={officeCovered}
+          leading={<HelpFab variant="dock" tooltipAbove={split && dashboardOpen} />}
+        >
+          {!dashboardOpen && !profileOpen ? <HelpFab variant="floating" /> : null}
+        </TeamBar>
+      </HelpCenter>
       {!dashboardOpen && <MobileMenuButton />}
 
       <DashboardPanel />
