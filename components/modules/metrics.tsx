@@ -92,7 +92,7 @@ export function MetricsModule() {
                   axisLine={false}
                   tick={{ fontSize: 10, fill: C.axis }}
                 />
-                <Tooltip content={<MiniTooltip suffix="" />} cursor={{ stroke: C.grid }} />
+                <Tooltip animationDuration={250} content={<MiniTooltip suffix="" />} cursor={{ stroke: C.grid }} />
                 <Area
                   type="monotone"
                   dataKey="value"
@@ -253,7 +253,7 @@ function TrendChart({ label, points, colors: C }: { label: string; points: Metri
               axisLine={false}
               tick={{ fontSize: 10, fill: C.axis }}
             />
-            <Tooltip content={<MiniTooltip suffix="" />} cursor={{ fill: C.cursor }} />
+            <Tooltip animationDuration={250} content={<MiniTooltip suffix="" />} cursor={{ fill: C.cursor }} />
             <Bar dataKey="value" radius={[4, 4, 0, 0]} fill={C.chart2} />
           </BarChart>
         </ResponsiveContainer>

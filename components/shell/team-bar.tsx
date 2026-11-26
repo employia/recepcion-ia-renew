@@ -71,7 +71,7 @@ export function TeamBar({
                 </button>
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute bottom-full left-1/2 mb-3 hidden -translate-x-1/2 whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-2 text-left opacity-0 shadow-float transition-opacity duration-350 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100 md:block"
+                  className="pointer-events-none absolute bottom-full left-1/2 mb-3 hidden -translate-x-1/2 whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-2 text-left opacity-0 shadow-float transition-opacity duration-250 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100 md:block"
                 >
                   <span className="block text-sm font-semibold leading-tight">{e.name}</span>
                   <span className="block text-xs leading-snug text-muted-foreground">{e.role}</span>
@@ -99,7 +99,7 @@ export function TeamBar({
             </button>
             <span
               aria-hidden
-              className="pointer-events-none absolute bottom-full right-0 mb-3 hidden whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-2 text-sm font-semibold leading-tight opacity-0 shadow-float transition-opacity duration-350 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100 md:block"
+              className="pointer-events-none absolute bottom-full right-0 mb-3 hidden whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-2 text-sm font-semibold leading-tight opacity-0 shadow-float transition-opacity duration-250 group-hover:opacity-100 group-has-[:focus-visible]:opacity-100 md:block"
             >
               {themeLabel}
             </span>

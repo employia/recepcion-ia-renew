@@ -252,7 +252,7 @@ export function HelpFab({
       </button>
       <span
         aria-hidden
-        className={`pointer-events-none absolute whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-2 text-sm font-semibold leading-tight opacity-0 shadow-float transition-opacity duration-350 ${
+        className={`pointer-events-none absolute whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-2 text-sm font-semibold leading-tight opacity-0 shadow-float transition-opacity duration-250 ${
           tooltipAbove ? "bottom-full left-0 mb-3" : "right-full top-1/2 mr-3 -translate-y-1/2"
         } ${open ? "" : "group-hover:opacity-100 group-has-[:focus-visible]:opacity-100"}`}
       >
