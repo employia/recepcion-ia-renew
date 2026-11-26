@@ -389,6 +389,19 @@
   }
 }
 
+/* Hides the scrollbar while keeping scrolling available (login screen). */
+@layer base {
+  .no-scrollbar,
+  .no-scrollbar body {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar,
+  .no-scrollbar body::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* Touch devices have no hover: no stuck hover states. */
 @media (prefers-reduced-transparency: reduce) {
   .glass {

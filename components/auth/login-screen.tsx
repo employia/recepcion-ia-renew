@@ -54,6 +54,12 @@ function LoginScreenInner() {
     window.addEventListener("resize", update)
     return () => window.removeEventListener("resize", update)
   }, [])
+  // Sin barra de desplazamiento visible en el login (el scroll sigue funcionando en pantallas muy bajas).
+  useEffect(() => {
+    const root = document.documentElement
+    root.classList.add("no-scrollbar")
+    return () => root.classList.remove("no-scrollbar")
+  }, [])
   const emailRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
 

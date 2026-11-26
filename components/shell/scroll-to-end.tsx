@@ -29,38 +29,55 @@ function easeOut(x: number) {
 /**
  * Desktop-only button that glides a scroll container to its end in 350 ms.
  * Shows only while there is content below; any wheel, touch or key input by
- * the person cancels the glide. Render it inside a `relative` host that also
- * contains the scroller.
+ * the person cancels the glide.
+ *
+ * - Container mode (`scrollRef`): render it inside a `relative` host that also
+ *   contains the scroller.
+ * - Page mode (`page`): scrolls the whole document (public pages such as the
+ *   legal documents) and sits fixed to the viewport corner.
  */
-export function ScrollToEnd({ scrollRef }: { scrollRef: RefObject<HTMLElement | null> }) {
+export function ScrollToEnd({ scrollRef, page = false }: { scrollRef?: RefObject<HTMLElement | null>; page?: boolean }) {
   const [visible, setVisible] = useState(false)
   const frame = useRef(0)
 
+  const getScroller = useCallback((): HTMLElement | null => {
+    if (page) return (document.scrollingElement as HTMLElement | null) ?? document.documentElement
+    return scrollRef?.current ?? null
+  }, [page, scrollRef])
+
   const update = useCallback(() => {
-    const el = scrollRef.current
+    const el = getScroller()
     if (!el) return
     setVisible(el.scrollHeight - el.scrollTop - el.clientHeight > THRESHOLD)
-  }, [scrollRef])
+  }, [getScroller])
 
   useEffect(() => {
-    const el = scrollRef.current
+    const el = getScroller()
     if (!el) return
+    // The document fires its scroll events on window, a container on itself.
+    const target: HTMLElement | Window = page ? window : el
     update()
-    el.addEventListener("scroll", update, { passive: true })
+    target.addEventListener("scroll", update, { passive: true })
     // Content (lists loading, rows expanding) changes the scrollable length without scrolling.
     const ro = new ResizeObserver(update)
-    ro.observe(el)
-    if (el.firstElementChild) ro.observe(el.firstElementChild)
+    if (page) {
+      ro.observe(document.documentElement)
+      ro.observe(document.body)
+    } else {
+      ro.observe(el)
+      if (el.firstElementChild) ro.observe(el.firstElementChild)
+    }
     return () => {
-      el.removeEventListener("scroll", update)
+      target.removeEventListener("scroll", update)
       ro.disconnect()
       cancelAnimationFrame(frame.current)
     }
-  }, [scrollRef, update])
+  }, [getScroller, page, update])
 
   function scrollToEnd() {
-    const el = scrollRef.current
+    const el = getScroller()
     if (!el) return
+    const input: HTMLElement | Window = page ? window : el
     cancelAnimationFrame(frame.current)
     const from = el.scrollTop
     const to = el.scrollHeight - el.clientHeight
@@ -74,15 +91,15 @@ export function ScrollToEnd({ scrollRef }: { scrollRef: RefObject<HTMLElement | 
       cleanup()
     }
     const cleanup = () => {
-      el.removeEventListener("wheel", stop)
-      el.removeEventListener("touchstart", stop)
-      el.removeEventListener("keydown", stop)
-      el.removeEventListener("pointerdown", stop)
+      input.removeEventListener("wheel", stop)
+      input.removeEventListener("touchstart", stop)
+      input.removeEventListener("keydown", stop)
+      input.removeEventListener("pointerdown", stop)
     }
-    el.addEventListener("wheel", stop, { passive: true })
-    el.addEventListener("touchstart", stop, { passive: true })
-    el.addEventListener("keydown", stop)
-    el.addEventListener("pointerdown", stop)
+    input.addEventListener("wheel", stop, { passive: true })
+    input.addEventListener("touchstart", stop, { passive: true })
+    input.addEventListener("keydown", stop)
+    input.addEventListener("pointerdown", stop)
     const step = (now: number) => {
       const p = Math.min((now - start) / DURATION_MS, 1)
       const end = el.scrollHeight - el.clientHeight // content may have grown meanwhile
@@ -99,7 +116,7 @@ export function ScrollToEnd({ scrollRef }: { scrollRef: RefObject<HTMLElement | 
       onClick={scrollToEnd}
       inert={!visible}
       aria-label="Ir al final"
-      className={`press absolute bottom-4 right-5 z-10 hidden h-11 w-11 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-float transition-[opacity,transform,visibility,color,background-color] duration-350 ease-[var(--ease-out)] hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-opacity md:flex ${
+      className={`press ${page ? "fixed bottom-6 right-6 z-30" : "absolute bottom-4 right-5 z-10"} hidden h-11 w-11 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-float transition-[opacity,transform,visibility,color,background-color] duration-350 ease-[var(--ease-out)] hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-opacity md:flex ${
         visible ? "visible translate-y-0 opacity-100" : "pointer-events-none invisible translate-y-2 opacity-0 motion-reduce:translate-y-0"
       }`}
     >

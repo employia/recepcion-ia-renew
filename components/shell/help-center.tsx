@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useId, useMemo, useR
 import { ChevronDown, CircleHelp, SearchX, X } from "lucide-react"
 import { FAQ_CATEGORIES, FAQ_ITEMS, type FaqItem } from "@/lib/faq"
 import { EmptyState, SearchBox } from "@/components/modules/shared"
+import { ScrollToEnd } from "./scroll-to-end"
 
 /** Lowercase, accent-free, punctuation-free, so "metricas" finds "Métricas". */
 function fold(text: string) {
@@ -60,6 +61,7 @@ export function HelpCenter({
   const fabs = useRef(new Set<HTMLButtonElement>())
   const titleRef = useRef<HTMLHeadingElement>(null)
   const panelId = useId()
+  const listRef = useRef<HTMLDivElement>(null)
   const titleId = useId()
 
   const results = useMemo(() => searchFaq(query), [query])
@@ -155,7 +157,8 @@ export function HelpCenter({
           <SearchBox value={query} onChange={setQuery} placeholder="Buscar una pregunta" />
         </div>
 
-        <div className="scroll-slim min-h-0 flex-1 overflow-y-auto p-4">
+        <div className="relative min-h-0 flex-1">
+        <div ref={listRef} className="scroll-slim h-full overflow-y-auto p-4">
           <p role="status" className="sr-only">
             {results.length === 0
               ? "Sin resultados"
@@ -191,6 +194,8 @@ export function HelpCenter({
               ))}
             </div>
           )}
+        </div>
+        <ScrollToEnd scrollRef={listRef} />
         </div>
       </section>
     </HelpContext.Provider>

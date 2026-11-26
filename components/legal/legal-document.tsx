@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import { LEGAL_UPDATED } from "@/lib/legal"
+import { ScrollToEnd } from "@/components/shell/scroll-to-end"
 import { BackLink } from "./back-link"
 
 export interface LegalSection {
@@ -36,6 +37,7 @@ export function LegalDocument({ title, intro, sections }: { title: string; intro
           ))}
         </div>
       </article>
+      <ScrollToEnd page />
     </main>
   )
 }

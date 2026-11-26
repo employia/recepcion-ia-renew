@@ -90,7 +90,7 @@ export function TeamBar({
               aria-label={themeLabel}
               className="press flex h-11 w-11 items-center justify-center rounded-full hover:scale-105 md:h-12 md:w-12"
             >
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-secondary text-foreground transition-colors duration-350 group-hover:bg-accent group-hover:text-accent-foreground md:h-11 md:w-11">
+              <span className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-secondary text-foreground transition-colors duration-350 group-hover:bg-accent group-hover:text-accent-foreground">
                 <ThemeIcon
                   key={nextTheme}
                   className="h-5 w-5 animate-in fade-in zoom-in-50 spin-in-90 duration-350 motion-reduce:animate-none"
