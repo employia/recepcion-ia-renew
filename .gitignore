@@ -8,6 +8,10 @@ __v0_jsx-dev-runtime.ts
 
 # Environment variables
 .env*.local
+# Never commit real environment files; keep only the template.
+.env
+.env.*
+!.env.example
 
 # Common ignores
 node_modules
