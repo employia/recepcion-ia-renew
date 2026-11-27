@@ -204,18 +204,11 @@ export function HelpCenter({
 
 /**
  * Trigger of the help panel.
- * - `dock`: desktop only, first item of the team capsule. Its tooltip opens to
- *   the left, or above when `tooltipAbove` (a module is open and the dock sits
- *   next to the module panel).
+ * - `dock`: desktop only, first item of the team capsule. Its tooltip opens
+ *   above the capsule, like the rest of the dock's tooltips.
  * - `floating`: mobile only, fixed at the top right (unchanged).
  */
-export function HelpFab({
-  variant,
-  tooltipAbove = false,
-}: {
-  variant: "dock" | "floating"
-  tooltipAbove?: boolean
-}) {
+export function HelpFab({ variant }: { variant: "dock" | "floating" }) {
   const { open, panelId, toggle, registerFab } = useHelp()
 
   if (variant === "floating") {
@@ -257,9 +250,9 @@ export function HelpFab({
       </button>
       <span
         aria-hidden
-        className={`pointer-events-none absolute whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-2 text-sm font-semibold leading-tight opacity-0 shadow-float transition-opacity duration-250 ${
-          tooltipAbove ? "bottom-full left-0 mb-3" : "right-full top-1/2 mr-3 -translate-y-1/2"
-        } ${open ? "" : "group-hover:opacity-100 group-has-[:focus-visible]:opacity-100"}`}
+        className={`pointer-events-none absolute bottom-full left-0 mb-3 whitespace-nowrap rounded-xl border border-border bg-popover px-3 py-2 text-sm font-semibold leading-tight opacity-0 shadow-float transition-opacity duration-250 ${
+          open ? "" : "group-hover:opacity-100 group-has-[:focus-visible]:opacity-100"
+        }`}
       >
         Preguntas frecuentes
       </span>

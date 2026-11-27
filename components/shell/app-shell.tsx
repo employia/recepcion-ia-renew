@@ -54,7 +54,7 @@ function Shell() {
           insetLeft={insetLeft}
           insetRight={insetRight}
           hidden={officeCovered}
-          leading={<HelpFab variant="dock" tooltipAbove={split && dashboardOpen} />}
+          leading={<HelpFab variant="dock" />}
         >
           {!dashboardOpen && !profileOpen ? <HelpFab variant="floating" /> : null}
         </TeamBar>
